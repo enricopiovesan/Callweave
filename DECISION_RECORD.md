@@ -77,6 +77,25 @@ The ordinary audible microphone cannot hear bat echolocation. No capability may 
 - Use 3-second overlapping windows for BirdNET and 5-second windows for Perch or another model-specific requirement.
 - Retain proof clips, spectrograms, results, and provenance longer than high-volume master audio.
 
+At 48 kHz / 24-bit / mono, uncompressed audio is approximately 12.4 GB per day. FLAC is the preferred master format because it is lossless and normally substantially smaller; actual reduction varies with the soundscape. A retention policy must preserve the source recording long enough to reproduce every retained observation, unknown cluster, and review package.
+
+### Browser-local runtime direction
+
+The intended first runtime is a local-first PWA. Audio processing and model inference must run in workers so recording and the daily canvas stay responsive.
+
+```text
+PWA
+├─ browser audio capture and local file ingestion
+├─ lossless audio/spectrogram processing
+├─ Web Workers for long-running work
+├─ ONNX Runtime Web: WASM baseline, WebGPU acceleration when supported
+├─ local model artifact cache
+├─ IndexedDB or equivalent local persistent store
+└─ optional local companion service for storage-heavy or constrained devices
+```
+
+The PWA must degrade safely: lack of WebGPU may reduce throughput but cannot change the interpretation policy; lack of a supported local model must result in `unavailable`, not a fabricated detection.
+
 ## 4. Location-aware wildlife knowledge
 
 Each location has a private `LocationProfile` with coordinates, radius, timezone, elevation, habitat context, privacy settings, installed audio sources, and a candidate-set version.
@@ -93,6 +112,25 @@ surprising -> retained in quarantine for review
 An impossible hardware claim is rejected. An out-of-range biological prediction is preserved as a surprising result with its evidence; it is not silently deleted.
 
 Candidate records include common/scientific names, taxonomic identifiers and aliases, group, seasonal occurrence, local likelihood, supported acoustic band/model, provenance, and review status.
+
+### Domain state and lifecycle
+
+The durable domain entities are:
+
+```text
+LocationProfile, AudioSource, Recording, AudioWindow, AcousticEvidence,
+Species, LocationCandidate, Observation, UnknownCluster, ReviewPackage,
+ReviewProposal, ReferenceClip, ModelRegistry, DailyCanvas
+```
+
+Knowledge and sound interpretations use separate lifecycles:
+
+```text
+location knowledge: candidate -> proposed -> confirmed -> retired
+sound interpretation: raw -> analyzed -> provisional -> verified / rejected / unknown / surprising
+```
+
+`confirmed` and `verified` require human approval. Every correction creates a superseding record; it must not rewrite history.
 
 ## 5. Identification approach
 
@@ -118,6 +156,13 @@ master recording
 | LMM | Review of sanitized unknown-sound packages | Proposal only |
 
 Every result stores the recording ID, start/end time, model and version, input quality, candidate-set version, confidence, and evidence links.
+
+### Local model and license notes
+
+- BirdNET is a valuable bird specialist. Its analyzer source is MIT licensed, while current model weights are CC BY-NC-SA; any public/commercial direction requires a dedicated license review.
+- Perch is the preferred broad bioacoustic foundation-model direction. Its open research code is Apache-2.0; record the license and distribution terms of each chosen model artifact independently.
+- Bat classifiers must be regional and require compatible ultrasonic input. Model output is evidence only, not confirmation.
+- Each downloaded model artifact needs a manifest, checksum, input contract, taxonomy/label version, license record, evaluation record, and activation state.
 
 ## 6. Unknown sounds and LMM review
 
@@ -146,6 +191,34 @@ unknowns/2026-08-10.zip
 ```
 
 The LMM must be permitted to answer `ignore`, `retain_unknown`, `add_location_candidate`, or `request_human_review`. It cannot mark a species verified.
+
+## 6.1 Initial location bootstrap CLI and LMM skill
+
+Callweave needs a repeatable setup workflow that initializes a new place without making Golden-specific assumptions. A future `initialize-wildlife-location` CLI/skill will:
+
+```text
+location input
+-> resolve coordinates, privacy level, timezone, elevation, and radius
+-> retrieve and normalize source-backed occurrence/taxonomy information
+-> build a deterministic candidate-set draft
+-> build an LMM habitat/context review package when useful
+-> validate all LMM suggestions deterministically
+-> write a versioned location profile, candidate set, source record, and app configuration
+-> produce a human-readable initialization report
+```
+
+The LMM does not write configuration. The CLI is the only writer and accepts only schema-valid, source-backed, privacy-safe proposals.
+
+Expected initialization artifacts:
+
+```text
+data/locations/<location-id>/
+├── location-profile.json
+├── candidate-species.json
+├── sources.json
+├── app-config.json
+└── initialization-report.md
+```
 
 ## 7. UMA / Traverse capability contract
 
@@ -314,6 +387,23 @@ No single open-source project implements the full Callweave design.
 
 Callweave should use these as references and model sources, not fork one whole project. All model/data licenses must be recorded and reviewed before use.
 
+### Research references
+
+These links are research inputs, not endorsements or guarantees of fit. Re-check versions, model terms, and APIs when implementing.
+
+- [BirdNET Analyzer](https://github.com/birdnet-team/BirdNET-Analyzer): scientific/batch audio processing and BirdNET model documentation.
+- [BirdNET Python library](https://github.com/birdnet-team/birdnet): current library, models, embeddings, and geo-model support.
+- [BirdNET-Go](https://github.com/tphakala/birdnet-go): closest self-hosted, multi-model continuous-monitoring reference.
+- [Birda](https://github.com/tphakala/birda): command-line reference for BirdNET/Perch analysis and model-specific sample windows.
+- [Perch](https://github.com/google-research/perch): bioacoustic foundation-model research and transfer-learning tooling.
+- [Acoupi](https://github.com/acoupi/acoupi): modular edge acoustic monitoring/deployment reference.
+- [BirdNET Live](https://birdnet-team.github.io/birdnet-live-app/): local/offline field-inference reference.
+- [iNaturalist sound-classifier browser extension announcement](https://www.inaturalist.org/posts/129322-sound-classifier-browser-extension): relevant browser-local ONNX and geographic cross-checking approach.
+- [BC Species & Ecosystems Explorer](https://a100.gov.bc.ca/pub/eswp/): useful provincial occurrence/status reference for a Golden bootstrap.
+- [BC wildlife conservation information](https://www2.gov.bc.ca/gov/content/environment/plants-animals-ecosystems/wildlife): provincial wildlife context and conservation resources.
+
+For a location bootstrap, occurrence sources may include source-approved data from iNaturalist, eBird, GBIF, and regional/provincial conservation authorities. The importer must retain source, query area/time, attribution, license/terms, and retrieval timestamp; it must not assume that observed occurrence equals current acoustic detectability.
+
 ## 12. Council evaluation
 
 The design was reviewed using the LLM Council method: independent roles, cross-critique, and a single synthesis. The approach is inspired by [LLM Council](https://github.com/karpathy/llm-council), which collects independent model responses, anonymizes peer review, and synthesizes a final response.
@@ -330,6 +420,21 @@ The design is approved for a prototype with these binding conclusions:
 6. Raw evidence, provenance, model versions, and uncertainty are durable product data.
 7. Automatic local model training is deferred until a verified, licensed dataset and held-out evaluation baseline exist.
 8. The artwork must communicate uncertainty, recording quality, and unknown calls—not only confident species detections.
+
+### Council criteria and personas
+
+The decision review used the following perspectives. They remain useful as recurring review gates for future capability and model decisions.
+
+| Persona | Review question |
+|---|---|
+| Bioacoustician | Does this correctly represent what can and cannot be inferred from a sound recording? |
+| Local-first systems architect | Does this work offline, recover safely, and retain replaceable capability boundaries? |
+| Wildlife-data steward | Does it preserve provenance, uncertainty, range-change evidence, and licensing obligations? |
+| Privacy and safety reviewer | Does it protect precise location and incidental human audio before sharing? |
+| Artist/product designer | Does the result turn ecology into meaningful art without concealing uncertainty? |
+| Operations engineer | Is it versioned, observable, idempotent, retryable, and recoverable? |
+
+No proposed capability, integration, or model release is ready until it passes the relevant perspectives.
 
 ## 13. Delivery sequence
 
