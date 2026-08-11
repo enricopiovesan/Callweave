@@ -1,0 +1,6 @@
+{
+  "id": "restart-replay-idempotency",
+  "kind": "restart-replay-idempotency",
+  "input": { "idempotency_key": "golden-bc-demo:2026-08-11" },
+  "expected": { "persisted_idempotency_key": "golden-bc-demo:2026-08-11", "result_count": 1 }
+}

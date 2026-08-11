@@ -1,0 +1,6 @@
+{
+  "id": "exclusive-detection-outcome",
+  "kind": "exclusive-detection-outcome",
+  "input": { "resolution_state": "unknown" },
+  "expected": { "emitted_event_id": "callweave.detection.unknown-identified", "route": "callweave.unknown-organize" }
+}

@@ -1,0 +1,6 @@
+{
+  "id": "privacy-deny-no-export",
+  "kind": "privacy-deny-no-export",
+  "input": { "export_status": "denied" },
+  "expected": { "next_capability": null }
+}

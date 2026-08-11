@@ -7,6 +7,9 @@ This directory is the contract-first UMA/Traverse surface for Callweave. It deli
 ```text
 contracts/callweave/<capability>/contract.json  governed capability contracts
 events/callweave/<event>/contract.json          stable domain-event contracts and declared edges
+schemas/domain-records.schema.json              shared immutable local-record schemas
+workflows/daily-local-first.workflow.json       draft routing, retries, and host boundaries
+workflows/fixtures/                             deterministic workflow fixtures
 personas/<persona>/1.0.0/persona.json           persona references used by contract use cases
 capability-inventory.json                        inventory of all contract-first capabilities
 wasm/implementation-plan.json                   future local model and advisory-agent bindings
@@ -20,7 +23,7 @@ wasm/implementation-plan.json                   future local model and advisory-
 - A contract that needs device, storage, model-cache, or source-provider access declares `host_api_access: exception_required` and carries the `callweave-host-adapter-boundary` exception reference.
 - Raw audio, evidence, proposal, knowledge, and observation history are append-only/versioned. A correction supersedes history; it does not rewrite it.
 - Standard recording and interpretation workflows are deterministic. The optional LMM advisor can only return an advisory proposal through `traverse.inference.generate`; the governed runtime validates it and a human approves durable knowledge changes.
-- Events express stable domain facts such as `callweave.audio.recording-finalized`, `callweave.acoustic.evidence-produced`, and `callweave.detection.resolved`. They make the intended workflow visible without encoding a central, hard-wired orchestration script.
+- Events express stable domain facts such as `callweave.audio.recording-finalized`, `callweave.acoustic.evidence-produced`, and the exclusive `callweave.detection.*` outcomes. The workflow specification supplies route predicates without allowing a capability to bypass governed state.
 
 ## Local storage boundary
 
@@ -44,6 +47,7 @@ Contracts are generated from the checked-in source of truth:
 
 ```bash
 node scripts/generate_traverse_contracts.mjs
+node scripts/run_workflow_fixtures.mjs
 find traverse/contracts/callweave -name contract.json -print0 | xargs -0 -n1 jq -e .
 ```
 

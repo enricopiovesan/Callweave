@@ -1,0 +1,6 @@
+{
+  "id": "late-evidence-creates-revision",
+  "kind": "late-evidence-creates-revision",
+  "input": { "verified": true, "previous_revision": 1 },
+  "expected": { "revision_number": 2 }
+}

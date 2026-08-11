@@ -1,0 +1,6 @@
+{
+  "id": "coverage-gap-canvas",
+  "kind": "coverage-gap-canvas",
+  "input": { "coverage_state": "partial" },
+  "expected": { "canvas_created": true }
+}

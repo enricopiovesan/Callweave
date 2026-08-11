@@ -1,0 +1,6 @@
+{
+  "id": "duplicate-daily-close",
+  "kind": "duplicate-daily-close",
+  "input": { "requests": [{ "location_id": "golden-bc-demo", "local_date": "2026-08-11" }, { "location_id": "golden-bc-demo", "local_date": "2026-08-11" }] },
+  "expected": { "daily_close_records": 1 }
+}
