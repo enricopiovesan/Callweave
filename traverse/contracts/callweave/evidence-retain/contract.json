@@ -1,37 +1,37 @@
 {
   "kind": "capability_contract",
   "schema_version": "1.0.0",
-  "id": "callweave.privacy-protect",
+  "id": "callweave.evidence-retain",
   "namespace": "callweave",
-  "name": "privacy-protect",
+  "name": "evidence-retain",
   "version": "0.1.0",
   "lifecycle": "draft",
   "owner": {
     "team": "callweave",
     "contact": "maintainers@callweave.local"
   },
-  "summary": "Detect speech risk and create a safe review-package asset set.",
-  "description": "Detects likely human speech and removes precise location and blocked assets before an external review package can be created. It fails closed: uncertain or unavailable privacy analysis prevents external sharing unless a reviewer uses an explicit approved override.\n\nImplementation status: contract-first. A WASM component/agent will be generated after contract approval. The host provides only the declared adapter authority.\n\nUse-case coverage: one happy path plus invalid-input, dependency-unavailable, and policy-denied unhappy paths.",
+  "summary": "Classify evidence retention and safe deletion eligibility without losing reproducibility.",
+  "description": "Assigns retention class, reference counts, review/legal hold, and earliest safe deletion time to recordings, clips, spectrograms, and review assets. It cannot delete data; deletion is a separately authorized host operation after this capability proves no active dependency remains.\n\nImplementation status: contract-first. A WASM component/agent will be generated after contract approval. The host provides only the declared adapter authority.\n\nUse-case coverage: one happy path plus invalid-input, dependency-unavailable, and policy-denied unhappy paths.",
   "use_cases": [
     {
-      "scenario": "As a Location Owner, I want detect speech risk and create a safe review-package asset set. so that the governed workflow can continue with traceable evidence.",
+      "scenario": "As a System Administrator, I want classify evidence retention and safe deletion eligibility without losing reproducibility. so that the governed workflow can continue with traceable evidence.",
       "input_example": {
-        "request_id": "privacy-protect-happy-001",
+        "request_id": "evidence-retain-happy-001",
         "workspace_id": "local-default",
         "location_id": "golden-bc-demo",
-        "idempotency_key": "privacy-protect-idempotency-001",
+        "idempotency_key": "evidence-retain-idempotency-001",
         "runtime_context": {
           "input_reference_state": "resolvable",
           "dependency_state": "available",
           "policy_state": "allowed"
         },
-        "asset_refs": {
-          "id": "asset_refs-001",
+        "asset_lifecycle_scope": {
+          "id": "asset_lifecycle_scope-001",
           "version": "1.0.0",
           "metadata": {}
         },
-        "privacy_policy": {
-          "id": "privacy_policy-001",
+        "retention_policy": {
+          "id": "retention_policy-001",
           "version": "1.0.0",
           "metadata": {}
         }
@@ -39,32 +39,32 @@
       "output_example": {
         "status": "completed",
         "reason_code": "ok",
-        "sanitized_asset_set_ref": "privacy-protect-result-001",
-        "trace_ref": "privacy-protect-trace-001",
+        "retention_decision_ref": "evidence-retain-result-001",
+        "trace_ref": "evidence-retain-trace-001",
         "warnings": []
       },
       "happy": true,
-      "persona_ref": "callweave-location-owner"
+      "persona_ref": "callweave-system-administrator"
     },
     {
       "scenario": "As the Callweave Runtime, I want malformed or incomplete input rejected so that this capability fails closed before creating state.",
       "input_example": {
-        "request_id": "privacy-protect-failure-002",
+        "request_id": "evidence-retain-failure-002",
         "workspace_id": "local-default",
         "location_id": "golden-bc-demo",
-        "idempotency_key": "privacy-protect-idempotency-002",
+        "idempotency_key": "evidence-retain-idempotency-002",
         "runtime_context": {
           "input_reference_state": "unresolvable",
           "dependency_state": "available",
           "policy_state": "allowed"
         },
-        "asset_refs": {
-          "id": "asset_refs-001",
+        "asset_lifecycle_scope": {
+          "id": "asset_lifecycle_scope-001",
           "version": "1.0.0",
           "metadata": {}
         },
-        "privacy_policy": {
-          "id": "privacy_policy-001",
+        "retention_policy": {
+          "id": "retention_policy-001",
           "version": "1.0.0",
           "metadata": {}
         }
@@ -72,8 +72,8 @@
       "output_example": {
         "status": "rejected",
         "reason_code": "invalid_input",
-        "sanitized_asset_set_ref": null,
-        "trace_ref": "privacy-protect-trace-002",
+        "retention_decision_ref": null,
+        "trace_ref": "evidence-retain-trace-002",
         "warnings": [
           "invalid_input"
         ]
@@ -84,22 +84,22 @@
     {
       "scenario": "As a System Administrator, I want unavailable required host/model dependencies reported explicitly so that the workflow can defer or use an approved fallback.",
       "input_example": {
-        "request_id": "privacy-protect-failure-003",
+        "request_id": "evidence-retain-failure-003",
         "workspace_id": "local-default",
         "location_id": "golden-bc-demo",
-        "idempotency_key": "privacy-protect-idempotency-003",
+        "idempotency_key": "evidence-retain-idempotency-003",
         "runtime_context": {
           "input_reference_state": "resolvable",
           "dependency_state": "unavailable",
           "policy_state": "allowed"
         },
-        "asset_refs": {
-          "id": "asset_refs-001",
+        "asset_lifecycle_scope": {
+          "id": "asset_lifecycle_scope-001",
           "version": "1.0.0",
           "metadata": {}
         },
-        "privacy_policy": {
-          "id": "privacy_policy-001",
+        "retention_policy": {
+          "id": "retention_policy-001",
           "version": "1.0.0",
           "metadata": {}
         }
@@ -107,8 +107,8 @@
       "output_example": {
         "status": "deferred",
         "reason_code": "dependency_unavailable",
-        "sanitized_asset_set_ref": null,
-        "trace_ref": "privacy-protect-trace-003",
+        "retention_decision_ref": null,
+        "trace_ref": "evidence-retain-trace-003",
         "warnings": [
           "dependency_unavailable"
         ]
@@ -119,22 +119,22 @@
     {
       "scenario": "As a Reviewer, I want policy-prohibited work denied without side effects so that privacy, hardware, and approval boundaries remain authoritative.",
       "input_example": {
-        "request_id": "privacy-protect-failure-004",
+        "request_id": "evidence-retain-failure-004",
         "workspace_id": "local-default",
         "location_id": "golden-bc-demo",
-        "idempotency_key": "privacy-protect-idempotency-004",
+        "idempotency_key": "evidence-retain-idempotency-004",
         "runtime_context": {
           "input_reference_state": "resolvable",
           "dependency_state": "available",
           "policy_state": "denied"
         },
-        "asset_refs": {
-          "id": "asset_refs-001",
+        "asset_lifecycle_scope": {
+          "id": "asset_lifecycle_scope-001",
           "version": "1.0.0",
           "metadata": {}
         },
-        "privacy_policy": {
-          "id": "privacy_policy-001",
+        "retention_policy": {
+          "id": "retention_policy-001",
           "version": "1.0.0",
           "metadata": {}
         }
@@ -142,8 +142,8 @@
       "output_example": {
         "status": "rejected",
         "reason_code": "policy_denied",
-        "sanitized_asset_set_ref": null,
-        "trace_ref": "privacy-protect-trace-004",
+        "retention_decision_ref": null,
+        "trace_ref": "evidence-retain-trace-004",
         "warnings": [
           "policy_denied"
         ]
@@ -160,8 +160,8 @@
         "workspace_id",
         "location_id",
         "idempotency_key",
-        "asset_refs",
-        "privacy_policy"
+        "asset_lifecycle_scope",
+        "retention_policy"
       ],
       "properties": {
         "request_id": {
@@ -212,7 +212,7 @@
           },
           "additionalProperties": false
         },
-        "asset_refs": {
+        "asset_lifecycle_scope": {
           "type": "object",
           "required": [
             "id"
@@ -233,7 +233,7 @@
           },
           "additionalProperties": false
         },
-        "privacy_policy": {
+        "retention_policy": {
           "type": "object",
           "required": [
             "id"
@@ -264,7 +264,7 @@
       "required": [
         "status",
         "reason_code",
-        "sanitized_asset_set_ref",
+        "retention_decision_ref",
         "trace_ref",
         "warnings"
       ],
@@ -286,7 +286,7 @@
             "policy_denied"
           ]
         },
-        "sanitized_asset_set_ref": {
+        "retention_decision_ref": {
           "type": [
             "string",
             "null"
@@ -333,19 +333,14 @@
   ],
   "emits": [
     {
-      "event_id": "callweave.privacy.protected",
+      "event_id": "callweave.evidence.retention-classified",
       "version": "0.1.0"
     }
   ],
-  "consumes": [
-    {
-      "event_id": "callweave.unknown.organized",
-      "version": "0.1.0"
-    }
-  ],
+  "consumes": [],
   "permissions": [
     {
-      "id": "callweave.privacy-protect.execute"
+      "id": "callweave.evidence-retain.execute"
     }
   ],
   "execution": {
@@ -356,7 +351,8 @@
     },
     "preferred_targets": [
       "local",
-      "browser"
+      "edge",
+      "cloud"
     ],
     "constraints": {
       "host_api_access": "exception_required",
@@ -417,6 +413,7 @@
   "service_type": "stateless",
   "permitted_targets": [
     "local",
-    "browser"
+    "edge",
+    "cloud"
   ]
 }

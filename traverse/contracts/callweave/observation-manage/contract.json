@@ -339,7 +339,11 @@
   ],
   "consumes": [
     {
-      "event_id": "callweave.detection.resolved",
+      "event_id": "callweave.detection.provisional-created",
+      "version": "0.1.0"
+    },
+    {
+      "event_id": "callweave.detection.surprising-quarantined",
       "version": "0.1.0"
     }
   ],

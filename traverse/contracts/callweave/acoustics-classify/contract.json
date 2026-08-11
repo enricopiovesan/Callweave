@@ -341,10 +341,6 @@
     {
       "event_id": "callweave.audio.prepared",
       "version": "0.1.0"
-    },
-    {
-      "event_id": "callweave.model.availability-changed",
-      "version": "0.1.0"
     }
   ],
   "permissions": [

@@ -30,6 +30,20 @@
       "model_interfaces": []
     },
     {
+      "capability_id": "callweave.coverage-assess",
+      "contract": "contracts/callweave/coverage-assess/contract.json",
+      "lifecycle": "draft",
+      "wasm_status": "not-generated",
+      "model_interfaces": []
+    },
+    {
+      "capability_id": "callweave.evidence-retain",
+      "contract": "contracts/callweave/evidence-retain/contract.json",
+      "lifecycle": "draft",
+      "wasm_status": "not-generated",
+      "model_interfaces": []
+    },
+    {
       "capability_id": "callweave.privacy-protect",
       "contract": "contracts/callweave/privacy-protect/contract.json",
       "lifecycle": "draft",
@@ -107,6 +121,13 @@
     {
       "capability_id": "callweave.daily-create",
       "contract": "contracts/callweave/daily-create/contract.json",
+      "lifecycle": "draft",
+      "wasm_status": "not-generated",
+      "model_interfaces": []
+    },
+    {
+      "capability_id": "callweave.daily-close",
+      "contract": "contracts/callweave/daily-close/contract.json",
       "lifecycle": "draft",
       "wasm_status": "not-generated",
       "model_interfaces": []

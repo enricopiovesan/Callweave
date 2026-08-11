@@ -56,11 +56,7 @@
   ],
   "subscribers": [
     {
-      "capability_id": "callweave.review-prepare",
-      "version": "0.1.0"
-    },
-    {
-      "capability_id": "callweave.daily-create",
+      "capability_id": "callweave.privacy-protect",
       "version": "0.1.0"
     }
   ],

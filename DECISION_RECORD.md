@@ -267,6 +267,8 @@ Every capability must be idempotent, auditable, version-aware, and safe to retry
 - `FinalizeRecording`
 - `ValidateRecording`
 - `ApplyRetentionPolicy`
+- `AssessCoverage`
+- `ClassifyEvidenceRetention`
 
 ### Preparation and privacy
 
@@ -330,6 +332,7 @@ Every capability must be idempotent, auditable, version-aware, and safe to retry
 ### Art and operations
 
 - `BuildDailyEcologySummary`
+- `CloseLocalDay`
 - `MapEcologyToVisualParameters`
 - `RenderDailyCanvas`
 - `ArchiveDailyArtifact`

@@ -38,9 +38,9 @@ for (const entry of entries.filter((candidate) => candidate.isDirectory())) {
   if (contract.execution.constraints.host_api_access === 'exception_required' && !(contract.provenance.exception_refs || []).includes('callweave-host-adapter-boundary')) failures.push(`${file}: host exception missing`);
 }
 
-if (entries.filter((entry) => entry.isDirectory()).length !== 15) failures.push('expected exactly 15 Callweave capability contracts');
+if (entries.filter((entry) => entry.isDirectory()).length !== 18) failures.push('expected exactly 18 Callweave capability contracts');
 const eventEntries = await readdir(eventBase, { withFileTypes: true });
-if (eventEntries.filter((entry) => entry.isDirectory()).length !== 15) failures.push('expected exactly 15 Callweave event contracts');
+if (eventEntries.filter((entry) => entry.isDirectory()).length !== 21) failures.push('expected exactly 21 Callweave event contracts');
 for (const entry of eventEntries.filter((candidate) => candidate.isDirectory())) {
   const file = join(eventBase, entry.name, 'contract.json');
   const event = JSON.parse(await readFile(file, 'utf8'));
@@ -52,4 +52,4 @@ if (failures.length) {
   console.error(failures.join('\n'));
   process.exit(1);
 }
-console.log('Validated 15 strict draft Callweave Traverse contracts and 15 draft event contracts with grounded happy/unhappy paths and local-state boundaries.');
+console.log('Validated 18 strict draft Callweave Traverse contracts and 21 draft event contracts with grounded happy/unhappy paths and local-state boundaries.');

@@ -54,12 +54,7 @@
       "version": "0.1.0"
     }
   ],
-  "subscribers": [
-    {
-      "capability_id": "callweave.acoustics-classify",
-      "version": "0.1.0"
-    }
-  ],
+  "subscribers": [],
   "policies": [
     {
       "id": "append-only-provenance"

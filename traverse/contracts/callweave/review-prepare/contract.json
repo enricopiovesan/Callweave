@@ -339,10 +339,6 @@
   ],
   "consumes": [
     {
-      "event_id": "callweave.unknown.organized",
-      "version": "0.1.0"
-    },
-    {
       "event_id": "callweave.privacy.protected",
       "version": "0.1.0"
     }

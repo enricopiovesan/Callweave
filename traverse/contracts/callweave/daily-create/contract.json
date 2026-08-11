@@ -11,7 +11,7 @@
     "contact": "maintainers@callweave.local"
   },
   "summary": "Build and archive an explainable daily ecological canvas.",
-  "description": "Builds the daily ecology summary, maps evidence and uncertainty to visual parameters, renders the canvas, and archives the artifact. P0 uses deterministic rendering; a future creative model is an optional separately governed implementation and cannot hide uncertainty.\n\nImplementation status: contract-first. A WASM component/agent will be generated after contract approval. The host provides only the declared adapter authority.\n\nUse-case coverage: one happy path plus invalid-input, dependency-unavailable, and policy-denied unhappy paths.",
+  "description": "Builds the daily ecology summary from one immutable daily-close record, maps evidence, coverage, and uncertainty to visual parameters, renders the canvas, and archives the artifact. The idempotency key is location plus local date. Corrections create a visible revision, not a silent replacement. P0 uses deterministic rendering.\n\nImplementation status: contract-first. A WASM component/agent will be generated after contract approval. The host provides only the declared adapter authority.\n\nUse-case coverage: one happy path plus invalid-input, dependency-unavailable, and policy-denied unhappy paths.",
   "use_cases": [
     {
       "scenario": "As a Artist, I want build and archive an explainable daily ecological canvas. so that the governed workflow can continue with traceable evidence.",
@@ -25,8 +25,8 @@
           "dependency_state": "available",
           "policy_state": "allowed"
         },
-        "daily_evidence_scope": {
-          "id": "daily_evidence_scope-001",
+        "daily_close_ref": {
+          "id": "daily_close_ref-001",
           "version": "1.0.0",
           "metadata": {}
         },
@@ -58,8 +58,8 @@
           "dependency_state": "available",
           "policy_state": "allowed"
         },
-        "daily_evidence_scope": {
-          "id": "daily_evidence_scope-001",
+        "daily_close_ref": {
+          "id": "daily_close_ref-001",
           "version": "1.0.0",
           "metadata": {}
         },
@@ -93,8 +93,8 @@
           "dependency_state": "unavailable",
           "policy_state": "allowed"
         },
-        "daily_evidence_scope": {
-          "id": "daily_evidence_scope-001",
+        "daily_close_ref": {
+          "id": "daily_close_ref-001",
           "version": "1.0.0",
           "metadata": {}
         },
@@ -128,8 +128,8 @@
           "dependency_state": "available",
           "policy_state": "denied"
         },
-        "daily_evidence_scope": {
-          "id": "daily_evidence_scope-001",
+        "daily_close_ref": {
+          "id": "daily_close_ref-001",
           "version": "1.0.0",
           "metadata": {}
         },
@@ -160,7 +160,7 @@
         "workspace_id",
         "location_id",
         "idempotency_key",
-        "daily_evidence_scope",
+        "daily_close_ref",
         "visual_mapping_policy"
       ],
       "properties": {
@@ -212,7 +212,7 @@
           },
           "additionalProperties": false
         },
-        "daily_evidence_scope": {
+        "daily_close_ref": {
           "type": "object",
           "required": [
             "id"
@@ -339,15 +339,7 @@
   ],
   "consumes": [
     {
-      "event_id": "callweave.observation.managed",
-      "version": "0.1.0"
-    },
-    {
-      "event_id": "callweave.unknown.organized",
-      "version": "0.1.0"
-    },
-    {
-      "event_id": "callweave.knowledge.versioned",
+      "event_id": "callweave.daily.closed",
       "version": "0.1.0"
     }
   ],

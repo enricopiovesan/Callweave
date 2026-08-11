@@ -58,10 +58,6 @@
     {
       "capability_id": "callweave.model-improve",
       "version": "0.1.0"
-    },
-    {
-      "capability_id": "callweave.daily-create",
-      "version": "0.1.0"
     }
   ],
   "policies": [

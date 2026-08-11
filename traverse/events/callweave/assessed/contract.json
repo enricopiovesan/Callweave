@@ -1,17 +1,17 @@
 {
   "kind": "event_contract",
   "schema_version": "1.0.0",
-  "id": "callweave.detection.resolved",
-  "namespace": "callweave.detection",
-  "name": "resolved",
+  "id": "callweave.coverage.assessed",
+  "namespace": "callweave.coverage",
+  "name": "assessed",
   "version": "0.1.0",
   "lifecycle": "draft",
   "owner": {
     "team": "callweave",
     "contact": "maintainers@callweave.local"
   },
-  "summary": "Callweave resolved domain event.",
-  "description": "Stable domain fact emitted after callweave.detection-resolve completes. Draft until its publishers and subscribers are backed by active WASM packages.",
+  "summary": "Callweave assessed domain event.",
+  "description": "Stable domain fact emitted after callweave.coverage-assess completes. Draft until its publishers and subscribers are backed by active WASM packages.",
   "payload": {
     "schema": {
       "type": "object",
@@ -41,7 +41,7 @@
   },
   "classification": {
     "domain": "callweave",
-    "bounded_context": "resolved",
+    "bounded_context": "assessed",
     "event_type": "domain",
     "tags": [
       "callweave",
@@ -50,20 +50,11 @@
   },
   "publishers": [
     {
-      "capability_id": "callweave.detection-resolve",
+      "capability_id": "callweave.coverage-assess",
       "version": "0.1.0"
     }
   ],
-  "subscribers": [
-    {
-      "capability_id": "callweave.observation-manage",
-      "version": "0.1.0"
-    },
-    {
-      "capability_id": "callweave.unknown-organize",
-      "version": "0.1.0"
-    }
-  ],
+  "subscribers": [],
   "policies": [
     {
       "id": "append-only-provenance"

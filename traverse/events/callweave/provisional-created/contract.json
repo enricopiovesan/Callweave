@@ -1,17 +1,17 @@
 {
   "kind": "event_contract",
   "schema_version": "1.0.0",
-  "id": "callweave.observation.managed",
-  "namespace": "callweave.observation",
-  "name": "managed",
+  "id": "callweave.detection.provisional-created",
+  "namespace": "callweave.detection",
+  "name": "provisional-created",
   "version": "0.1.0",
   "lifecycle": "draft",
   "owner": {
     "team": "callweave",
     "contact": "maintainers@callweave.local"
   },
-  "summary": "Callweave managed domain event.",
-  "description": "Stable domain fact emitted after callweave.observation-manage completes. Draft until its publishers and subscribers are backed by active WASM packages.",
+  "summary": "Callweave provisional-created domain event.",
+  "description": "Stable domain fact emitted after callweave.detection-resolve completes. Draft until its publishers and subscribers are backed by active WASM packages.",
   "payload": {
     "schema": {
       "type": "object",
@@ -41,7 +41,7 @@
   },
   "classification": {
     "domain": "callweave",
-    "bounded_context": "managed",
+    "bounded_context": "provisional",
     "event_type": "domain",
     "tags": [
       "callweave",
@@ -50,13 +50,13 @@
   },
   "publishers": [
     {
-      "capability_id": "callweave.observation-manage",
+      "capability_id": "callweave.detection-resolve",
       "version": "0.1.0"
     }
   ],
   "subscribers": [
     {
-      "capability_id": "callweave.model-improve",
+      "capability_id": "callweave.observation-manage",
       "version": "0.1.0"
     }
   ],
