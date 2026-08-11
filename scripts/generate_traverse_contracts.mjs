@@ -123,6 +123,31 @@ const caps = [
   },
 ];
 
+const eventLinks = {
+  'location-initialize': { emits: ['location.initialized'], consumes: [] },
+  'audio-source-configure': { emits: ['audio.source-configured'], consumes: ['location.initialized'] },
+  'audio-capture': { emits: ['audio.recording-finalized'], consumes: ['audio.source-configured'] },
+  'audio-prepare': { emits: ['audio.prepared'], consumes: ['audio.recording-finalized'] },
+  'privacy-protect': { emits: ['privacy.protected'], consumes: ['audio.prepared'] },
+  'model-manage': { emits: ['model.availability-changed'], consumes: [] },
+  'acoustics-classify': { emits: ['acoustic.evidence-produced'], consumes: ['audio.prepared', 'model.availability-changed'] },
+  'detection-resolve': { emits: ['detection.resolved'], consumes: ['acoustic.evidence-produced'] },
+  'observation-manage': { emits: ['observation.managed'], consumes: ['detection.resolved'] },
+  'unknown-organize': { emits: ['unknown.organized'], consumes: ['detection.resolved'] },
+  'review-prepare': { emits: ['review.proposal-validated'], consumes: ['unknown.organized', 'privacy.protected'] },
+  'knowledge-manage': { emits: ['knowledge.versioned'], consumes: ['review.proposal-validated'] },
+  'model-improve': { emits: ['model.release-evaluated'], consumes: ['observation.managed', 'knowledge.versioned'] },
+  'daily-create': { emits: ['daily.canvas-created'], consumes: ['observation.managed', 'unknown.organized', 'knowledge.versioned'] },
+  'operations-recover': { emits: ['operations.reported'], consumes: [] },
+};
+
+const events = Object.entries(eventLinks)
+  .flatMap(([capability, links]) => links.emits.map((name) => ({ name, publisher: capability })))
+  .map(({ name, publisher }) => ({
+    id: `callweave.${name}`, name: name.split('.').at(-1), publisher,
+    subscribers: Object.entries(eventLinks).filter(([, links]) => links.consumes.includes(name)).map(([capability]) => capability),
+  }));
+
 const fieldSchema = (field) => ({
   type: 'object',
   required: ['id'],
@@ -142,6 +167,14 @@ function contract(cap) {
     workspace_id: { type: 'string', minLength: 1 },
     location_id: { type: 'string', minLength: 1 },
     idempotency_key: { type: 'string', minLength: 1 },
+    runtime_context: {
+      type: 'object', required: ['input_reference_state', 'dependency_state', 'policy_state'],
+      properties: {
+        input_reference_state: { type: 'string', enum: ['resolvable', 'unresolvable'] },
+        dependency_state: { type: 'string', enum: ['available', 'unavailable'] },
+        policy_state: { type: 'string', enum: ['allowed', 'denied'] },
+      }, additionalProperties: false,
+    },
     ...Object.fromEntries(cap.fields.map((field) => [field, fieldSchema(field)])),
   };
   const inputExample = Object.fromEntries([
@@ -149,6 +182,7 @@ function contract(cap) {
     ['workspace_id', 'local-default'],
     ['location_id', 'golden-bc-demo'],
     ['idempotency_key', `${cap.name}-idempotency-001`],
+    ['runtime_context', { input_reference_state: 'resolvable', dependency_state: 'available', policy_state: 'allowed' }],
     ...cap.fields.map((field) => [field, { id: `${field}-001`, version: '1.0.0', metadata: {} }]),
   ]);
   const reasonCodes = ['ok', 'invalid_input', 'dependency_unavailable', 'policy_denied'];
@@ -159,9 +193,15 @@ function contract(cap) {
     [`As a System Administrator, I want unavailable required host/model dependencies reported explicitly so that the workflow can defer or use an approved fallback.`, false],
     [`As a Reviewer, I want policy-prohibited work denied without side effects so that privacy, hardware, and approval boundaries remain authoritative.`, false],
   ];
+  const contexts = [
+    { input_reference_state: 'resolvable', dependency_state: 'available', policy_state: 'allowed' },
+    { input_reference_state: 'unresolvable', dependency_state: 'available', policy_state: 'allowed' },
+    { input_reference_state: 'resolvable', dependency_state: 'unavailable', policy_state: 'allowed' },
+    { input_reference_state: 'resolvable', dependency_state: 'available', policy_state: 'denied' },
+  ];
   const use_cases = reasonCodes.map((reason_code, index) => ({
     scenario: scenarios[index][0],
-    input_example: index === 0 ? inputExample : { ...inputExample, request_id: `${cap.name}-failure-00${index}`, idempotency_key: `${cap.name}-idempotency-failure-00${index}` },
+    input_example: { ...inputExample, request_id: `${cap.name}-${index === 0 ? 'happy' : 'failure'}-00${index + 1}`, idempotency_key: `${cap.name}-idempotency-00${index + 1}`, runtime_context: contexts[index] },
     output_example: {
       status: statuses[index],
       reason_code,
@@ -196,14 +236,15 @@ function contract(cap) {
       { id: 'no-silent-authority-escalation', description: 'Undeclared network, filesystem, model, and approval authority is never used.' },
     ],
     side_effects: [{ kind: 'state_change', description: 'Any persistent state, device I/O, network operation, or model invocation is performed only by an explicitly declared host adapter.' }],
-    emits: [], consumes: [], permissions: [{ id: `${id}.execute` }],
+    emits: eventLinks[cap.name].emits.map((event_id) => ({ event_id: `callweave.${event_id}`, version: '0.1.0' })),
+    consumes: eventLinks[cap.name].consumes.map((event_id) => ({ event_id: `callweave.${event_id}`, version: '0.1.0' })), permissions: [{ id: `${id}.execute` }],
     execution: { binary_format: 'wasm', entrypoint: { kind: 'wasi-command', command: 'run' }, preferred_targets: cap.targets, constraints: { host_api_access, network_access, filesystem_access } },
     policies: [
       { id: 'local-first' }, { id: 'fail-closed-on-invalid-or-unsafe' }, { id: 'append-only-provenance' }, { id: 'human-approval-for-durable-knowledge' },
     ],
     dependencies: [],
-    provenance: { source: 'greenfield', author: 'Callweave architecture record', created_at: '2026-08-11T00:00:00Z', spec_ref: 'callweave-decision-record@1.0.0', adr_refs: ['DECISION_RECORD.md'], exception_refs: host_api_access === 'exception_required' ? ['callweave-host-adapter-boundary'] : [] },
-    evidence: [{ evidence_id: `${id}-contract-design`, type: 'contract_validation', status: 'passed' }],
+    provenance: { source: 'ai-assisted', author: 'Callweave architecture record', created_at: '2026-08-11T00:00:00Z', spec_ref: 'callweave-decision-record@1.0.0', adr_refs: ['DECISION_RECORD.md'], exception_refs: host_api_access === 'exception_required' ? ['callweave-host-adapter-boundary'] : [] },
+    evidence: [],
     state_schema: {
       type: 'object',
       required: ['workspace_id', 'trace_ref'],
@@ -217,6 +258,26 @@ function contract(cap) {
     },
     service_type: 'stateless', permitted_targets: cap.targets,
   };
+}
+
+for (const event of events) {
+  const eventParts = event.id.split('.');
+  const name = eventParts.at(-1);
+  const namespace = eventParts.slice(0, -1).join('.');
+  const path = join(root, 'traverse', 'events', 'callweave', event.name, 'contract.json');
+  await mkdir(dirname(path), { recursive: true });
+  await writeFile(path, `${JSON.stringify({
+    kind: 'event_contract', schema_version: '1.0.0', id: event.id, namespace, name,
+    version: '0.1.0', lifecycle: 'draft', owner: { team: 'callweave', contact: 'maintainers@callweave.local' },
+    summary: `Callweave ${event.name} domain event.`,
+    description: `Stable domain fact emitted after callweave.${event.publisher} completes. Draft until its publishers and subscribers are backed by active WASM packages.`,
+    payload: { schema: { type: 'object', required: ['workspace_id', 'location_id', 'trace_ref', 'result_ref'], properties: { workspace_id: { type: 'string' }, location_id: { type: 'string' }, trace_ref: { type: 'string' }, result_ref: { type: 'string' } }, additionalProperties: false }, compatibility: 'backward-compatible' },
+    classification: { domain: 'callweave', bounded_context: event.name.split('-')[0], event_type: 'domain', tags: ['callweave', 'local-first'] },
+    publishers: [{ capability_id: `callweave.${event.publisher}`, version: '0.1.0' }],
+    subscribers: event.subscribers.map((capability_id) => ({ capability_id: `callweave.${capability_id}`, version: '0.1.0' })),
+    policies: [{ id: 'append-only-provenance' }], tags: ['callweave'],
+    provenance: { source: 'ai-generated', author: 'Callweave architecture record', created_at: '2026-08-11T00:00:00Z' }, evidence: [],
+  }, null, 2)}\n`);
 }
 
 for (const [id, name, description] of personas) {

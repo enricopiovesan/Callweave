@@ -1,0 +1,81 @@
+{
+  "kind": "event_contract",
+  "schema_version": "1.0.0",
+  "id": "callweave.detection.resolved",
+  "namespace": "callweave.detection",
+  "name": "resolved",
+  "version": "0.1.0",
+  "lifecycle": "draft",
+  "owner": {
+    "team": "callweave",
+    "contact": "maintainers@callweave.local"
+  },
+  "summary": "Callweave resolved domain event.",
+  "description": "Stable domain fact emitted after callweave.detection-resolve completes. Draft until its publishers and subscribers are backed by active WASM packages.",
+  "payload": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "workspace_id",
+        "location_id",
+        "trace_ref",
+        "result_ref"
+      ],
+      "properties": {
+        "workspace_id": {
+          "type": "string"
+        },
+        "location_id": {
+          "type": "string"
+        },
+        "trace_ref": {
+          "type": "string"
+        },
+        "result_ref": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "compatibility": "backward-compatible"
+  },
+  "classification": {
+    "domain": "callweave",
+    "bounded_context": "resolved",
+    "event_type": "domain",
+    "tags": [
+      "callweave",
+      "local-first"
+    ]
+  },
+  "publishers": [
+    {
+      "capability_id": "callweave.detection-resolve",
+      "version": "0.1.0"
+    }
+  ],
+  "subscribers": [
+    {
+      "capability_id": "callweave.observation-manage",
+      "version": "0.1.0"
+    },
+    {
+      "capability_id": "callweave.unknown-organize",
+      "version": "0.1.0"
+    }
+  ],
+  "policies": [
+    {
+      "id": "append-only-provenance"
+    }
+  ],
+  "tags": [
+    "callweave"
+  ],
+  "provenance": {
+    "source": "ai-generated",
+    "author": "Callweave architecture record",
+    "created_at": "2026-08-11T00:00:00Z"
+  },
+  "evidence": []
+}

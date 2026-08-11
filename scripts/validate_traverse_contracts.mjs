@@ -3,6 +3,7 @@ import { join } from 'node:path';
 
 const root = new URL('..', import.meta.url).pathname;
 const base = join(root, 'traverse', 'contracts', 'callweave');
+const eventBase = join(root, 'traverse', 'events', 'callweave');
 const expectedReasons = new Set(['ok', 'invalid_input', 'dependency_unavailable', 'policy_denied']);
 const requiredTopLevel = [
   'kind', 'schema_version', 'id', 'namespace', 'name', 'version', 'lifecycle',
@@ -26,12 +27,29 @@ for (const entry of entries.filter((candidate) => candidate.isDirectory())) {
   if (!contract.use_cases.some((useCase) => useCase.happy)) failures.push(`${file}: missing happy path`);
   if (!contract.use_cases.some((useCase) => !useCase.happy)) failures.push(`${file}: missing unhappy path`);
   if (!contract.state_schema || !contract.state_schema.properties?.trace_ref) failures.push(`${file}: local state trace schema missing`);
+  if (contract.evidence.length !== 0) failures.push(`${file}: draft contract must not claim validation evidence`);
+  for (const useCase of contract.use_cases) {
+    const context = useCase.input_example.runtime_context;
+    if (!context) failures.push(`${file}: use case lacks runtime_context`);
+    if (useCase.output_example.reason_code === 'invalid_input' && context?.input_reference_state !== 'unresolvable') failures.push(`${file}: invalid_input use case lacks unresolvable reference`);
+    if (useCase.output_example.reason_code === 'dependency_unavailable' && context?.dependency_state !== 'unavailable') failures.push(`${file}: dependency use case lacks unavailable dependency`);
+    if (useCase.output_example.reason_code === 'policy_denied' && context?.policy_state !== 'denied') failures.push(`${file}: policy use case lacks denied policy`);
+  }
   if (contract.execution.constraints.host_api_access === 'exception_required' && !(contract.provenance.exception_refs || []).includes('callweave-host-adapter-boundary')) failures.push(`${file}: host exception missing`);
 }
 
 if (entries.filter((entry) => entry.isDirectory()).length !== 15) failures.push('expected exactly 15 Callweave capability contracts');
+const eventEntries = await readdir(eventBase, { withFileTypes: true });
+if (eventEntries.filter((entry) => entry.isDirectory()).length !== 15) failures.push('expected exactly 15 Callweave event contracts');
+for (const entry of eventEntries.filter((candidate) => candidate.isDirectory())) {
+  const file = join(eventBase, entry.name, 'contract.json');
+  const event = JSON.parse(await readFile(file, 'utf8'));
+  if (event.id !== `${event.namespace}.${event.name}`) failures.push(`${file}: identity mismatch`);
+  if (event.lifecycle !== 'draft') failures.push(`${file}: must remain draft until packages exist`);
+  if (event.evidence.length !== 0) failures.push(`${file}: draft event must not claim validation evidence`);
+}
 if (failures.length) {
   console.error(failures.join('\n'));
   process.exit(1);
 }
-console.log('Validated 15 strict draft Callweave Traverse contracts with happy/unhappy paths and local-state boundaries.');
+console.log('Validated 15 strict draft Callweave Traverse contracts and 15 draft event contracts with grounded happy/unhappy paths and local-state boundaries.');

@@ -20,6 +20,11 @@
         "workspace_id": "local-default",
         "location_id": "golden-bc-demo",
         "idempotency_key": "review-prepare-idempotency-001",
+        "runtime_context": {
+          "input_reference_state": "resolvable",
+          "dependency_state": "available",
+          "policy_state": "allowed"
+        },
         "unknown_cluster_ref": {
           "id": "unknown_cluster_ref-001",
           "version": "1.0.0",
@@ -44,10 +49,15 @@
     {
       "scenario": "As the Callweave Runtime, I want malformed or incomplete input rejected so that this capability fails closed before creating state.",
       "input_example": {
-        "request_id": "review-prepare-failure-001",
+        "request_id": "review-prepare-failure-002",
         "workspace_id": "local-default",
         "location_id": "golden-bc-demo",
-        "idempotency_key": "review-prepare-idempotency-failure-001",
+        "idempotency_key": "review-prepare-idempotency-002",
+        "runtime_context": {
+          "input_reference_state": "unresolvable",
+          "dependency_state": "available",
+          "policy_state": "allowed"
+        },
         "unknown_cluster_ref": {
           "id": "unknown_cluster_ref-001",
           "version": "1.0.0",
@@ -74,10 +84,15 @@
     {
       "scenario": "As a System Administrator, I want unavailable required host/model dependencies reported explicitly so that the workflow can defer or use an approved fallback.",
       "input_example": {
-        "request_id": "review-prepare-failure-002",
+        "request_id": "review-prepare-failure-003",
         "workspace_id": "local-default",
         "location_id": "golden-bc-demo",
-        "idempotency_key": "review-prepare-idempotency-failure-002",
+        "idempotency_key": "review-prepare-idempotency-003",
+        "runtime_context": {
+          "input_reference_state": "resolvable",
+          "dependency_state": "unavailable",
+          "policy_state": "allowed"
+        },
         "unknown_cluster_ref": {
           "id": "unknown_cluster_ref-001",
           "version": "1.0.0",
@@ -104,10 +119,15 @@
     {
       "scenario": "As a Reviewer, I want policy-prohibited work denied without side effects so that privacy, hardware, and approval boundaries remain authoritative.",
       "input_example": {
-        "request_id": "review-prepare-failure-003",
+        "request_id": "review-prepare-failure-004",
         "workspace_id": "local-default",
         "location_id": "golden-bc-demo",
-        "idempotency_key": "review-prepare-idempotency-failure-003",
+        "idempotency_key": "review-prepare-idempotency-004",
+        "runtime_context": {
+          "input_reference_state": "resolvable",
+          "dependency_state": "available",
+          "policy_state": "denied"
+        },
         "unknown_cluster_ref": {
           "id": "unknown_cluster_ref-001",
           "version": "1.0.0",
@@ -159,6 +179,38 @@
         "idempotency_key": {
           "type": "string",
           "minLength": 1
+        },
+        "runtime_context": {
+          "type": "object",
+          "required": [
+            "input_reference_state",
+            "dependency_state",
+            "policy_state"
+          ],
+          "properties": {
+            "input_reference_state": {
+              "type": "string",
+              "enum": [
+                "resolvable",
+                "unresolvable"
+              ]
+            },
+            "dependency_state": {
+              "type": "string",
+              "enum": [
+                "available",
+                "unavailable"
+              ]
+            },
+            "policy_state": {
+              "type": "string",
+              "enum": [
+                "allowed",
+                "denied"
+              ]
+            }
+          },
+          "additionalProperties": false
         },
         "unknown_cluster_ref": {
           "type": "object",
@@ -279,8 +331,22 @@
       "description": "Any persistent state, device I/O, network operation, or model invocation is performed only by an explicitly declared host adapter."
     }
   ],
-  "emits": [],
-  "consumes": [],
+  "emits": [
+    {
+      "event_id": "callweave.review.proposal-validated",
+      "version": "0.1.0"
+    }
+  ],
+  "consumes": [
+    {
+      "event_id": "callweave.unknown.organized",
+      "version": "0.1.0"
+    },
+    {
+      "event_id": "callweave.privacy.protected",
+      "version": "0.1.0"
+    }
+  ],
   "permissions": [
     {
       "id": "callweave.review-prepare.execute"
@@ -318,7 +384,7 @@
   ],
   "dependencies": [],
   "provenance": {
-    "source": "greenfield",
+    "source": "ai-assisted",
     "author": "Callweave architecture record",
     "created_at": "2026-08-11T00:00:00Z",
     "spec_ref": "callweave-decision-record@1.0.0",
@@ -329,13 +395,7 @@
       "callweave-host-adapter-boundary"
     ]
   },
-  "evidence": [
-    {
-      "evidence_id": "callweave.review-prepare-contract-design",
-      "type": "contract_validation",
-      "status": "passed"
-    }
-  ],
+  "evidence": [],
   "state_schema": {
     "type": "object",
     "required": [
