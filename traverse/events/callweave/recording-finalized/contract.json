@@ -23,16 +23,20 @@
       ],
       "properties": {
         "workspace_id": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "location_id": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "trace_ref": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "result_ref": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         }
       },
       "additionalProperties": false
@@ -57,6 +61,10 @@
   "subscribers": [
     {
       "capability_id": "callweave.audio-prepare",
+      "version": "0.1.0"
+    },
+    {
+      "capability_id": "callweave.evidence-retain",
       "version": "0.1.0"
     }
   ],

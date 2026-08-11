@@ -1,0 +1,311 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "callweave.domain-records@0.1.0",
+  "title": "Callweave versioned local domain records",
+  "description": "Shared contract-first record types. Every reference in events resolves to an immutable local record of the applicable type.",
+  "$defs": {
+    "Recording": {
+      "type": "object",
+      "title": "Recording",
+      "required": [
+        "id",
+        "version",
+        "source_id",
+        "started_at",
+        "ended_at",
+        "checksum",
+        "coverage_state"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_id": {
+          "type": "string"
+        },
+        "started_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "ended_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "checksum": {
+          "type": "string"
+        },
+        "coverage_state": {
+          "type": "string",
+          "enum": [
+            "complete",
+            "partial",
+            "invalid"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "AcousticEvidence": {
+      "type": "object",
+      "title": "Acoustic evidence",
+      "required": [
+        "id",
+        "version",
+        "recording_ref",
+        "model_version",
+        "time_range_ms",
+        "labels"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "recording_ref": {
+          "type": "string"
+        },
+        "model_version": {
+          "type": "string"
+        },
+        "time_range_ms": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "integer",
+              "minimum": 0
+            }
+          ],
+          "items": false
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "Resolution": {
+      "type": "object",
+      "title": "Detection resolution",
+      "required": [
+        "id",
+        "version",
+        "evidence_ref",
+        "resolution_state",
+        "policy_version"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_ref": {
+          "type": "string"
+        },
+        "resolution_state": {
+          "type": "string",
+          "enum": [
+            "provisional",
+            "unknown",
+            "surprising",
+            "rejected"
+          ]
+        },
+        "policy_version": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "CoverageReport": {
+      "type": "object",
+      "title": "Coverage report",
+      "required": [
+        "id",
+        "version",
+        "local_date",
+        "timezone",
+        "expected_minutes",
+        "captured_minutes",
+        "valid_minutes",
+        "coverage_state"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "local_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "timezone": {
+          "type": "string"
+        },
+        "expected_minutes": {
+          "type": "number",
+          "minimum": 0
+        },
+        "captured_minutes": {
+          "type": "number",
+          "minimum": 0
+        },
+        "valid_minutes": {
+          "type": "number",
+          "minimum": 0
+        },
+        "coverage_state": {
+          "type": "string",
+          "enum": [
+            "complete",
+            "partial",
+            "unavailable"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "SanitizedAssetSet": {
+      "type": "object",
+      "title": "Sanitized review asset set",
+      "required": [
+        "id",
+        "version",
+        "asset_hashes",
+        "privacy_policy_version",
+        "export_status"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "asset_hashes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "privacy_policy_version": {
+          "type": "string"
+        },
+        "export_status": {
+          "type": "string",
+          "enum": [
+            "approved",
+            "denied"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "DailyClose": {
+      "type": "object",
+      "title": "Daily close",
+      "required": [
+        "id",
+        "version",
+        "location_id",
+        "local_date",
+        "timezone",
+        "coverage_report_ref",
+        "idempotency_key"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "location_id": {
+          "type": "string"
+        },
+        "local_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "timezone": {
+          "type": "string"
+        },
+        "coverage_report_ref": {
+          "type": "string"
+        },
+        "idempotency_key": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "DailyCanvasRevision": {
+      "type": "object",
+      "title": "Daily canvas revision",
+      "required": [
+        "id",
+        "version",
+        "daily_close_ref",
+        "revision_number",
+        "supersedes_ref",
+        "reason"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "daily_close_ref": {
+          "type": "string"
+        },
+        "revision_number": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "supersedes_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

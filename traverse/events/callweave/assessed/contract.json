@@ -23,16 +23,20 @@
       ],
       "properties": {
         "workspace_id": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "location_id": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "trace_ref": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "result_ref": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         }
       },
       "additionalProperties": false
@@ -54,7 +58,12 @@
       "version": "0.1.0"
     }
   ],
-  "subscribers": [],
+  "subscribers": [
+    {
+      "capability_id": "callweave.daily-close",
+      "version": "0.1.0"
+    }
+  ],
   "policies": [
     {
       "id": "append-only-provenance"

@@ -28,7 +28,8 @@
         "acoustic_evidence_ref": {
           "id": "acoustic_evidence_ref-001",
           "version": "1.0.0",
-          "metadata": {}
+          "metadata": {},
+          "record_type": "AcousticEvidence"
         },
         "resolution_context": {
           "id": "resolution_context-001",
@@ -40,7 +41,119 @@
         "status": "completed",
         "reason_code": "ok",
         "resolution_ref": "detection-resolve-result-001",
+        "resolution_state": "provisional",
+        "emitted_event_id": "callweave.detection.provisional-created",
         "trace_ref": "detection-resolve-trace-001",
+        "warnings": []
+      },
+      "happy": true,
+      "persona_ref": "callweave-runtime"
+    },
+    {
+      "scenario": "As the Callweave Runtime, I want to retain an unresolved biological sound for local clustering rather than asserting a species. so that outcome routing is deterministic.",
+      "input_example": {
+        "request_id": "detection-resolve-unknown-002",
+        "workspace_id": "local-default",
+        "location_id": "golden-bc-demo",
+        "idempotency_key": "detection-resolve-unknown-002",
+        "runtime_context": {
+          "input_reference_state": "resolvable",
+          "dependency_state": "available",
+          "policy_state": "allowed"
+        },
+        "acoustic_evidence_ref": {
+          "id": "acoustic_evidence_ref-001",
+          "version": "1.0.0",
+          "metadata": {},
+          "record_type": "AcousticEvidence"
+        },
+        "resolution_context": {
+          "id": "resolution_context-001",
+          "version": "1.0.0",
+          "metadata": {}
+        }
+      },
+      "output_example": {
+        "status": "completed",
+        "reason_code": "ok",
+        "resolution_ref": "detection-resolve-unknown-001",
+        "resolution_state": "unknown",
+        "emitted_event_id": "callweave.detection.unknown-identified",
+        "trace_ref": "detection-resolve-trace-unknown-001",
+        "warnings": []
+      },
+      "happy": true,
+      "persona_ref": "callweave-runtime"
+    },
+    {
+      "scenario": "As the Callweave Runtime, I want to preserve biologically surprising evidence for both quarantine and review without treating it as verified. so that outcome routing is deterministic.",
+      "input_example": {
+        "request_id": "detection-resolve-surprising-003",
+        "workspace_id": "local-default",
+        "location_id": "golden-bc-demo",
+        "idempotency_key": "detection-resolve-surprising-003",
+        "runtime_context": {
+          "input_reference_state": "resolvable",
+          "dependency_state": "available",
+          "policy_state": "allowed"
+        },
+        "acoustic_evidence_ref": {
+          "id": "acoustic_evidence_ref-001",
+          "version": "1.0.0",
+          "metadata": {},
+          "record_type": "AcousticEvidence"
+        },
+        "resolution_context": {
+          "id": "resolution_context-001",
+          "version": "1.0.0",
+          "metadata": {}
+        }
+      },
+      "output_example": {
+        "status": "completed",
+        "reason_code": "ok",
+        "resolution_ref": "detection-resolve-surprising-001",
+        "resolution_state": "surprising",
+        "emitted_event_id": "callweave.detection.surprising-quarantined",
+        "trace_ref": "detection-resolve-trace-surprising-001",
+        "warnings": [
+          "requires_review"
+        ]
+      },
+      "happy": true,
+      "persona_ref": "callweave-runtime"
+    },
+    {
+      "scenario": "As the Callweave Runtime, I want to record a hardware-impossible or policy-invalid claim without letting it enter observation or unknown state. so that outcome routing is deterministic.",
+      "input_example": {
+        "request_id": "detection-resolve-rejected-004",
+        "workspace_id": "local-default",
+        "location_id": "golden-bc-demo",
+        "idempotency_key": "detection-resolve-rejected-004",
+        "runtime_context": {
+          "input_reference_state": "resolvable",
+          "dependency_state": "available",
+          "policy_state": "allowed"
+        },
+        "acoustic_evidence_ref": {
+          "id": "acoustic_evidence_ref-001",
+          "version": "1.0.0",
+          "metadata": {},
+          "record_type": "AcousticEvidence"
+        },
+        "resolution_context": {
+          "id": "resolution_context-001",
+          "version": "1.0.0",
+          "metadata": {}
+        }
+      },
+      "output_example": {
+        "status": "completed",
+        "reason_code": "ok",
+        "resolution_ref": "detection-resolve-rejected-001",
+        "resolution_state": "rejected",
+        "emitted_event_id": "callweave.detection.rejected",
+        "trace_ref": "detection-resolve-trace-rejected-001",
         "warnings": []
       },
       "happy": true,
@@ -61,7 +174,8 @@
         "acoustic_evidence_ref": {
           "id": "acoustic_evidence_ref-001",
           "version": "1.0.0",
-          "metadata": {}
+          "metadata": {},
+          "record_type": "AcousticEvidence"
         },
         "resolution_context": {
           "id": "resolution_context-001",
@@ -73,6 +187,8 @@
         "status": "rejected",
         "reason_code": "invalid_input",
         "resolution_ref": null,
+        "resolution_state": null,
+        "emitted_event_id": null,
         "trace_ref": "detection-resolve-trace-002",
         "warnings": [
           "invalid_input"
@@ -96,7 +212,8 @@
         "acoustic_evidence_ref": {
           "id": "acoustic_evidence_ref-001",
           "version": "1.0.0",
-          "metadata": {}
+          "metadata": {},
+          "record_type": "AcousticEvidence"
         },
         "resolution_context": {
           "id": "resolution_context-001",
@@ -108,6 +225,8 @@
         "status": "deferred",
         "reason_code": "dependency_unavailable",
         "resolution_ref": null,
+        "resolution_state": null,
+        "emitted_event_id": null,
         "trace_ref": "detection-resolve-trace-003",
         "warnings": [
           "dependency_unavailable"
@@ -131,7 +250,8 @@
         "acoustic_evidence_ref": {
           "id": "acoustic_evidence_ref-001",
           "version": "1.0.0",
-          "metadata": {}
+          "metadata": {},
+          "record_type": "AcousticEvidence"
         },
         "resolution_context": {
           "id": "resolution_context-001",
@@ -143,6 +263,8 @@
         "status": "rejected",
         "reason_code": "policy_denied",
         "resolution_ref": null,
+        "resolution_state": null,
+        "emitted_event_id": null,
         "trace_ref": "detection-resolve-trace-004",
         "warnings": [
           "policy_denied"
@@ -215,7 +337,8 @@
         "acoustic_evidence_ref": {
           "type": "object",
           "required": [
-            "id"
+            "id",
+            "record_type"
           ],
           "properties": {
             "id": {
@@ -229,6 +352,10 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {}
+            },
+            "record_type": {
+              "type": "string",
+              "const": "AcousticEvidence"
             }
           },
           "additionalProperties": false
@@ -266,7 +393,9 @@
         "reason_code",
         "resolution_ref",
         "trace_ref",
-        "warnings"
+        "warnings",
+        "resolution_state",
+        "emitted_event_id"
       ],
       "properties": {
         "status": {
@@ -300,6 +429,32 @@
           "items": {
             "type": "string"
           }
+        },
+        "resolution_state": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "provisional",
+            "unknown",
+            "surprising",
+            "rejected",
+            null
+          ]
+        },
+        "emitted_event_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "callweave.detection.provisional-created",
+            "callweave.detection.unknown-identified",
+            "callweave.detection.surprising-quarantined",
+            "callweave.detection.rejected",
+            null
+          ]
         }
       },
       "additionalProperties": false
@@ -404,11 +559,23 @@
     "exception_refs": []
   },
   "evidence": [],
+  "domain_schema_ref": "schemas/domain-records.schema.json",
+  "state_ownership": {
+    "model": "host-owned-local-store",
+    "reads": [
+      "acoustic_evidence_ref"
+    ],
+    "writes": [
+      "resolution_ref"
+    ],
+    "transition": "append-only; idempotency_key atomically maps to one trace and one result"
+  },
   "state_schema": {
     "type": "object",
     "required": [
       "workspace_id",
-      "trace_ref"
+      "trace_ref",
+      "owned_record_refs"
     ],
     "properties": {
       "workspace_id": {
@@ -422,6 +589,13 @@
       },
       "payload_ref": {
         "type": "string"
+      },
+      "owned_record_refs": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 1
+        }
       }
     },
     "additionalProperties": false

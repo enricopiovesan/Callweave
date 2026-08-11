@@ -4,6 +4,7 @@ import { dirname, join } from 'node:path';
 const root = new URL('..', import.meta.url).pathname;
 const contractRoot = join(root, 'traverse', 'contracts', 'callweave');
 const personaRoot = join(root, 'traverse', 'personas');
+const schemaRoot = join(root, 'traverse', 'schemas');
 
 const personas = [
   ['callweave-location-owner', 'Location Owner', 'Creates a private location profile and owns location-specific wildlife data.'],
@@ -129,6 +130,13 @@ const caps = [
     fields: ['daily_close_ref', 'visual_mapping_policy'], result: 'daily_canvas_ref', model: [],
   },
   {
+    name: 'daily-revise', owner: 'callweave-artist', targets: ['local', 'browser'],
+    constraints: ['exception_required', 'forbidden', 'sandbox_only'],
+    summary: 'Create a visible immutable revision of a completed daily ecological canvas.',
+    description: 'Renders a numbered successor to an existing daily canvas after a verified correction or a previously unavailable coverage/evidence fact becomes available. It preserves the prior artifact, records the reason and source trace, and cannot silently replace a published canvas.',
+    fields: ['daily_revision_request', 'visual_mapping_policy'], result: 'daily_canvas_revision_ref', model: [],
+  },
+  {
     name: 'daily-close', owner: 'callweave-runtime', targets: ['local', 'edge', 'cloud'],
     constraints: ['exception_required', 'forbidden', 'sandbox_only'],
     summary: 'Close one timezone-aware local day exactly once with a coverage watermark.',
@@ -150,18 +158,19 @@ const eventLinks = {
   'audio-capture': { emits: ['audio.recording-finalized'], consumes: ['audio.source-configured'] },
   'audio-prepare': { emits: ['audio.prepared'], consumes: ['audio.recording-finalized'] },
   'coverage-assess': { emits: ['coverage.assessed'], consumes: [] },
-  'evidence-retain': { emits: ['evidence.retention-classified'], consumes: [] },
+  'evidence-retain': { emits: ['evidence.retention-classified'], consumes: ['audio.recording-finalized', 'audio.prepared', 'privacy.protected'] },
   'privacy-protect': { emits: ['privacy.protected'], consumes: ['unknown.organized'] },
   'model-manage': { emits: ['model.availability-changed'], consumes: [] },
   'acoustics-classify': { emits: ['acoustic.evidence-produced'], consumes: ['audio.prepared'] },
   'detection-resolve': { emits: ['detection.provisional-created', 'detection.unknown-identified', 'detection.surprising-quarantined', 'detection.rejected'], consumes: ['acoustic.evidence-produced'] },
-  'observation-manage': { emits: ['observation.managed'], consumes: ['detection.provisional-created', 'detection.surprising-quarantined'] },
+  'observation-manage': { emits: ['observation.managed', 'daily.revision-requested'], consumes: ['detection.provisional-created', 'detection.surprising-quarantined'] },
   'unknown-organize': { emits: ['unknown.organized'], consumes: ['detection.unknown-identified', 'detection.surprising-quarantined'] },
   'review-prepare': { emits: ['review.proposal-validated'], consumes: ['privacy.protected'] },
   'knowledge-manage': { emits: ['knowledge.versioned'], consumes: ['review.proposal-validated'] },
   'model-improve': { emits: ['model.release-evaluated'], consumes: ['observation.managed', 'knowledge.versioned'] },
-  'daily-close': { emits: ['daily.closed'], consumes: [] },
+  'daily-close': { emits: ['daily.closed'], consumes: ['coverage.assessed'] },
   'daily-create': { emits: ['daily.canvas-created'], consumes: ['daily.closed'] },
+  'daily-revise': { emits: ['daily.canvas-revised'], consumes: ['daily.revision-requested'] },
   'operations-recover': { emits: ['operations.reported'], consumes: [] },
 };
 
@@ -183,6 +192,43 @@ const fieldSchema = (field) => ({
   additionalProperties: false,
 });
 
+const recordTypeForField = (field) => ({
+  recording_ref: 'Recording', acoustic_evidence_ref: 'AcousticEvidence', resolution_ref: 'Resolution',
+  coverage_report_ref: 'CoverageReport', sanitized_asset_set_ref: 'SanitizedAssetSet',
+  daily_close_ref: 'DailyClose', daily_canvas_ref: 'DailyCanvasRevision',
+}[field]);
+
+const domainType = (title, required, properties) => ({
+  type: 'object', title, required: ['id', 'version', ...required],
+  properties: { id: { type: 'string', minLength: 1 }, version: { type: 'string', minLength: 1 }, ...properties },
+  additionalProperties: false,
+});
+
+const domainSchema = {
+  $schema: 'https://json-schema.org/draft/2020-12/schema',
+  $id: 'callweave.domain-records@0.1.0', title: 'Callweave versioned local domain records',
+  description: 'Shared contract-first record types. Every reference in events resolves to an immutable local record of the applicable type.',
+  $defs: {
+    Recording: domainType('Recording', ['source_id', 'started_at', 'ended_at', 'checksum', 'coverage_state'], { source_id: { type: 'string' }, started_at: { type: 'string', format: 'date-time' }, ended_at: { type: 'string', format: 'date-time' }, checksum: { type: 'string' }, coverage_state: { type: 'string', enum: ['complete', 'partial', 'invalid'] } }),
+    AcousticEvidence: domainType('Acoustic evidence', ['recording_ref', 'model_version', 'time_range_ms', 'labels'], { recording_ref: { type: 'string' }, model_version: { type: 'string' }, time_range_ms: { type: 'array', prefixItems: [{ type: 'integer', minimum: 0 }, { type: 'integer', minimum: 0 }], items: false }, labels: { type: 'array', items: { type: 'string' } } }),
+    Resolution: domainType('Detection resolution', ['evidence_ref', 'resolution_state', 'policy_version'], { evidence_ref: { type: 'string' }, resolution_state: { type: 'string', enum: ['provisional', 'unknown', 'surprising', 'rejected'] }, policy_version: { type: 'string' } }),
+    CoverageReport: domainType('Coverage report', ['local_date', 'timezone', 'expected_minutes', 'captured_minutes', 'valid_minutes', 'coverage_state'], { local_date: { type: 'string', format: 'date' }, timezone: { type: 'string' }, expected_minutes: { type: 'number', minimum: 0 }, captured_minutes: { type: 'number', minimum: 0 }, valid_minutes: { type: 'number', minimum: 0 }, coverage_state: { type: 'string', enum: ['complete', 'partial', 'unavailable'] } }),
+    SanitizedAssetSet: domainType('Sanitized review asset set', ['asset_hashes', 'privacy_policy_version', 'export_status'], { asset_hashes: { type: 'array', items: { type: 'string' } }, privacy_policy_version: { type: 'string' }, export_status: { type: 'string', enum: ['approved', 'denied'] } }),
+    DailyClose: domainType('Daily close', ['location_id', 'local_date', 'timezone', 'coverage_report_ref', 'idempotency_key'], { location_id: { type: 'string' }, local_date: { type: 'string', format: 'date' }, timezone: { type: 'string' }, coverage_report_ref: { type: 'string' }, idempotency_key: { type: 'string', minLength: 1 } }),
+    DailyCanvasRevision: domainType('Daily canvas revision', ['daily_close_ref', 'revision_number', 'supersedes_ref', 'reason'], { daily_close_ref: { type: 'string' }, revision_number: { type: 'integer', minimum: 1 }, supersedes_ref: { type: ['string', 'null'] }, reason: { type: 'string', minLength: 1 } }),
+  },
+};
+
+const eventPayload = (event) => {
+  const properties = { workspace_id: { type: 'string', minLength: 1 }, location_id: { type: 'string', minLength: 1 }, trace_ref: { type: 'string', minLength: 1 }, result_ref: { type: 'string', minLength: 1 } };
+  if (event.name.startsWith('detection.')) properties.resolution_state = { type: 'string', const: event.name.replace('detection.', '').replace('-created', '').replace('-identified', '').replace('-quarantined', '') };
+  if (event.name === 'daily.closed') Object.assign(properties, { local_date: { type: 'string', format: 'date' }, timezone: { type: 'string', minLength: 1 }, coverage_report_ref: { type: 'string', minLength: 1 }, idempotency_key: { type: 'string', minLength: 1 } });
+  if (event.name === 'daily.revision-requested' || event.name === 'daily.canvas-revised') Object.assign(properties, { daily_close_ref: { type: 'string', minLength: 1 }, revision_reason: { type: 'string', minLength: 1 } });
+  if (event.name === 'privacy.protected') Object.assign(properties, { export_status: { type: 'string', enum: ['approved', 'denied'] }, sanitized_asset_set_ref: { type: 'string', minLength: 1 } });
+  const required = Object.keys(properties);
+  return { type: 'object', required, properties, additionalProperties: false };
+};
+
 function contract(cap) {
   const id = `callweave.${cap.name}`;
   const [host_api_access, network_access, filesystem_access] = cap.constraints;
@@ -199,7 +245,9 @@ function contract(cap) {
         policy_state: { type: 'string', enum: ['allowed', 'denied'] },
       }, additionalProperties: false,
     },
-    ...Object.fromEntries(cap.fields.map((field) => [field, fieldSchema(field)])),
+    ...Object.fromEntries(cap.fields.map((field) => [field, recordTypeForField(field)
+      ? { ...fieldSchema(field), required: ['id', 'record_type'], properties: { ...fieldSchema(field).properties, record_type: { type: 'string', const: recordTypeForField(field) } } }
+      : fieldSchema(field)])),
   };
   const inputExample = Object.fromEntries([
     ['request_id', `${cap.name}-happy-001`],
@@ -207,7 +255,7 @@ function contract(cap) {
     ['location_id', 'golden-bc-demo'],
     ['idempotency_key', `${cap.name}-idempotency-001`],
     ['runtime_context', { input_reference_state: 'resolvable', dependency_state: 'available', policy_state: 'allowed' }],
-    ...cap.fields.map((field) => [field, { id: `${field}-001`, version: '1.0.0', metadata: {} }]),
+    ...cap.fields.map((field) => [field, { id: `${field}-001`, version: '1.0.0', metadata: {}, ...(recordTypeForField(field) ? { record_type: recordTypeForField(field) } : {}) }]),
   ]);
   const reasonCodes = ['ok', 'invalid_input', 'dependency_unavailable', 'policy_denied'];
   const statuses = ['completed', 'rejected', 'deferred', 'rejected'];
@@ -230,12 +278,27 @@ function contract(cap) {
       status: statuses[index],
       reason_code,
       [cap.result]: index === 0 ? `${cap.name}-result-001` : null,
+      ...(cap.name === 'detection-resolve' ? { resolution_state: index === 0 ? 'provisional' : null } : {}),
+      ...(cap.name === 'detection-resolve' ? { emitted_event_id: index === 0 ? 'callweave.detection.provisional-created' : null } : {}),
       trace_ref: `${cap.name}-trace-00${index + 1}`,
       warnings: index === 0 ? [] : [reason_code],
     },
     happy: scenarios[index][1],
     persona_ref: index === 0 ? cap.owner : index === 3 ? 'callweave-reviewer' : 'callweave-system-administrator',
   }));
+  if (cap.name === 'detection-resolve') {
+    const outcomes = [
+      ['unknown', 'callweave.detection.unknown-identified', 'retain an unresolved biological sound for local clustering rather than asserting a species.'],
+      ['surprising', 'callweave.detection.surprising-quarantined', 'preserve biologically surprising evidence for both quarantine and review without treating it as verified.'],
+      ['rejected', 'callweave.detection.rejected', 'record a hardware-impossible or policy-invalid claim without letting it enter observation or unknown state.'],
+    ];
+    use_cases.splice(1, 0, ...outcomes.map(([resolution_state, emitted_event_id, intent], index) => ({
+      scenario: `As the Callweave Runtime, I want to ${intent} so that outcome routing is deterministic.`,
+      input_example: { ...inputExample, request_id: `detection-resolve-${resolution_state}-00${index + 2}`, idempotency_key: `detection-resolve-${resolution_state}-00${index + 2}` },
+      output_example: { status: 'completed', reason_code: 'ok', resolution_ref: `detection-resolve-${resolution_state}-001`, resolution_state, emitted_event_id, trace_ref: `detection-resolve-trace-${resolution_state}-001`, warnings: resolution_state === 'surprising' ? ['requires_review'] : [] },
+      happy: true, persona_ref: 'callweave-runtime',
+    })));
+  }
   return {
     kind: 'capability_contract', schema_version: '1.0.0', id, namespace: 'callweave', name: cap.name,
     version: '0.1.0', lifecycle: 'draft',
@@ -244,12 +307,14 @@ function contract(cap) {
     description: `${cap.description}\n\nImplementation status: contract-first. A WASM component/agent will be generated after contract approval. The host provides only the declared adapter authority.\n\nUse-case coverage: one happy path plus invalid-input, dependency-unavailable, and policy-denied unhappy paths.`,
     use_cases,
     inputs: { schema: { type: 'object', required: ['request_id', 'workspace_id', 'location_id', 'idempotency_key', ...cap.fields], properties: inputProperties, additionalProperties: false } },
-    outputs: { schema: { type: 'object', required: ['status', 'reason_code', cap.result, 'trace_ref', 'warnings'], properties: {
+    outputs: { schema: { type: 'object', required: ['status', 'reason_code', cap.result, 'trace_ref', 'warnings', ...(cap.name === 'detection-resolve' ? ['resolution_state', 'emitted_event_id'] : [])], properties: {
       status: { type: 'string', enum: ['completed', 'rejected', 'deferred'] },
       reason_code: { type: 'string', enum: reasonCodes },
       [cap.result]: { type: ['string', 'null'] },
       trace_ref: { type: 'string' },
       warnings: { type: 'array', items: { type: 'string' } },
+      ...(cap.name === 'detection-resolve' ? { resolution_state: { type: ['string', 'null'], enum: ['provisional', 'unknown', 'surprising', 'rejected', null] } } : {}),
+      ...(cap.name === 'detection-resolve' ? { emitted_event_id: { type: ['string', 'null'], enum: ['callweave.detection.provisional-created', 'callweave.detection.unknown-identified', 'callweave.detection.surprising-quarantined', 'callweave.detection.rejected', null] } } : {}),
     }, additionalProperties: false } },
     preconditions: [
       { id: 'idempotency-key-present', description: 'idempotency_key is present and scoped to the workspace.' },
@@ -269,14 +334,22 @@ function contract(cap) {
     dependencies: [],
     provenance: { source: 'ai-assisted', author: 'Callweave architecture record', created_at: '2026-08-11T00:00:00Z', spec_ref: 'callweave-decision-record@1.0.0', adr_refs: ['DECISION_RECORD.md'], exception_refs: host_api_access === 'exception_required' ? ['callweave-host-adapter-boundary'] : [] },
     evidence: [],
+    domain_schema_ref: 'schemas/domain-records.schema.json',
+    state_ownership: {
+      model: 'host-owned-local-store',
+      reads: cap.fields.filter((field) => field.endsWith('_ref') || field.endsWith('_refs')),
+      writes: [cap.result],
+      transition: 'append-only; idempotency_key atomically maps to one trace and one result',
+    },
     state_schema: {
       type: 'object',
-      required: ['workspace_id', 'trace_ref'],
+      required: ['workspace_id', 'trace_ref', 'owned_record_refs'],
       properties: {
         workspace_id: { type: 'string' },
         trace_ref: { type: 'string' },
         updated_at: { type: 'string' },
         payload_ref: { type: 'string' },
+        owned_record_refs: { type: 'array', items: { type: 'string', minLength: 1 } },
       },
       additionalProperties: false,
     },
@@ -295,7 +368,7 @@ for (const event of events) {
     version: '0.1.0', lifecycle: 'draft', owner: { team: 'callweave', contact: 'maintainers@callweave.local' },
     summary: `Callweave ${event.name} domain event.`,
     description: `Stable domain fact emitted after callweave.${event.publisher} completes. Draft until its publishers and subscribers are backed by active WASM packages.`,
-    payload: { schema: { type: 'object', required: ['workspace_id', 'location_id', 'trace_ref', 'result_ref'], properties: { workspace_id: { type: 'string' }, location_id: { type: 'string' }, trace_ref: { type: 'string' }, result_ref: { type: 'string' } }, additionalProperties: false }, compatibility: 'backward-compatible' },
+    payload: { schema: eventPayload(event), compatibility: 'backward-compatible' },
     classification: { domain: 'callweave', bounded_context: event.name.split('-')[0], event_type: 'domain', tags: ['callweave', 'local-first'] },
     publishers: [{ capability_id: `callweave.${event.publisher}`, version: '0.1.0' }],
     subscribers: event.subscribers.map((capability_id) => ({ capability_id: `callweave.${capability_id}`, version: '0.1.0' })),
@@ -303,6 +376,34 @@ for (const event of events) {
     provenance: { source: 'ai-generated', author: 'Callweave architecture record', created_at: '2026-08-11T00:00:00Z' }, evidence: [],
   }, null, 2)}\n`);
 }
+
+const domainPath = join(schemaRoot, 'domain-records.schema.json');
+await mkdir(dirname(domainPath), { recursive: true });
+await writeFile(domainPath, `${JSON.stringify(domainSchema, null, 2)}\n`);
+
+const workflow = {
+  schema_version: '0.1.0', lifecycle: 'draft', id: 'callweave.daily-local-first',
+  summary: 'Draft event workflow for one location-local acoustic day.',
+  host_boundaries: ['scheduler', 'clock-timezone', 'audio-device', 'local-object-store', 'local-state-store', 'local-model-runtime'],
+  idempotency: { daily_close: '<location-id>:<local-date>', daily_canvas: '<location-id>:<local-date>:<revision-number>' },
+  routes: [
+    { from: 'callweave.acoustic.evidence-produced', capability: 'callweave.detection-resolve', condition: 'evidence reference resolves' },
+    { from: 'callweave.detection.provisional-created', capability: 'callweave.observation-manage', condition: 'resolution_state == provisional' },
+    { from: 'callweave.detection.unknown-identified', capability: 'callweave.unknown-organize', condition: 'resolution_state == unknown' },
+    { from: 'callweave.detection.surprising-quarantined', capability: 'callweave.observation-manage', condition: 'resolution_state == surprising' },
+    { from: 'callweave.detection.surprising-quarantined', capability: 'callweave.unknown-organize', condition: 'resolution_state == surprising' },
+    { from: 'callweave.unknown.organized', capability: 'callweave.privacy-protect', condition: 'selected unknown cluster exists' },
+    { from: 'callweave.privacy.protected', capability: 'callweave.review-prepare', condition: 'export_status == approved' },
+    { from: 'callweave.coverage.assessed', capability: 'callweave.daily-close', condition: 'scheduler grace period elapsed and local date is not closed' },
+    { from: 'callweave.daily.closed', capability: 'callweave.daily-create', condition: 'immutable daily close resolves' },
+    { from: 'callweave.daily.revision-requested', capability: 'callweave.daily-revise', condition: 'verified correction or late evidence is accepted' },
+  ],
+  retries: { retryable_reason_codes: ['dependency_unavailable'], max_attempts: 3, terminal_reason_codes: ['invalid_input', 'policy_denied'], dead_letter_requires_trace: true },
+  fixtures_required: ['exclusive-detection-outcome', 'privacy-deny-no-export', 'duplicate-daily-close', 'late-evidence-creates-revision', 'coverage-gap-canvas', 'restart-replay-idempotency'],
+};
+const workflowPath = join(root, 'traverse', 'workflows', 'daily-local-first.workflow.json');
+await mkdir(dirname(workflowPath), { recursive: true });
+await writeFile(workflowPath, `${JSON.stringify(workflow, null, 2)}\n`);
 
 for (const [id, name, description] of personas) {
   const path = join(personaRoot, id, '1.0.0', 'persona.json');
@@ -343,4 +444,4 @@ const planPath = join(root, 'traverse', 'wasm', 'implementation-plan.json');
 await mkdir(dirname(planPath), { recursive: true });
 await writeFile(planPath, `${JSON.stringify(implementationPlan, null, 2)}\n`);
 
-console.log(`Generated ${caps.length} capability contracts and ${personas.length} personas.`);
+console.log(`Generated ${caps.length} capability contracts, ${events.length} event contracts, and ${personas.length} personas.`);

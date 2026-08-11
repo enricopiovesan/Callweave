@@ -23,16 +23,20 @@
       ],
       "properties": {
         "workspace_id": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "location_id": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "trace_ref": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "result_ref": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         }
       },
       "additionalProperties": false

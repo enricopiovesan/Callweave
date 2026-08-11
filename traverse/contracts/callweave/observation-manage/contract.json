@@ -28,7 +28,8 @@
         "resolution_ref": {
           "id": "resolution_ref-001",
           "version": "1.0.0",
-          "metadata": {}
+          "metadata": {},
+          "record_type": "Resolution"
         },
         "review_decision": {
           "id": "review_decision-001",
@@ -61,7 +62,8 @@
         "resolution_ref": {
           "id": "resolution_ref-001",
           "version": "1.0.0",
-          "metadata": {}
+          "metadata": {},
+          "record_type": "Resolution"
         },
         "review_decision": {
           "id": "review_decision-001",
@@ -96,7 +98,8 @@
         "resolution_ref": {
           "id": "resolution_ref-001",
           "version": "1.0.0",
-          "metadata": {}
+          "metadata": {},
+          "record_type": "Resolution"
         },
         "review_decision": {
           "id": "review_decision-001",
@@ -131,7 +134,8 @@
         "resolution_ref": {
           "id": "resolution_ref-001",
           "version": "1.0.0",
-          "metadata": {}
+          "metadata": {},
+          "record_type": "Resolution"
         },
         "review_decision": {
           "id": "review_decision-001",
@@ -215,7 +219,8 @@
         "resolution_ref": {
           "type": "object",
           "required": [
-            "id"
+            "id",
+            "record_type"
           ],
           "properties": {
             "id": {
@@ -229,6 +234,10 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {}
+            },
+            "record_type": {
+              "type": "string",
+              "const": "Resolution"
             }
           },
           "additionalProperties": false
@@ -335,6 +344,10 @@
     {
       "event_id": "callweave.observation.managed",
       "version": "0.1.0"
+    },
+    {
+      "event_id": "callweave.daily.revision-requested",
+      "version": "0.1.0"
     }
   ],
   "consumes": [
@@ -397,11 +410,23 @@
     ]
   },
   "evidence": [],
+  "domain_schema_ref": "schemas/domain-records.schema.json",
+  "state_ownership": {
+    "model": "host-owned-local-store",
+    "reads": [
+      "resolution_ref"
+    ],
+    "writes": [
+      "observation_ref"
+    ],
+    "transition": "append-only; idempotency_key atomically maps to one trace and one result"
+  },
   "state_schema": {
     "type": "object",
     "required": [
       "workspace_id",
-      "trace_ref"
+      "trace_ref",
+      "owned_record_refs"
     ],
     "properties": {
       "workspace_id": {
@@ -415,6 +440,13 @@
       },
       "payload_ref": {
         "type": "string"
+      },
+      "owned_record_refs": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 1
+        }
       }
     },
     "additionalProperties": false

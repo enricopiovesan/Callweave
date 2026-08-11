@@ -28,7 +28,8 @@
         "daily_close_ref": {
           "id": "daily_close_ref-001",
           "version": "1.0.0",
-          "metadata": {}
+          "metadata": {},
+          "record_type": "DailyClose"
         },
         "visual_mapping_policy": {
           "id": "visual_mapping_policy-001",
@@ -61,7 +62,8 @@
         "daily_close_ref": {
           "id": "daily_close_ref-001",
           "version": "1.0.0",
-          "metadata": {}
+          "metadata": {},
+          "record_type": "DailyClose"
         },
         "visual_mapping_policy": {
           "id": "visual_mapping_policy-001",
@@ -96,7 +98,8 @@
         "daily_close_ref": {
           "id": "daily_close_ref-001",
           "version": "1.0.0",
-          "metadata": {}
+          "metadata": {},
+          "record_type": "DailyClose"
         },
         "visual_mapping_policy": {
           "id": "visual_mapping_policy-001",
@@ -131,7 +134,8 @@
         "daily_close_ref": {
           "id": "daily_close_ref-001",
           "version": "1.0.0",
-          "metadata": {}
+          "metadata": {},
+          "record_type": "DailyClose"
         },
         "visual_mapping_policy": {
           "id": "visual_mapping_policy-001",
@@ -215,7 +219,8 @@
         "daily_close_ref": {
           "type": "object",
           "required": [
-            "id"
+            "id",
+            "record_type"
           ],
           "properties": {
             "id": {
@@ -229,6 +234,10 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {}
+            },
+            "record_type": {
+              "type": "string",
+              "const": "DailyClose"
             }
           },
           "additionalProperties": false
@@ -392,11 +401,23 @@
     ]
   },
   "evidence": [],
+  "domain_schema_ref": "schemas/domain-records.schema.json",
+  "state_ownership": {
+    "model": "host-owned-local-store",
+    "reads": [
+      "daily_close_ref"
+    ],
+    "writes": [
+      "daily_canvas_ref"
+    ],
+    "transition": "append-only; idempotency_key atomically maps to one trace and one result"
+  },
   "state_schema": {
     "type": "object",
     "required": [
       "workspace_id",
-      "trace_ref"
+      "trace_ref",
+      "owned_record_refs"
     ],
     "properties": {
       "workspace_id": {
@@ -410,6 +431,13 @@
       },
       "payload_ref": {
         "type": "string"
+      },
+      "owned_record_refs": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 1
+        }
       }
     },
     "additionalProperties": false

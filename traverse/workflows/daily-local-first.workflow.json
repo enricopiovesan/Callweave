@@ -1,0 +1,89 @@
+{
+  "schema_version": "0.1.0",
+  "lifecycle": "draft",
+  "id": "callweave.daily-local-first",
+  "summary": "Draft event workflow for one location-local acoustic day.",
+  "host_boundaries": [
+    "scheduler",
+    "clock-timezone",
+    "audio-device",
+    "local-object-store",
+    "local-state-store",
+    "local-model-runtime"
+  ],
+  "idempotency": {
+    "daily_close": "<location-id>:<local-date>",
+    "daily_canvas": "<location-id>:<local-date>:<revision-number>"
+  },
+  "routes": [
+    {
+      "from": "callweave.acoustic.evidence-produced",
+      "capability": "callweave.detection-resolve",
+      "condition": "evidence reference resolves"
+    },
+    {
+      "from": "callweave.detection.provisional-created",
+      "capability": "callweave.observation-manage",
+      "condition": "resolution_state == provisional"
+    },
+    {
+      "from": "callweave.detection.unknown-identified",
+      "capability": "callweave.unknown-organize",
+      "condition": "resolution_state == unknown"
+    },
+    {
+      "from": "callweave.detection.surprising-quarantined",
+      "capability": "callweave.observation-manage",
+      "condition": "resolution_state == surprising"
+    },
+    {
+      "from": "callweave.detection.surprising-quarantined",
+      "capability": "callweave.unknown-organize",
+      "condition": "resolution_state == surprising"
+    },
+    {
+      "from": "callweave.unknown.organized",
+      "capability": "callweave.privacy-protect",
+      "condition": "selected unknown cluster exists"
+    },
+    {
+      "from": "callweave.privacy.protected",
+      "capability": "callweave.review-prepare",
+      "condition": "export_status == approved"
+    },
+    {
+      "from": "callweave.coverage.assessed",
+      "capability": "callweave.daily-close",
+      "condition": "scheduler grace period elapsed and local date is not closed"
+    },
+    {
+      "from": "callweave.daily.closed",
+      "capability": "callweave.daily-create",
+      "condition": "immutable daily close resolves"
+    },
+    {
+      "from": "callweave.daily.revision-requested",
+      "capability": "callweave.daily-revise",
+      "condition": "verified correction or late evidence is accepted"
+    }
+  ],
+  "retries": {
+    "retryable_reason_codes": [
+      "dependency_unavailable"
+    ],
+    "max_attempts": 3,
+    "terminal_reason_codes": [
+      "invalid_input",
+      "policy_denied"
+    ],
+    "dead_letter_requires_trace": true
+  },
+  "fixtures_required": [
+    "exclusive-detection-outcome",
+    "privacy-deny-no-export",
+    "duplicate-daily-close",
+    "late-evidence-creates-revision",
+    "coverage-gap-canvas",
+    "restart-replay-idempotency"
+  ]
+}

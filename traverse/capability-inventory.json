@@ -126,6 +126,13 @@
       "model_interfaces": []
     },
     {
+      "capability_id": "callweave.daily-revise",
+      "contract": "contracts/callweave/daily-revise/contract.json",
+      "lifecycle": "draft",
+      "wasm_status": "not-generated",
+      "model_interfaces": []
+    },
+    {
       "capability_id": "callweave.daily-close",
       "contract": "contracts/callweave/daily-close/contract.json",
       "lifecycle": "draft",
