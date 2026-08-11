@@ -1,0 +1,366 @@
+{
+  "kind": "capability_contract",
+  "schema_version": "1.0.0",
+  "id": "callweave.privacy-protect",
+  "namespace": "callweave",
+  "name": "privacy-protect",
+  "version": "0.1.0",
+  "lifecycle": "draft",
+  "owner": {
+    "team": "callweave",
+    "contact": "maintainers@callweave.local"
+  },
+  "summary": "Detect speech risk and create a safe review-package asset set.",
+  "description": "Detects likely human speech and removes precise location and blocked assets before an external review package can be created. It fails closed: uncertain or unavailable privacy analysis prevents external sharing unless a reviewer uses an explicit approved override.\n\nImplementation status: contract-first. A WASM component/agent will be generated after contract approval. The host provides only the declared adapter authority.\n\nUse-case coverage: one happy path plus invalid-input, dependency-unavailable, and policy-denied unhappy paths.",
+  "use_cases": [
+    {
+      "scenario": "As a Location Owner, I want detect speech risk and create a safe review-package asset set. so that the governed workflow can continue with traceable evidence.",
+      "input_example": {
+        "request_id": "privacy-protect-happy-001",
+        "workspace_id": "local-default",
+        "location_id": "golden-bc-demo",
+        "idempotency_key": "privacy-protect-idempotency-001",
+        "asset_refs": {
+          "id": "asset_refs-001",
+          "version": "1.0.0",
+          "metadata": {}
+        },
+        "privacy_policy": {
+          "id": "privacy_policy-001",
+          "version": "1.0.0",
+          "metadata": {}
+        }
+      },
+      "output_example": {
+        "status": "completed",
+        "reason_code": "ok",
+        "sanitized_asset_set_ref": "privacy-protect-result-001",
+        "trace_ref": "privacy-protect-trace-001",
+        "warnings": []
+      },
+      "happy": true,
+      "persona_ref": "callweave-location-owner"
+    },
+    {
+      "scenario": "As the Callweave Runtime, I want malformed or incomplete input rejected so that this capability fails closed before creating state.",
+      "input_example": {
+        "request_id": "privacy-protect-failure-001",
+        "workspace_id": "local-default",
+        "location_id": "golden-bc-demo",
+        "idempotency_key": "privacy-protect-idempotency-failure-001",
+        "asset_refs": {
+          "id": "asset_refs-001",
+          "version": "1.0.0",
+          "metadata": {}
+        },
+        "privacy_policy": {
+          "id": "privacy_policy-001",
+          "version": "1.0.0",
+          "metadata": {}
+        }
+      },
+      "output_example": {
+        "status": "rejected",
+        "reason_code": "invalid_input",
+        "sanitized_asset_set_ref": null,
+        "trace_ref": "privacy-protect-trace-002",
+        "warnings": [
+          "invalid_input"
+        ]
+      },
+      "happy": false,
+      "persona_ref": "callweave-system-administrator"
+    },
+    {
+      "scenario": "As a System Administrator, I want unavailable required host/model dependencies reported explicitly so that the workflow can defer or use an approved fallback.",
+      "input_example": {
+        "request_id": "privacy-protect-failure-002",
+        "workspace_id": "local-default",
+        "location_id": "golden-bc-demo",
+        "idempotency_key": "privacy-protect-idempotency-failure-002",
+        "asset_refs": {
+          "id": "asset_refs-001",
+          "version": "1.0.0",
+          "metadata": {}
+        },
+        "privacy_policy": {
+          "id": "privacy_policy-001",
+          "version": "1.0.0",
+          "metadata": {}
+        }
+      },
+      "output_example": {
+        "status": "deferred",
+        "reason_code": "dependency_unavailable",
+        "sanitized_asset_set_ref": null,
+        "trace_ref": "privacy-protect-trace-003",
+        "warnings": [
+          "dependency_unavailable"
+        ]
+      },
+      "happy": false,
+      "persona_ref": "callweave-system-administrator"
+    },
+    {
+      "scenario": "As a Reviewer, I want policy-prohibited work denied without side effects so that privacy, hardware, and approval boundaries remain authoritative.",
+      "input_example": {
+        "request_id": "privacy-protect-failure-003",
+        "workspace_id": "local-default",
+        "location_id": "golden-bc-demo",
+        "idempotency_key": "privacy-protect-idempotency-failure-003",
+        "asset_refs": {
+          "id": "asset_refs-001",
+          "version": "1.0.0",
+          "metadata": {}
+        },
+        "privacy_policy": {
+          "id": "privacy_policy-001",
+          "version": "1.0.0",
+          "metadata": {}
+        }
+      },
+      "output_example": {
+        "status": "rejected",
+        "reason_code": "policy_denied",
+        "sanitized_asset_set_ref": null,
+        "trace_ref": "privacy-protect-trace-004",
+        "warnings": [
+          "policy_denied"
+        ]
+      },
+      "happy": false,
+      "persona_ref": "callweave-reviewer"
+    }
+  ],
+  "inputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "request_id",
+        "workspace_id",
+        "location_id",
+        "idempotency_key",
+        "asset_refs",
+        "privacy_policy"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "workspace_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "location_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "idempotency_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "asset_refs": {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "version": {
+              "type": "string"
+            },
+            "metadata": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {}
+            }
+          },
+          "additionalProperties": false
+        },
+        "privacy_policy": {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "version": {
+              "type": "string"
+            },
+            "metadata": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {}
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "outputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "status",
+        "reason_code",
+        "sanitized_asset_set_ref",
+        "trace_ref",
+        "warnings"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "completed",
+            "rejected",
+            "deferred"
+          ]
+        },
+        "reason_code": {
+          "type": "string",
+          "enum": [
+            "ok",
+            "invalid_input",
+            "dependency_unavailable",
+            "policy_denied"
+          ]
+        },
+        "sanitized_asset_set_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "trace_ref": {
+          "type": "string"
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "preconditions": [
+    {
+      "id": "idempotency-key-present",
+      "description": "idempotency_key is present and scoped to the workspace."
+    },
+    {
+      "id": "input-references-resolvable",
+      "description": "All input references resolve in the host-owned local store before side effects."
+    }
+  ],
+  "postconditions": [
+    {
+      "id": "trace-produced",
+      "description": "Every completed, rejected, or deferred outcome has a trace_ref."
+    },
+    {
+      "id": "no-silent-authority-escalation",
+      "description": "Undeclared network, filesystem, model, and approval authority is never used."
+    }
+  ],
+  "side_effects": [
+    {
+      "kind": "state_change",
+      "description": "Any persistent state, device I/O, network operation, or model invocation is performed only by an explicitly declared host adapter."
+    }
+  ],
+  "emits": [],
+  "consumes": [],
+  "permissions": [
+    {
+      "id": "callweave.privacy-protect.execute"
+    }
+  ],
+  "execution": {
+    "binary_format": "wasm",
+    "entrypoint": {
+      "kind": "wasi-command",
+      "command": "run"
+    },
+    "preferred_targets": [
+      "local",
+      "browser"
+    ],
+    "constraints": {
+      "host_api_access": "exception_required",
+      "network_access": "forbidden",
+      "filesystem_access": "sandbox_only"
+    }
+  },
+  "policies": [
+    {
+      "id": "local-first"
+    },
+    {
+      "id": "fail-closed-on-invalid-or-unsafe"
+    },
+    {
+      "id": "append-only-provenance"
+    },
+    {
+      "id": "human-approval-for-durable-knowledge"
+    }
+  ],
+  "dependencies": [],
+  "provenance": {
+    "source": "greenfield",
+    "author": "Callweave architecture record",
+    "created_at": "2026-08-11T00:00:00Z",
+    "spec_ref": "callweave-decision-record@1.0.0",
+    "adr_refs": [
+      "DECISION_RECORD.md"
+    ],
+    "exception_refs": [
+      "callweave-host-adapter-boundary"
+    ]
+  },
+  "evidence": [
+    {
+      "evidence_id": "callweave.privacy-protect-contract-design",
+      "type": "contract_validation",
+      "status": "passed"
+    }
+  ],
+  "state_schema": {
+    "type": "object",
+    "required": [
+      "workspace_id",
+      "trace_ref"
+    ],
+    "properties": {
+      "workspace_id": {
+        "type": "string"
+      },
+      "trace_ref": {
+        "type": "string"
+      },
+      "updated_at": {
+        "type": "string"
+      },
+      "payload_ref": {
+        "type": "string"
+      }
+    },
+    "additionalProperties": false
+  },
+  "service_type": "stateless",
+  "permitted_targets": [
+    "local",
+    "browser"
+  ]
+}

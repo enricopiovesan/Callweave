@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.0.0",
+  "status": "contract-first-no-wasm-artifacts-yet",
+  "rule": "Local classifiers are future WASM implementation modules. The only LMM dependency is the optional advisory interface traverse.inference.generate, resolved by the runtime rather than hard-coded by a WASM guest.",
+  "modules": [
+    {
+      "id": "callweave.perch-v2-audible",
+      "kind": "local_wasm_model",
+      "capabilities": [
+        "callweave.acoustics-classify",
+        "callweave.unknown-organize",
+        "callweave.model-improve"
+      ],
+      "input": "prepared audible audio / embeddings",
+      "authority": "evidence only"
+    },
+    {
+      "id": "callweave.birdnet-v2.4",
+      "kind": "local_wasm_model",
+      "capabilities": [
+        "callweave.acoustics-classify"
+      ],
+      "input": "48 kHz audible audio",
+      "authority": "evidence only"
+    },
+    {
+      "id": "callweave.bat-regional-v1",
+      "kind": "local_wasm_model",
+      "capabilities": [
+        "callweave.acoustics-classify"
+      ],
+      "input": "256 kHz+ ultrasonic audio",
+      "authority": "evidence only"
+    },
+    {
+      "id": "callweave.speech-privacy-v1",
+      "kind": "local_wasm_model",
+      "capabilities": [
+        "callweave.privacy-protect"
+      ],
+      "input": "audible audio",
+      "authority": "privacy-risk spans only"
+    },
+    {
+      "id": "callweave.unknown-review-advisor",
+      "kind": "runtime_resolved_lmm_agent",
+      "capabilities": [
+        "callweave.review-prepare"
+      ],
+      "model_dependency": "traverse.inference.generate",
+      "input": "sanitized review package only",
+      "authority": "proposal only"
+    }
+  ]
+}

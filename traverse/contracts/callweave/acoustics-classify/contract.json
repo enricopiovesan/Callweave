@@ -1,0 +1,368 @@
+{
+  "kind": "capability_contract",
+  "schema_version": "1.0.0",
+  "id": "callweave.acoustics-classify",
+  "namespace": "callweave",
+  "name": "acoustics-classify",
+  "version": "0.1.0",
+  "lifecycle": "draft",
+  "owner": {
+    "team": "callweave",
+    "contact": "maintainers@callweave.local"
+  },
+  "summary": "Produce local acoustic evidence and embeddings from prepared audio.",
+  "description": "Detects biological sound and runs only the model implementation selected by explicit metadata: Perch for broad audible wildlife, BirdNET for birds, and a regional bat model only for compatible ultrasonic sources. It outputs ranked evidence and embeddings, never verified observations. Runtime selection must remain deterministic when basic and AI-enhanced implementations coexist.\n\nImplementation status: contract-first. A WASM component/agent will be generated after contract approval. The host provides only the declared adapter authority.\n\nUse-case coverage: one happy path plus invalid-input, dependency-unavailable, and policy-denied unhappy paths.",
+  "use_cases": [
+    {
+      "scenario": "As a Callweave Runtime, I want produce local acoustic evidence and embeddings from prepared audio. so that the governed workflow can continue with traceable evidence.",
+      "input_example": {
+        "request_id": "acoustics-classify-happy-001",
+        "workspace_id": "local-default",
+        "location_id": "golden-bc-demo",
+        "idempotency_key": "acoustics-classify-idempotency-001",
+        "prepared_audio_ref": {
+          "id": "prepared_audio_ref-001",
+          "version": "1.0.0",
+          "metadata": {}
+        },
+        "model_selection": {
+          "id": "model_selection-001",
+          "version": "1.0.0",
+          "metadata": {}
+        }
+      },
+      "output_example": {
+        "status": "completed",
+        "reason_code": "ok",
+        "acoustic_evidence_ref": "acoustics-classify-result-001",
+        "trace_ref": "acoustics-classify-trace-001",
+        "warnings": []
+      },
+      "happy": true,
+      "persona_ref": "callweave-runtime"
+    },
+    {
+      "scenario": "As the Callweave Runtime, I want malformed or incomplete input rejected so that this capability fails closed before creating state.",
+      "input_example": {
+        "request_id": "acoustics-classify-failure-001",
+        "workspace_id": "local-default",
+        "location_id": "golden-bc-demo",
+        "idempotency_key": "acoustics-classify-idempotency-failure-001",
+        "prepared_audio_ref": {
+          "id": "prepared_audio_ref-001",
+          "version": "1.0.0",
+          "metadata": {}
+        },
+        "model_selection": {
+          "id": "model_selection-001",
+          "version": "1.0.0",
+          "metadata": {}
+        }
+      },
+      "output_example": {
+        "status": "rejected",
+        "reason_code": "invalid_input",
+        "acoustic_evidence_ref": null,
+        "trace_ref": "acoustics-classify-trace-002",
+        "warnings": [
+          "invalid_input"
+        ]
+      },
+      "happy": false,
+      "persona_ref": "callweave-system-administrator"
+    },
+    {
+      "scenario": "As a System Administrator, I want unavailable required host/model dependencies reported explicitly so that the workflow can defer or use an approved fallback.",
+      "input_example": {
+        "request_id": "acoustics-classify-failure-002",
+        "workspace_id": "local-default",
+        "location_id": "golden-bc-demo",
+        "idempotency_key": "acoustics-classify-idempotency-failure-002",
+        "prepared_audio_ref": {
+          "id": "prepared_audio_ref-001",
+          "version": "1.0.0",
+          "metadata": {}
+        },
+        "model_selection": {
+          "id": "model_selection-001",
+          "version": "1.0.0",
+          "metadata": {}
+        }
+      },
+      "output_example": {
+        "status": "deferred",
+        "reason_code": "dependency_unavailable",
+        "acoustic_evidence_ref": null,
+        "trace_ref": "acoustics-classify-trace-003",
+        "warnings": [
+          "dependency_unavailable"
+        ]
+      },
+      "happy": false,
+      "persona_ref": "callweave-system-administrator"
+    },
+    {
+      "scenario": "As a Reviewer, I want policy-prohibited work denied without side effects so that privacy, hardware, and approval boundaries remain authoritative.",
+      "input_example": {
+        "request_id": "acoustics-classify-failure-003",
+        "workspace_id": "local-default",
+        "location_id": "golden-bc-demo",
+        "idempotency_key": "acoustics-classify-idempotency-failure-003",
+        "prepared_audio_ref": {
+          "id": "prepared_audio_ref-001",
+          "version": "1.0.0",
+          "metadata": {}
+        },
+        "model_selection": {
+          "id": "model_selection-001",
+          "version": "1.0.0",
+          "metadata": {}
+        }
+      },
+      "output_example": {
+        "status": "rejected",
+        "reason_code": "policy_denied",
+        "acoustic_evidence_ref": null,
+        "trace_ref": "acoustics-classify-trace-004",
+        "warnings": [
+          "policy_denied"
+        ]
+      },
+      "happy": false,
+      "persona_ref": "callweave-reviewer"
+    }
+  ],
+  "inputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "request_id",
+        "workspace_id",
+        "location_id",
+        "idempotency_key",
+        "prepared_audio_ref",
+        "model_selection"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "workspace_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "location_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "idempotency_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "prepared_audio_ref": {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "version": {
+              "type": "string"
+            },
+            "metadata": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {}
+            }
+          },
+          "additionalProperties": false
+        },
+        "model_selection": {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "version": {
+              "type": "string"
+            },
+            "metadata": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {}
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "outputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "status",
+        "reason_code",
+        "acoustic_evidence_ref",
+        "trace_ref",
+        "warnings"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "completed",
+            "rejected",
+            "deferred"
+          ]
+        },
+        "reason_code": {
+          "type": "string",
+          "enum": [
+            "ok",
+            "invalid_input",
+            "dependency_unavailable",
+            "policy_denied"
+          ]
+        },
+        "acoustic_evidence_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "trace_ref": {
+          "type": "string"
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "preconditions": [
+    {
+      "id": "idempotency-key-present",
+      "description": "idempotency_key is present and scoped to the workspace."
+    },
+    {
+      "id": "input-references-resolvable",
+      "description": "All input references resolve in the host-owned local store before side effects."
+    }
+  ],
+  "postconditions": [
+    {
+      "id": "trace-produced",
+      "description": "Every completed, rejected, or deferred outcome has a trace_ref."
+    },
+    {
+      "id": "no-silent-authority-escalation",
+      "description": "Undeclared network, filesystem, model, and approval authority is never used."
+    }
+  ],
+  "side_effects": [
+    {
+      "kind": "state_change",
+      "description": "Any persistent state, device I/O, network operation, or model invocation is performed only by an explicitly declared host adapter."
+    }
+  ],
+  "emits": [],
+  "consumes": [],
+  "permissions": [
+    {
+      "id": "callweave.acoustics-classify.execute"
+    }
+  ],
+  "execution": {
+    "binary_format": "wasm",
+    "entrypoint": {
+      "kind": "wasi-command",
+      "command": "run"
+    },
+    "preferred_targets": [
+      "local",
+      "browser",
+      "device"
+    ],
+    "constraints": {
+      "host_api_access": "exception_required",
+      "network_access": "forbidden",
+      "filesystem_access": "sandbox_only"
+    }
+  },
+  "policies": [
+    {
+      "id": "local-first"
+    },
+    {
+      "id": "fail-closed-on-invalid-or-unsafe"
+    },
+    {
+      "id": "append-only-provenance"
+    },
+    {
+      "id": "human-approval-for-durable-knowledge"
+    }
+  ],
+  "dependencies": [],
+  "provenance": {
+    "source": "greenfield",
+    "author": "Callweave architecture record",
+    "created_at": "2026-08-11T00:00:00Z",
+    "spec_ref": "callweave-decision-record@1.0.0",
+    "adr_refs": [
+      "DECISION_RECORD.md"
+    ],
+    "exception_refs": [
+      "callweave-host-adapter-boundary"
+    ]
+  },
+  "evidence": [
+    {
+      "evidence_id": "callweave.acoustics-classify-contract-design",
+      "type": "contract_validation",
+      "status": "passed"
+    }
+  ],
+  "state_schema": {
+    "type": "object",
+    "required": [
+      "workspace_id",
+      "trace_ref"
+    ],
+    "properties": {
+      "workspace_id": {
+        "type": "string"
+      },
+      "trace_ref": {
+        "type": "string"
+      },
+      "updated_at": {
+        "type": "string"
+      },
+      "payload_ref": {
+        "type": "string"
+      }
+    },
+    "additionalProperties": false
+  },
+  "service_type": "stateless",
+  "permitted_targets": [
+    "local",
+    "browser",
+    "device"
+  ]
+}

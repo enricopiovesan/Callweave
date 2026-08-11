@@ -1,0 +1,368 @@
+{
+  "kind": "capability_contract",
+  "schema_version": "1.0.0",
+  "id": "callweave.model-manage",
+  "namespace": "callweave",
+  "name": "model-manage",
+  "version": "0.1.0",
+  "lifecycle": "draft",
+  "owner": {
+    "team": "callweave",
+    "contact": "maintainers@callweave.local"
+  },
+  "summary": "Verify, cache, and select local model artifacts without ambient provider access.",
+  "description": "Verifies checksums, compatibility, model manifests, licenses, and local cache state. Model downloads occur through a narrow host adapter; model providers, URLs, credentials, and SDKs are never embedded in a portable capability.\n\nImplementation status: contract-first. A WASM component/agent will be generated after contract approval. The host provides only the declared adapter authority.\n\nUse-case coverage: one happy path plus invalid-input, dependency-unavailable, and policy-denied unhappy paths.",
+  "use_cases": [
+    {
+      "scenario": "As a System Administrator, I want verify, cache, and select local model artifacts without ambient provider access. so that the governed workflow can continue with traceable evidence.",
+      "input_example": {
+        "request_id": "model-manage-happy-001",
+        "workspace_id": "local-default",
+        "location_id": "golden-bc-demo",
+        "idempotency_key": "model-manage-idempotency-001",
+        "model_artifact": {
+          "id": "model_artifact-001",
+          "version": "1.0.0",
+          "metadata": {}
+        },
+        "model_policy": {
+          "id": "model_policy-001",
+          "version": "1.0.0",
+          "metadata": {}
+        }
+      },
+      "output_example": {
+        "status": "completed",
+        "reason_code": "ok",
+        "model_availability_ref": "model-manage-result-001",
+        "trace_ref": "model-manage-trace-001",
+        "warnings": []
+      },
+      "happy": true,
+      "persona_ref": "callweave-system-administrator"
+    },
+    {
+      "scenario": "As the Callweave Runtime, I want malformed or incomplete input rejected so that this capability fails closed before creating state.",
+      "input_example": {
+        "request_id": "model-manage-failure-001",
+        "workspace_id": "local-default",
+        "location_id": "golden-bc-demo",
+        "idempotency_key": "model-manage-idempotency-failure-001",
+        "model_artifact": {
+          "id": "model_artifact-001",
+          "version": "1.0.0",
+          "metadata": {}
+        },
+        "model_policy": {
+          "id": "model_policy-001",
+          "version": "1.0.0",
+          "metadata": {}
+        }
+      },
+      "output_example": {
+        "status": "rejected",
+        "reason_code": "invalid_input",
+        "model_availability_ref": null,
+        "trace_ref": "model-manage-trace-002",
+        "warnings": [
+          "invalid_input"
+        ]
+      },
+      "happy": false,
+      "persona_ref": "callweave-system-administrator"
+    },
+    {
+      "scenario": "As a System Administrator, I want unavailable required host/model dependencies reported explicitly so that the workflow can defer or use an approved fallback.",
+      "input_example": {
+        "request_id": "model-manage-failure-002",
+        "workspace_id": "local-default",
+        "location_id": "golden-bc-demo",
+        "idempotency_key": "model-manage-idempotency-failure-002",
+        "model_artifact": {
+          "id": "model_artifact-001",
+          "version": "1.0.0",
+          "metadata": {}
+        },
+        "model_policy": {
+          "id": "model_policy-001",
+          "version": "1.0.0",
+          "metadata": {}
+        }
+      },
+      "output_example": {
+        "status": "deferred",
+        "reason_code": "dependency_unavailable",
+        "model_availability_ref": null,
+        "trace_ref": "model-manage-trace-003",
+        "warnings": [
+          "dependency_unavailable"
+        ]
+      },
+      "happy": false,
+      "persona_ref": "callweave-system-administrator"
+    },
+    {
+      "scenario": "As a Reviewer, I want policy-prohibited work denied without side effects so that privacy, hardware, and approval boundaries remain authoritative.",
+      "input_example": {
+        "request_id": "model-manage-failure-003",
+        "workspace_id": "local-default",
+        "location_id": "golden-bc-demo",
+        "idempotency_key": "model-manage-idempotency-failure-003",
+        "model_artifact": {
+          "id": "model_artifact-001",
+          "version": "1.0.0",
+          "metadata": {}
+        },
+        "model_policy": {
+          "id": "model_policy-001",
+          "version": "1.0.0",
+          "metadata": {}
+        }
+      },
+      "output_example": {
+        "status": "rejected",
+        "reason_code": "policy_denied",
+        "model_availability_ref": null,
+        "trace_ref": "model-manage-trace-004",
+        "warnings": [
+          "policy_denied"
+        ]
+      },
+      "happy": false,
+      "persona_ref": "callweave-reviewer"
+    }
+  ],
+  "inputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "request_id",
+        "workspace_id",
+        "location_id",
+        "idempotency_key",
+        "model_artifact",
+        "model_policy"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "workspace_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "location_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "idempotency_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "model_artifact": {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "version": {
+              "type": "string"
+            },
+            "metadata": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {}
+            }
+          },
+          "additionalProperties": false
+        },
+        "model_policy": {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "version": {
+              "type": "string"
+            },
+            "metadata": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {}
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "outputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "status",
+        "reason_code",
+        "model_availability_ref",
+        "trace_ref",
+        "warnings"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "completed",
+            "rejected",
+            "deferred"
+          ]
+        },
+        "reason_code": {
+          "type": "string",
+          "enum": [
+            "ok",
+            "invalid_input",
+            "dependency_unavailable",
+            "policy_denied"
+          ]
+        },
+        "model_availability_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "trace_ref": {
+          "type": "string"
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "preconditions": [
+    {
+      "id": "idempotency-key-present",
+      "description": "idempotency_key is present and scoped to the workspace."
+    },
+    {
+      "id": "input-references-resolvable",
+      "description": "All input references resolve in the host-owned local store before side effects."
+    }
+  ],
+  "postconditions": [
+    {
+      "id": "trace-produced",
+      "description": "Every completed, rejected, or deferred outcome has a trace_ref."
+    },
+    {
+      "id": "no-silent-authority-escalation",
+      "description": "Undeclared network, filesystem, model, and approval authority is never used."
+    }
+  ],
+  "side_effects": [
+    {
+      "kind": "state_change",
+      "description": "Any persistent state, device I/O, network operation, or model invocation is performed only by an explicitly declared host adapter."
+    }
+  ],
+  "emits": [],
+  "consumes": [],
+  "permissions": [
+    {
+      "id": "callweave.model-manage.execute"
+    }
+  ],
+  "execution": {
+    "binary_format": "wasm",
+    "entrypoint": {
+      "kind": "wasi-command",
+      "command": "run"
+    },
+    "preferred_targets": [
+      "local",
+      "browser",
+      "edge"
+    ],
+    "constraints": {
+      "host_api_access": "exception_required",
+      "network_access": "required",
+      "filesystem_access": "sandbox_only"
+    }
+  },
+  "policies": [
+    {
+      "id": "local-first"
+    },
+    {
+      "id": "fail-closed-on-invalid-or-unsafe"
+    },
+    {
+      "id": "append-only-provenance"
+    },
+    {
+      "id": "human-approval-for-durable-knowledge"
+    }
+  ],
+  "dependencies": [],
+  "provenance": {
+    "source": "greenfield",
+    "author": "Callweave architecture record",
+    "created_at": "2026-08-11T00:00:00Z",
+    "spec_ref": "callweave-decision-record@1.0.0",
+    "adr_refs": [
+      "DECISION_RECORD.md"
+    ],
+    "exception_refs": [
+      "callweave-host-adapter-boundary"
+    ]
+  },
+  "evidence": [
+    {
+      "evidence_id": "callweave.model-manage-contract-design",
+      "type": "contract_validation",
+      "status": "passed"
+    }
+  ],
+  "state_schema": {
+    "type": "object",
+    "required": [
+      "workspace_id",
+      "trace_ref"
+    ],
+    "properties": {
+      "workspace_id": {
+        "type": "string"
+      },
+      "trace_ref": {
+        "type": "string"
+      },
+      "updated_at": {
+        "type": "string"
+      },
+      "payload_ref": {
+        "type": "string"
+      }
+    },
+    "additionalProperties": false
+  },
+  "service_type": "stateless",
+  "permitted_targets": [
+    "local",
+    "browser",
+    "edge"
+  ]
+}
