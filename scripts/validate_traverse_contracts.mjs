@@ -58,6 +58,8 @@ for (const entry of eventEntries.filter((candidate) => candidate.isDirectory()))
 }
 const workflow = JSON.parse(await readFile(join(root, 'traverse', 'workflows', 'daily-local-first.workflow.json'), 'utf8'));
 if (workflow.routes.length < 10 || !workflow.fixtures_required.includes('duplicate-daily-close')) failures.push('workflow lacks required routing or idempotency fixture');
+const adapters = JSON.parse(await readFile(join(root, 'traverse', 'host-adapters', 'local-first-host-adapters.json'), 'utf8'));
+for (const id of ['scheduler', 'clock-timezone', 'audio-device', 'local-object-store', 'local-state-store', 'local-model-runtime']) if (!adapters.adapters.some((adapter) => adapter.id === id)) failures.push(`host adapter boundary missing ${id}`);
 if (failures.length) {
   console.error(failures.join('\n'));
   process.exit(1);

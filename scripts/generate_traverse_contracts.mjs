@@ -405,6 +405,22 @@ const workflowPath = join(root, 'traverse', 'workflows', 'daily-local-first.work
 await mkdir(dirname(workflowPath), { recursive: true });
 await writeFile(workflowPath, `${JSON.stringify(workflow, null, 2)}\n`);
 
+const hostAdapters = {
+  schema_version: '0.1.0', lifecycle: 'draft', id: 'callweave.local-first-host-adapters',
+  rule: 'Capabilities receive explicit requests and typed references only; hosts hold credentials, device handles, filesystem access, and transaction authority.',
+  adapters: [
+    { id: 'scheduler', authority: 'invoke daily-close after local-day grace period', inputs: ['location_id', 'local_date', 'timezone', 'grace_period'], outputs: ['invocation_id', 'idempotency_key'], failure_modes: ['clock_unavailable', 'duplicate_invocation', 'late_invocation'] },
+    { id: 'clock-timezone', authority: 'resolve IANA timezone and bounded local day', inputs: ['location_id', 'instant'], outputs: ['local_date', 'timezone', 'day_start', 'day_end'], failure_modes: ['timezone_unresolved', 'clock_skew'] },
+    { id: 'audio-device', authority: 'capture configured microphone samples', inputs: ['audio_source_ref', 'capture_window'], outputs: ['recording_ref'], failure_modes: ['device_unavailable', 'format_unsupported', 'power_interrupted'] },
+    { id: 'local-object-store', authority: 'atomically store immutable audio and derived assets', inputs: ['asset_stream', 'retention_class'], outputs: ['asset_ref', 'checksum'], failure_modes: ['storage_full', 'checksum_mismatch', 'write_interrupted'] },
+    { id: 'local-state-store', authority: 'resolve typed records and atomically append idempotent transitions', inputs: ['record_refs', 'idempotency_key', 'transition'], outputs: ['result_ref', 'trace_ref'], failure_modes: ['reference_unresolvable', 'version_conflict', 'idempotency_conflict'] },
+    { id: 'local-model-runtime', authority: 'load verified local models and return evidence only', inputs: ['model_manifest_ref', 'prepared_audio_ref'], outputs: ['acoustic_evidence_ref'], failure_modes: ['model_unavailable', 'checksum_mismatch', 'hardware_incompatible'] },
+  ],
+};
+const adaptersPath = join(root, 'traverse', 'host-adapters', 'local-first-host-adapters.json');
+await mkdir(dirname(adaptersPath), { recursive: true });
+await writeFile(adaptersPath, `${JSON.stringify(hostAdapters, null, 2)}\n`);
+
 for (const [id, name, description] of personas) {
   const path = join(personaRoot, id, '1.0.0', 'persona.json');
   await mkdir(dirname(path), { recursive: true });

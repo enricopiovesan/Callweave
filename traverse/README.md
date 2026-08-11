@@ -10,6 +10,7 @@ events/callweave/<event>/contract.json          stable domain-event contracts an
 schemas/domain-records.schema.json              shared immutable local-record schemas
 workflows/daily-local-first.workflow.json       draft routing, retries, and host boundaries
 workflows/fixtures/                             deterministic workflow fixtures
+host-adapters/local-first-host-adapters.json    explicit host authority and failure boundaries
 personas/<persona>/1.0.0/persona.json           persona references used by contract use cases
 capability-inventory.json                        inventory of all contract-first capabilities
 wasm/implementation-plan.json                   future local model and advisory-agent bindings
