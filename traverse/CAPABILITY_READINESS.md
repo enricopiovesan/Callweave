@@ -12,7 +12,7 @@ or that the host adapter is available.
 | `audio-prepare` | Local WAV/FLAC decode, resample, windowing | Recording reference/storage | Logic ready |
 | `coverage-assess` | Standalone WASM package | Day-record input/storage | Logic ready |
 | `evidence-retain` | Standalone WASM package | Retention execution/storage | Logic ready |
-| `privacy-protect` | Fail-closed review gate; Silero VAD readiness verified | False-negative/privacy evaluation + export adapter | Evaluation + adapter required |
+| `privacy-protect` | Fail-closed review gate; Silero VAD readiness and privacy-evaluation gate verified | Labeled field evaluation + export adapter | Evaluation + adapter required |
 | `model-manage` | Checksum/license/release gate | Model cache activation | Logic ready |
 | `acoustics-classify` | Local BirdNET/Perch evidence runner | Prepared-audio/model host binding | Logic ready |
 | `detection-resolve` | Calibrated policy resolver | Candidate/evidence record reads | Logic ready |

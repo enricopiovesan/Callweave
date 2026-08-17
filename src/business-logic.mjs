@@ -94,3 +94,17 @@ export function planRecovery({ expectedIds, completedIds = [], policy }) {
   const replay_ids = [...new Set(expectedIds)].filter(id => !completed.has(id)).sort();
   return { policy_version: policy.version, replay_ids, action: replay_ids.length ? 'replay_missing_idempotently' : 'no_action' };
 }
+
+/** Privacy release gate over supplied, reviewer-labeled detector outcomes. */
+export function evaluatePrivacyGate({ cases, policy }) {
+  requireValue(policy?.version, 'policy.version');
+  if (!Array.isArray(cases) || cases.length === 0) throw new Error('labeled privacy cases are required');
+  if (cases.some(test => typeof test.contains_speech !== 'boolean' || typeof test.risk_detected !== 'boolean')) throw new Error('privacy cases require boolean speech and risk labels');
+  const speech = cases.filter(test => test.contains_speech);
+  const falseNegatives = speech.filter(test => !test.risk_detected).length;
+  const falseNegativeMillis = speech.length ? Math.round(1000 * falseNegatives / speech.length) : 1000;
+  const result = { policy_version: policy.version, total_cases: cases.length, speech_cases: speech.length, false_negatives: falseNegatives, false_negative_millis: falseNegativeMillis };
+  if (speech.length < policy.minimum_speech_cases) return { ...result, decision: 'reject', reason: 'insufficient_speech_cases' };
+  if (falseNegativeMillis > policy.maximum_false_negative_millis) return { ...result, decision: 'reject', reason: 'false_negative_limit_exceeded' };
+  return { ...result, decision: 'approve_for_policy', reason: 'privacy_gate_passed' };
+}
