@@ -1,6 +1,9 @@
 # Callweave Traverse Contracts
 
-This directory is the contract-first UMA/Traverse surface for Callweave. It deliberately contains no generated WASM binaries yet.
+This directory is the contract-first UMA/Traverse surface for Callweave. Its
+application contracts remain draft; six reusable, standalone WASI capability
+packages live in `../capabilities/` and are deliberately not coupled to this
+application workflow.
 
 ## Layout
 
@@ -30,9 +33,25 @@ wasm/implementation-plan.json                   future local model and advisory-
 
 `state_schema` specifies the portable state-reference shape that each capability may request through the host runtime. The host owns the actual local store, encryption, retention, audio files, model cache, and backup target. This keeps the same contract usable in a browser, local companion, edge device, or cloud host without duplicating business behavior.
 
-## Future WASM work
+## WASM implementation status
 
-The planned modules appear in [wasm/implementation-plan.json](wasm/implementation-plan.json). When an implementation begins:
+The following pure, connector-free capability packages are built and carry
+deterministic runtime requests:
+
+- `evidence.policy-resolve`
+- `evidence.coverage-assess`
+- `evidence.retention-classify`
+- `evidence.cluster-curate`
+- `evidence.visual-artifact-render`
+- `artifact.versioned-revision-create`
+
+They are reusable building blocks, not implementations of the draft
+Callweave application contracts. Their guests have no host API, filesystem,
+network, model, or workflow authority.
+
+The planned model and host-integrated modules appear in
+[wasm/implementation-plan.json](wasm/implementation-plan.json). When an
+implementation begins:
 
 1. Keep the contract version stable unless the schema changes.
 2. Create one WASM capability package per implementation using Traverse's governed package template.

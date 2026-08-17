@@ -20,7 +20,10 @@ The review follows the LLM Council shape: independent role-based first opinions,
 
 ## Residual gaps deliberately deferred
 
-1. No capability package or WASM binary exists yet; all capability and event contracts remain `draft`.
+1. Six connector-free, standalone WASI packages now exist under `capabilities/`.
+   The application capability and event contracts in this directory remain
+   `draft`; the packages are intentionally not coupled to the Callweave
+   workflow and do not make those application contracts active.
 2. Persona records are local staging records. They must be published to the target Traverse registry before a registry-aware capability publish can resolve `persona_ref` values.
 3. Connector contracts and host implementations for audio capture, storage, source discovery, model caching, and external LMM submission are not yet authored. The contract boundaries are declared; executable adapters are a future implementation milestone.
 4. A full workflow definition is deferred until the P0 capability packages exist. The event contracts already make all intended progression visible without pretending the packages can execute.
