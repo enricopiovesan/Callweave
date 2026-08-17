@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0.0",
+  "id": "silero-vad-onnx-community",
+  "purpose": "Local speech-risk evidence for privacy gating. It must not independently authorize raw-audio export.",
+  "source": {
+    "repository": "https://huggingface.co/onnx-community/silero-vad",
+    "revision": "e71cae966052b992a7eca6b17738916ce0eca4ec",
+    "artifact": "onnx/model.onnx",
+    "download_url": "https://huggingface.co/onnx-community/silero-vad/resolve/e71cae966052b992a7eca6b17738916ce0eca4ec/onnx/model.onnx"
+  },
+  "integrity": { "sha256": "a4a068cd6cf1ea8355b84327595838ca748ec29a25bc91fc82e6c299ccdc5808", "expected_local_path": "models/silero-vad/silero-vad.onnx" },
+  "interface": { "sample_rate_hz": 16000, "frame_samples": 512, "input_tensors": ["input", "state", "sr"], "output_tensors": ["output", "stateN"] },
+  "license": { "spdx": "MIT", "commercial_use": "allowed_subject_to_license_notice", "attribution_required": true, "local_license_file": "models/silero-vad/LICENSE" },
+  "activation_policy": "speech-risk evidence only; raw-audio export remains denied until a separately approved false-negative/privacy evaluation passes",
+  "status": "verified-local-wasm-readiness"
+}

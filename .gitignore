@@ -1,4 +1,5 @@
 node_modules/
 models/birdnet/*.onnx
 models/perch/*.onnx
+models/silero-vad/*.onnx
 output/
