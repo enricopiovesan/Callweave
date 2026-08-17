@@ -1,0 +1,28 @@
+{
+  "kind": "capability_contract",
+  "schema_version": "1.0.0",
+  "id": "evidence.policy-resolve",
+  "namespace": "evidence",
+  "name": "policy-resolve",
+  "version": "1.0.0",
+  "lifecycle": "active",
+  "owner": { "team": "callweave", "contact": "maintainers@callweave.local" },
+  "summary": "Resolve scored evidence through a supplied deterministic policy.",
+  "description": "Pure, standalone evidence-resolution capability. It receives an evidence claim and a versioned policy; it does not access audio, models, local storage, locations, workflows, or application configuration. It can return a provisional claim, an unknown for review, a surprising claim for review, or a rejection when the hardware assertion is impossible.",
+  "use_cases": [
+    { "scenario": "As an evidence consumer, I want a high-confidence expected claim resolved provisionally so that a workflow may decide what to do next.", "input_example": { "evidence": { "claim_id": "e-001", "score_millis": 910, "candidate_status": "expected", "hardware_compatible": true }, "resolution_policy": { "version": "1.0.0", "minimum_score_millis": 800 } }, "output_example": { "claim_id": "e-001", "resolution_state": "provisional", "reason_code": "score_meets_policy", "policy_version": "1.0.0" }, "happy": true },
+    { "scenario": "As an evidence consumer, I want a low-confidence claim retained as unknown so that it is not treated as an asserted identity.", "input_example": { "evidence": { "claim_id": "e-002", "score_millis": 400, "candidate_status": "expected", "hardware_compatible": true }, "resolution_policy": { "version": "1.0.0", "minimum_score_millis": 800 } }, "output_example": { "claim_id": "e-002", "resolution_state": "unknown", "reason_code": "score_below_policy", "policy_version": "1.0.0" }, "happy": true },
+    { "scenario": "As an evidence consumer, I want a strong rare claim preserved as surprising rather than silently discarded.", "input_example": { "evidence": { "claim_id": "e-003", "score_millis": 910, "candidate_status": "rare", "hardware_compatible": true }, "resolution_policy": { "version": "1.0.0", "minimum_score_millis": 800 } }, "output_example": { "claim_id": "e-003", "resolution_state": "surprising", "reason_code": "rare_candidate", "policy_version": "1.0.0" }, "happy": true },
+    { "scenario": "As an evidence consumer, I want a hardware-incompatible assertion rejected so that impossible evidence does not enter downstream decisions.", "input_example": { "evidence": { "claim_id": "e-004", "score_millis": 990, "candidate_status": "expected", "hardware_compatible": false }, "resolution_policy": { "version": "1.0.0", "minimum_score_millis": 800 } }, "output_example": { "claim_id": "e-004", "resolution_state": "rejected", "reason_code": "hardware_incompatible", "policy_version": "1.0.0" }, "happy": false }
+  ],
+  "inputs": { "schema": { "type": "object", "required": ["evidence", "resolution_policy"], "properties": { "evidence": { "type": "object", "required": ["claim_id", "score_millis", "candidate_status", "hardware_compatible"], "properties": { "claim_id": { "type": "string", "minLength": 1 }, "score_millis": { "type": "integer", "minimum": 0, "maximum": 1000 }, "candidate_status": { "type": "string", "enum": ["expected", "possible", "rare"] }, "hardware_compatible": { "type": "boolean" } }, "additionalProperties": false }, "resolution_policy": { "type": "object", "required": ["version", "minimum_score_millis"], "properties": { "version": { "type": "string", "minLength": 1 }, "minimum_score_millis": { "type": "integer", "minimum": 0, "maximum": 1000 } }, "additionalProperties": false } }, "additionalProperties": false } },
+  "outputs": { "schema": { "type": "object", "required": ["claim_id", "resolution_state", "reason_code", "policy_version"], "properties": { "claim_id": { "type": "string" }, "resolution_state": { "type": "string", "enum": ["provisional", "unknown", "surprising", "rejected"] }, "reason_code": { "type": "string", "enum": ["score_meets_policy", "score_below_policy", "rare_candidate", "hardware_incompatible"] }, "policy_version": { "type": "string" } }, "additionalProperties": false } },
+  "preconditions": [{ "id": "policy-is-versioned", "description": "A non-empty policy version and bounded score threshold are supplied." }],
+  "postconditions": [{ "id": "deterministic", "description": "Identical evidence and policy inputs yield identical outputs." }, { "id": "no-biological-fact-assertion", "description": "The output is a governed resolution state, not a verified biological observation." }],
+  "side_effects": [{ "kind": "memory_only", "description": "Pure calculation; no host, network, filesystem, model, or state access." }],
+  "emits": [], "consumes": [], "permissions": [{ "id": "evidence.policy-resolve.execute" }],
+  "execution": { "binary_format": "wasm", "entrypoint": { "kind": "wasi-command", "command": "run" }, "preferred_targets": ["local", "browser", "edge", "device"], "constraints": { "host_api_access": "none", "network_access": "forbidden", "filesystem_access": "none" } },
+  "policies": [{ "id": "deterministic-policy-only" }, { "id": "evidence-not-truth" }], "dependencies": [],
+  "provenance": { "source": "greenfield", "author": "Callweave", "created_at": "2026-08-11T00:00:00Z", "spec_ref": "100-capability-package-authoring@1.0.0", "adr_refs": ["DECISION_RECORD.md"], "exception_refs": [] },
+  "evidence": [], "state_schema": null, "service_type": "stateless", "permitted_targets": ["local", "browser", "edge", "device"]
+}

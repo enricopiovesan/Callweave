@@ -1,0 +1,30 @@
+{
+  "binary": {
+    "abi_version": "1.0.0",
+    "expected_digest": "fnv1a64:a4ea069c22157597",
+    "format": "wasm",
+    "path": "artifacts/policy-resolve.wasm"
+  },
+  "capability_ref": {
+    "contract_path": "contract.json",
+    "id": "evidence.policy-resolve",
+    "version": "1.0.0"
+  },
+  "constraints": {
+    "filesystem_access": "none",
+    "host_api_access": "none",
+    "network_access": "forbidden"
+  },
+  "kind": "capability_package",
+  "package_id": "evidence.policy-resolve",
+  "schema_version": "1.0.0",
+  "source": {
+    "entry": "run",
+    "language": "rust",
+    "path": "src/agent.rs"
+  },
+  "summary": "Pure WASM package for deterministic policy resolution of scored evidence.",
+  "version": "1.0.0",
+  "known_compositions": [],
+  "model_dependencies": []
+}
