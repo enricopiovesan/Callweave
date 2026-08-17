@@ -1,0 +1,29 @@
+{
+  "binary": {
+    "abi_version": "1.0.0",
+    "expected_digest": "fnv1a64:5119a20d06542f61",
+    "format": "wasm",
+    "path": "artifacts/versioned-revision-create.wasm"
+  },
+  "capability_ref": {
+    "contract_path": "contract.json",
+    "id": "artifact.versioned-revision-create",
+    "version": "1.0.0"
+  },
+  "constraints": {
+    "filesystem_access": "none",
+    "host_api_access": "none",
+    "network_access": "forbidden"
+  },
+  "kind": "capability_package",
+  "known_compositions": [],
+  "package_id": "artifact.versioned-revision-create",
+  "schema_version": "1.0.0",
+  "source": {
+    "entry": "run",
+    "language": "rust",
+    "path": "src/agent.rs"
+  },
+  "summary": "Governed capability package for artifact.versioned-revision-create.",
+  "version": "1.0.0"
+}
