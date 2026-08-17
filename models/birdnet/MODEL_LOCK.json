@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0.0",
+  "id": "birdnet-v2.4-global-6k-int8-arm",
+  "purpose": "Local, audible bird-classification evidence baseline. It is not a complete animal classifier.",
+  "source": {
+    "repository": "https://huggingface.co/tphakala/BirdNET-v2.4",
+    "revision": "d016ed1",
+    "artifact": "BirdNET_v2.4_int8_arm.onnx",
+    "download_url": "https://huggingface.co/tphakala/BirdNET-v2.4/resolve/d016ed1/BirdNET_v2.4_int8_arm.onnx",
+    "labels_artifact": "labels.txt",
+    "labels_sha256": "487937b6ad132b8506215523209a87b86adc9dce8e5ed3048ce9268189dddd3d"
+  },
+  "integrity": {
+    "sha256": "6a2323fe8f99c2af4bb325cf8f11b52748a86aa1f2c9e706c1ae7f907289521a",
+    "expected_local_path": "models/birdnet/birdnet.onnx"
+  },
+  "interface": {
+    "sample_rate_hz": 48000,
+    "channels": 1,
+    "clip_duration_seconds": 3,
+    "input_tensor": "input",
+    "input_shape": [1, 144000],
+    "output_tensor": "output",
+    "labels_count": 6522,
+    "score_transform": "sigmoid"
+  },
+  "license": {
+    "spdx": "CC-BY-NC-SA-4.0",
+    "commercial_use": "forbidden_without_separate_authorization",
+    "attribution_required": true,
+    "local_license_file": "models/birdnet/LICENSE"
+  },
+  "status": "verified-local-wasm-readiness",
+  "verified_at": "2026-08-17T15:02:00-06:00"
+}
