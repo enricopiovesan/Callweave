@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0.0",
+  "id": "perch-v2-multitaxa-int8-arm",
+  "purpose": "Optional local multi-taxa acoustic evidence and embedding baseline; it does not establish observation truth.",
+  "source": {
+    "repository": "https://huggingface.co/tphakala/Perch-v2",
+    "revision": "244a57ef671052a29a7393d6f5753c1a299344a0",
+    "artifact": "perch_v2_int8_arm.onnx",
+    "download_url": "https://huggingface.co/tphakala/Perch-v2/resolve/244a57ef671052a29a7393d6f5753c1a299344a0/perch_v2_int8_arm.onnx",
+    "labels_artifact": "labels.txt",
+    "labels_sha256": "e4d5c0397d8fb08bf90c6b13a34810af53504faad927e472fcc567793c9de057"
+  },
+  "integrity": {
+    "sha256": "ff32ca8c57954a86e6023a915d018dc7573cfc5567dd7314899d1c947cc6d5c5",
+    "expected_local_path": "models/perch/perch.onnx"
+  },
+  "interface": {
+    "sample_rate_hz": 32000,
+    "channels": 1,
+    "clip_duration_seconds": 5,
+    "input_tensor": "inputs",
+    "input_shape": [1, 160000],
+    "classification_output_tensor": "label",
+    "embedding_output_tensor": "embedding",
+    "labels_count": 14796,
+    "classification_labels_count": 14795,
+    "labels_header": "inat2024_fsd50k",
+    "score_transform": "model-defined"
+  },
+  "resource_profile": {
+    "published_peak_ram_mb_arm_int8": 292,
+    "artifact_size_mb_approx": 131
+  },
+  "license": {
+    "spdx": "Apache-2.0",
+    "commercial_use": "allowed_subject_to_license_notice",
+    "attribution_required": true,
+    "notice": "Google Research created Perch v2; Justin Chuby converted it to ONNX; tphakala packaged the pinned ARM INT8 artifact."
+  },
+  "status": "verified-local-wasm-readiness",
+  "verified_at": "2026-08-17T15:05:00-06:00"
+}
