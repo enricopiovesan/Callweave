@@ -1,7 +1,7 @@
 # Callweave — Product and Architecture Decision Record
 
 **Status:** Living document  
-**Last updated:** 2026-08-11  
+**Last updated:** 2026-08-17
 **Initial deployment:** Golden, British Columbia, Canada  
 **Product name:** Callweave  
 **Tagline:** A living canvas for the sounds around us.
@@ -24,7 +24,6 @@ An AI model produces evidence and confidence, not a verified fact. Static capabi
 
 - Continuous passive acoustic monitoring.
 - Audible wildlife: birds, frogs/toads, many insects, and vocal mammals.
-- Optional ultrasonic monitoring for bats and ultrasonic insects.
 - Generic location setup and a seasonal, source-backed local candidate database.
 - Local/WASM-first inference, storage, and visualization.
 - Unknown-sound clustering and an LMM review package.
@@ -65,9 +64,6 @@ Human reviewer: verifies durable knowledge and model releases
 | Stream | Baseline configuration | Supports |
 |---|---|---|
 | Audible | 48 kHz, 24-bit, mono, lossless FLAC master | Birds, amphibians, many insects, vocal mammals |
-| Ultrasonic (optional) | 256 kHz or higher, separate source | Bats and ultrasonic insects |
-
-The ordinary audible microphone cannot hear bat echolocation. No capability may claim bat coverage without a compatible ultrasonic source.
 
 ### File and analysis policy
 
@@ -151,7 +147,6 @@ master recording
 |---|---|---|
 | Broad wildlife classification | Perch-compatible local model | Evidence only |
 | Bird specialist | BirdNET-compatible local model | Evidence only |
-| Bat specialist | Regional ultrasonic bat model | Evidence only |
 | Local similarity / “animal Shazam” | Embeddings from verified local references | Evidence only |
 | LMM | Review of sanitized unknown-sound packages | Proposal only |
 
@@ -161,7 +156,6 @@ Every result stores the recording ID, start/end time, model and version, input q
 
 - BirdNET is a valuable bird specialist. Its analyzer source is MIT licensed, while current model weights are CC BY-NC-SA; any public/commercial direction requires a dedicated license review.
 - Perch is the preferred broad bioacoustic foundation-model direction. Its open research code is Apache-2.0; record the license and distribution terms of each chosen model artifact independently.
-- Bat classifiers must be regional and require compatible ultrasonic input. Model output is evidence only, not confirmation.
 - Each downloaded model artifact needs a manifest, checksum, input contract, taxonomy/label version, license record, evaluation record, and activation state.
 
 ## 6. Unknown sounds and LMM review
@@ -490,11 +484,11 @@ multi-location scaling
 | D-001 | Build a generic, location-profile-based product; deploy Golden first. | Accepted | Prevents Golden-specific logic and makes future locations configuration, not rewrites. |
 | D-002 | Use local/WASM inference as the default execution path. | Accepted | Preserves privacy, offline use, and local ownership; provide a local companion fallback for constrained browsers. |
 | D-003 | Use 48 kHz, 24-bit, mono, lossless audible masters in 15-minute segments. | Accepted | Matches primary models, retains useful acoustic detail, limits recovery loss, and supports re-analysis. |
-| D-004 | Add ultrasonic monitoring as a separate optional source. | Accepted | A normal audible microphone cannot reliably detect bats. |
+| D-004 | Exclude ultrasonic bat monitoring from the product scope. | Superseded | The product now focuses on audible wildlife; no bat claim or absence inference is made. |
 | D-005 | Keep master audio immutable and create model-specific derived windows. | Accepted | Makes evidence and future reprocessing reproducible. |
 | D-006 | Use Perch as the broad local wildlife model and BirdNET as a bird specialist. | Accepted for prototype | Model outputs remain evidence only and must retain model/version/license provenance. |
 | D-007 | Use a location candidate database with expected/possible/rare/surprising states. | Accepted | Avoids implausible suggestions without deleting potentially valuable rare evidence. |
-| D-008 | Reject impossible hardware claims but quarantine out-of-range biological claims. | Accepted | A bat from an audible mic is invalid; an unexpected owl may be meaningful. |
+| D-008 | Reject impossible hardware claims but quarantine out-of-range biological claims. | Accepted | An unexpected owl may be meaningful; hardware limitations are never treated as biological absence. |
 | D-009 | Treat unknown sound as a durable, visible outcome. | Accepted | Honest uncertainty is both scientifically useful and artistically meaningful. |
 | D-010 | Use embeddings to cluster unknown sounds and create a local similarity library. | Accepted | Reduces review burden and enables a future local “animal Shazam” layer. |
 | D-011 | Use an LMM only to review sanitized unknown-sound packages. | Accepted | An LMM is useful for hypotheses but cannot be an authority over ecological truth. |
@@ -503,6 +497,7 @@ multi-location scaling
 | D-014 | Require provenance and versioning for recordings, candidate sets, models, outputs, and decisions. | Accepted | Enables audits, reprocessing, model comparison, and correction. |
 | D-015 | Defer local fine-tuning until verified, licensed training data and a held-out evaluation set exist. | Accepted | Prevents feedback loops that train errors into local models. |
 | D-016 | Render uncertainty, recording quality, and unknown activity in the daily canvas. | Accepted | The artwork must not turn uncertain predictions into false certainty. |
+| D-017 | Exclude bats and ultrasonic insects from Callweave. | Accepted | Keeps the first product focused on the validated audible path; future ultrasonic work would require a new explicit decision. |
 | D-017 | Use UMA/Traverse-style atomic capability contracts. | Accepted | Keeps static policy and replaceable model capabilities independently testable. |
 | D-018 | Use open-source projects as references/components, not as a project to fork wholesale. | Accepted | Existing projects solve valuable subsets but not the full workflow or product intent. |
 
@@ -554,7 +549,6 @@ The following is the implementation-level user-story catalogue. Each capability 
 | `DetectBiologicalSound` | As a System, I want probable biological sound detected so that classification focuses on useful audio. | Likely animal windows route to classifiers. | Low confidence routes to archival/unknown handling without asserting an animal. |
 | `RunPerchClassifier` | As a Location Owner, I want a local broad-wildlife model so that more than birds are considered. | WASM/local inference returns ranked candidates and embeddings. | Model/runtime fails; record failure and use other supported local paths if available. |
 | `RunBirdNETClassifier` | As a Location Owner, I want a bird specialist so that bird calls receive stronger evidence. | Valid audible windows return ranked bird probabilities. | Input/model is unavailable; omit specialist evidence without blocking other inference. |
-| `RunBatClassifier` | As a Location Owner, I want a bat model when ultrasonic hardware exists so that bats are handled correctly. | Valid ultrasonic clips receive regional bat scores. | No compatible source exists; return `not_applicable`, never a bat absence claim. |
 | `CreateAudioEmbedding` | As a System, I want reusable embeddings so that repeated and unknown calls can be compared locally. | Store a versioned embedding linked to source audio. | Generation fails; continue classification but skip similarity/cluster work. |
 
 ### A.4 Interpretation and observations

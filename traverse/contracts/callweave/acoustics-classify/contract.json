@@ -11,7 +11,7 @@
     "contact": "maintainers@callweave.local"
   },
   "summary": "Produce local acoustic evidence and embeddings from prepared audio.",
-  "description": "Detects biological sound and runs only the model implementation selected by explicit metadata: Perch for broad audible wildlife, BirdNET for birds, and a regional bat model only for compatible ultrasonic sources. It outputs ranked evidence and embeddings, never verified observations. Runtime selection must remain deterministic when basic and AI-enhanced implementations coexist.\n\nImplementation status: contract-first. A WASM component/agent will be generated after contract approval. The host provides only the declared adapter authority.\n\nUse-case coverage: one happy path plus invalid-input, dependency-unavailable, and policy-denied unhappy paths.",
+  "description": "Detects biological sound and runs only the model implementation selected by explicit metadata: Perch for broad audible wildlife and BirdNET for birds. It outputs ranked evidence and embeddings, never verified observations. Runtime selection must remain deterministic when basic and AI-enhanced implementations coexist.\n\nImplementation status: contract-first. A WASM component/agent will be generated after contract approval. The host provides only the declared adapter authority.\n\nUse-case coverage: one happy path plus invalid-input, dependency-unavailable, and policy-denied unhappy paths.",
   "use_cases": [
     {
       "scenario": "As a Callweave Runtime, I want produce local acoustic evidence and embeddings from prepared audio. so that the governed workflow can continue with traceable evidence.",

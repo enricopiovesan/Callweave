@@ -11,7 +11,7 @@
     "contact": "maintainers@callweave.local"
   },
   "summary": "Register, validate, calibrate, and configure an audio source.",
-  "description": "Registers a microphone, validates audible or ultrasonic capability, configures the recording profile, calibrates levels, and checks clock accuracy. The host owns hardware access; this contract records a device configuration decision and never treats lack of ultrasonic hardware as evidence that bats are absent.\n\nImplementation status: contract-first. A WASM component/agent will be generated after contract approval. The host provides only the declared adapter authority.\n\nUse-case coverage: one happy path plus invalid-input, dependency-unavailable, and policy-denied unhappy paths.",
+  "description": "Registers an audible microphone, validates its capability, configures the recording profile, calibrates levels, and checks clock accuracy. The host owns hardware access.\n\nImplementation status: contract-first. A WASM component/agent will be generated after contract approval. The host provides only the declared adapter authority.\n\nUse-case coverage: one happy path plus invalid-input, dependency-unavailable, and policy-denied unhappy paths.",
   "use_cases": [
     {
       "scenario": "As a Field Operator, I want register, validate, calibrate, and configure an audio source. so that the governed workflow can continue with traceable evidence.",

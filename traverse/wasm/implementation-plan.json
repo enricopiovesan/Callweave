@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "status": "contract-first-no-wasm-artifacts-yet",
+  "status": "audible-model-readiness-verified-host-integration-pending",
   "rule": "Local classifiers are future WASM implementation modules. The only LMM dependency is the optional advisory interface traverse.inference.generate, resolved by the runtime rather than hard-coded by a WASM guest.",
   "modules": [
     {
@@ -21,15 +21,6 @@
         "callweave.acoustics-classify"
       ],
       "input": "48 kHz audible audio",
-      "authority": "evidence only"
-    },
-    {
-      "id": "callweave.bat-regional-v1",
-      "kind": "local_wasm_model",
-      "capabilities": [
-        "callweave.acoustics-classify"
-      ],
-      "input": "256 kHz+ ultrasonic audio",
       "authority": "evidence only"
     },
     {

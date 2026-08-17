@@ -28,7 +28,7 @@ const caps = [
     name: 'audio-source-configure', owner: 'callweave-field-operator', targets: ['device', 'local'],
     constraints: ['exception_required', 'forbidden', 'sandbox_only'],
     summary: 'Register, validate, calibrate, and configure an audio source.',
-    description: 'Registers a microphone, validates audible or ultrasonic capability, configures the recording profile, calibrates levels, and checks clock accuracy. The host owns hardware access; this contract records a device configuration decision and never treats lack of ultrasonic hardware as evidence that bats are absent.',
+    description: 'Registers an audible microphone, validates its capability, configures the recording profile, calibrates levels, and checks clock accuracy. The host owns hardware access.',
     fields: ['audio_source', 'recording_profile'], result: 'audio_source_ref', model: [],
   },
   {
@@ -77,8 +77,8 @@ const caps = [
     name: 'acoustics-classify', owner: 'callweave-runtime', targets: ['local', 'browser', 'device'],
     constraints: ['exception_required', 'forbidden', 'sandbox_only'],
     summary: 'Produce local acoustic evidence and embeddings from prepared audio.',
-    description: 'Detects biological sound and runs only the model implementation selected by explicit metadata: Perch for broad audible wildlife, BirdNET for birds, and a regional bat model only for compatible ultrasonic sources. It outputs ranked evidence and embeddings, never verified observations. Runtime selection must remain deterministic when basic and AI-enhanced implementations coexist.',
-    fields: ['prepared_audio_ref', 'model_selection'], result: 'acoustic_evidence_ref', model: ['callweave.perch-v2-audible', 'callweave.birdnet-v2.4', 'callweave.bat-regional-v1'],
+    description: 'Detects biological sound and runs only the model implementation selected by explicit metadata: Perch for broad audible wildlife and BirdNET for birds. It outputs ranked evidence and embeddings, never verified observations. Runtime selection must remain deterministic when basic and AI-enhanced implementations coexist.',
+    fields: ['prepared_audio_ref', 'model_selection'], result: 'acoustic_evidence_ref', model: ['callweave.perch-v2-audible', 'callweave.birdnet-v2.4'],
   },
   {
     name: 'detection-resolve', owner: 'callweave-runtime', targets: ['local', 'browser', 'edge', 'cloud'],
@@ -446,12 +446,11 @@ await writeFile(inventoryPath, `${JSON.stringify({ schema_version: '1.0.0', capa
 
 const implementationPlan = {
   schema_version: '1.0.0',
-  status: 'contract-first-no-wasm-artifacts-yet',
+  status: 'audible-model-readiness-verified-host-integration-pending',
   rule: 'Local classifiers are future WASM implementation modules. The only LMM dependency is the optional advisory interface traverse.inference.generate, resolved by the runtime rather than hard-coded by a WASM guest.',
   modules: [
     { id: 'callweave.perch-v2-audible', kind: 'local_wasm_model', capabilities: ['callweave.acoustics-classify', 'callweave.unknown-organize', 'callweave.model-improve'], input: 'prepared audible audio / embeddings', authority: 'evidence only' },
     { id: 'callweave.birdnet-v2.4', kind: 'local_wasm_model', capabilities: ['callweave.acoustics-classify'], input: '48 kHz audible audio', authority: 'evidence only' },
-    { id: 'callweave.bat-regional-v1', kind: 'local_wasm_model', capabilities: ['callweave.acoustics-classify'], input: '256 kHz+ ultrasonic audio', authority: 'evidence only' },
     { id: 'callweave.speech-privacy-v1', kind: 'local_wasm_model', capabilities: ['callweave.privacy-protect'], input: 'audible audio', authority: 'privacy-risk spans only' },
     { id: 'callweave.unknown-review-advisor', kind: 'runtime_resolved_lmm_agent', capabilities: ['callweave.review-prepare'], model_dependency: 'traverse.inference.generate', input: 'sanitized review package only', authority: 'proposal only' },
   ],
