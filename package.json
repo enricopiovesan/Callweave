@@ -1,0 +1,11 @@
+{
+  "name": "callweave",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "birdnet:readiness": "node scripts/birdnet-readiness.mjs"
+  },
+  "dependencies": {
+    "onnxruntime-web": "^1.23.2"
+  }
+}
