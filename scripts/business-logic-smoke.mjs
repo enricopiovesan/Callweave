@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { closeDay, clusterUnknownEvidence, createDailyCanvasPlan, evaluateModelRelease, initializeLocation, manageKnowledge, manageObservation, planRecovery, prepareReview, resolveDetection } from '../src/business-logic.mjs';
+import { AppendOnlyState } from '../src/append-only-state.mjs';
 
 const candidateSet = initializeLocation({ location: { id: 'golden' }, policy: { version: '1' }, sources: [{ id: 's1', license: 'CC-BY', taxon: 'Aves example', status: 'expected' }] });
 assert.equal(candidateSet.candidates[0].status, 'expected');
@@ -16,4 +17,9 @@ assert.equal(clusterUnknownEvidence({ items: [{ id: 'u1', embedding: [1, 0] }, {
 assert.equal(evaluateModelRelease({ candidate: { id: 'm1', sha256: 'abc', license: 'Apache-2.0', status: 'verified' }, evaluation: { held_out_precision_millis: 900, held_out_recall_millis: 850 }, policy: { version: '1', minimum_precision_millis: 800, minimum_recall_millis: 800 } }).decision, 'approve');
 assert.equal(createDailyCanvasPlan({ close, policy: { version: '1' } }).visual_facts.uncertainty_millis, 500);
 assert.deepEqual(planRecovery({ expectedIds: ['a', 'b'], completedIds: ['a'], policy: { version: '1' } }).replay_ids, ['b']);
+const state = new AppendOnlyState();
+const first = state.append({ type: 'observation', payload: { id: 'o1', state: 'provisional' }, idempotencyKey: 'request-1', timestamp: '2026-08-17T00:00:00Z' });
+assert.equal(first.replayed, false);
+assert.equal(state.append({ type: 'observation', payload: { id: 'o1', state: 'provisional' }, idempotencyKey: 'request-1', timestamp: '2026-08-17T00:00:00Z' }).replayed, true);
+assert.equal(state.append({ type: 'observation', payload: { id: 'o1', state: 'verified' }, idempotencyKey: 'request-2', timestamp: '2026-08-17T00:01:00Z' }).previous_id, first.id);
 console.log('business_logic_smoke=passed');
