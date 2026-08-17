@@ -1,0 +1,1 @@
+Place the compiled WASM artifact here after running build-fixture.sh. That script writes the matching `binary.expected_digest` into manifest.json. `capability-package inspect`/`execute` refuse to treat this package as executable until a real artifact exists here with a matching digest.

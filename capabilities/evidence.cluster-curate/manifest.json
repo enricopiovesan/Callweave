@@ -1,0 +1,29 @@
+{
+  "binary": {
+    "abi_version": "1.0.0",
+    "expected_digest": "fnv1a64:cb224f42df23b3e7",
+    "format": "wasm",
+    "path": "artifacts/cluster-curate.wasm"
+  },
+  "capability_ref": {
+    "contract_path": "contract.json",
+    "id": "evidence.cluster-curate",
+    "version": "1.0.0"
+  },
+  "constraints": {
+    "filesystem_access": "none",
+    "host_api_access": "none",
+    "network_access": "forbidden"
+  },
+  "kind": "capability_package",
+  "known_compositions": [],
+  "package_id": "evidence.cluster-curate",
+  "schema_version": "1.0.0",
+  "source": {
+    "entry": "run",
+    "language": "rust",
+    "path": "src/agent.rs"
+  },
+  "summary": "Governed capability package for evidence.cluster-curate.",
+  "version": "1.0.0"
+}

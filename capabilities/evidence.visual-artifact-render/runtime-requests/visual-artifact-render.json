@@ -1,0 +1,22 @@
+{
+  "context": {
+    "caller": "capability-scaffold",
+    "requested_target": "local"
+  },
+  "governing_spec": "006-runtime-request-execution",
+  "input": {
+    "summary": { "evidence_count": 12, "coverage_millis": 900, "uncertainty_millis": 200 },
+    "visual_policy": { "version": "1.0.0", "palette_seed": 17 }
+  },
+  "intent": {
+    "capability_id": "evidence.visual-artifact-render",
+    "capability_version": "1.0.0"
+  },
+  "kind": "runtime_request",
+  "lookup": {
+    "allow_ambiguity": false,
+    "scope": "prefer_private"
+  },
+  "request_id": "visual-artifact-render-scaffold-001",
+  "schema_version": "1.0.0"
+}
