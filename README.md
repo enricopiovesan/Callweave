@@ -39,3 +39,9 @@ architecture record.
 A native SwiftUI macOS developer test app lives in
 [`apps/CallweaveMac`](apps/CallweaveMac). It runs the local checks that are
 already available before Traverse connector support lands.
+
+## Web test app
+
+A browser test app lives in [`apps/CallweaveWeb`](apps/CallweaveWeb). It runs
+the browser-safe checks over the same shared business-logic modules used by
+the Node and macOS test surfaces.

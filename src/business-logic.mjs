@@ -1,6 +1,4 @@
-import { createHash } from 'node:crypto';
-
-const stableId = (kind, value) => `${kind}-${createHash('sha256').update(JSON.stringify(value)).digest('hex').slice(0, 16)}`;
+import { stableId } from './stable-id.mjs';
 const requireValue = (value, name) => { if (value === undefined || value === null || value === '') throw new Error(`${name} is required`); return value; };
 
 /** Pure location/candidate-set policy. Sources are supplied by a host adapter. */

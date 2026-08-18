@@ -1,6 +1,4 @@
-import { createHash } from 'node:crypto';
-
-const digest = value => createHash('sha256').update(JSON.stringify(value)).digest('hex');
+import { stableDigest } from './stable-id.mjs';
 
 /**
  * Pure append-only state kernel. A future host connector persists and reloads
@@ -17,7 +15,7 @@ export class AppendOnlyState {
     const prior = this.#records.filter(record => record.type === type && record.payload.id === payload.id);
     const version = prior.length + 1;
     const record = Object.freeze({
-      id: `${type}-${digest({ type, payload, idempotencyKey, timestamp }).slice(0, 16)}`,
+      id: `${type}-${stableDigest({ type, payload, idempotencyKey, timestamp }).slice(0, 16)}`,
       type,
       version,
       idempotency_key: idempotencyKey,

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Callweave Web Test App</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="sidebar-header">Callweave</div>
+        <nav id="action-list" class="action-list"></nav>
+      </aside>
+      <main class="detail">
+        <header class="detail-header">
+          <div>
+            <div class="eyebrow">Web Test App</div>
+            <h1 id="title">Select a check</h1>
+            <p id="detail" class="detail-copy">Runs browser-safe checks over the shared Callweave business logic.</p>
+          </div>
+          <button id="run-button" class="run-button">Run Check</button>
+        </header>
+
+        <section class="workspace">
+          <div class="workspace-label">Workspace</div>
+          <div id="workspace-path" class="workspace-path"></div>
+        </section>
+
+        <div id="status-line" class="status-line"></div>
+
+        <section class="output-panel">
+          <pre id="output">Select a check, then run it.</pre>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="./main.js"></script>
+  </body>
+  </html>
