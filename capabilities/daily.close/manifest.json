@@ -1,0 +1,29 @@
+{
+  "binary": {
+    "abi_version": "1.0.0",
+    "expected_digest": "fnv1a64:6d4eaadc40568ede",
+    "format": "wasm",
+    "path": "artifacts/daily-close.wasm"
+  },
+  "capability_ref": {
+    "contract_path": "contract.json",
+    "id": "daily.close",
+    "version": "1.0.0"
+  },
+  "constraints": {
+    "filesystem_access": "none",
+    "host_api_access": "none",
+    "network_access": "forbidden"
+  },
+  "kind": "capability_package",
+  "known_compositions": [],
+  "package_id": "daily.close",
+  "schema_version": "1.0.0",
+  "source": {
+    "entry": "run",
+    "language": "rust",
+    "path": "src/agent.rs"
+  },
+  "summary": "Pure WASM package for deterministic daily close records.",
+  "version": "1.0.0"
+}

@@ -1,0 +1,151 @@
+{
+  "kind": "capability_contract",
+  "schema_version": "1.0.0",
+  "id": "daily.close",
+  "namespace": "daily",
+  "name": "close",
+  "version": "1.0.0",
+  "lifecycle": "active",
+  "owner": {
+    "team": "callweave",
+    "contact": "maintainers@callweave.local"
+  },
+  "summary": "Create a deterministic local-day close record from supplied facts.",
+  "description": "Pure standalone daily-close policy. It validates location, date, watermark, and policy version; computes the immutable idempotency key; sorts observation and unknown references; and returns a single close record. It does not schedule itself, persist state, or know any application workflow.",
+  "use_cases": [
+    {
+      "scenario": "As an operator, I want one deterministic close record for a bounded local day so that downstream daily work executes exactly once per day key.",
+      "input_example": {
+        "locationId": "golden-bc",
+        "localDate": "2026-08-17",
+        "coverage": "partial",
+        "observationIds": ["obs-2", "obs-1"],
+        "unknownIds": ["unk-1"],
+        "watermark": "capture-watermark-001",
+        "policy": { "version": "policy-1" }
+      },
+      "output_example": {
+        "idempotency_key": "golden-bc:2026-08-17:capture-watermark-001",
+        "location_id": "golden-bc",
+        "local_date": "2026-08-17",
+        "observation_ids": ["obs-1", "obs-2"],
+        "unknown_ids": ["unk-1"],
+        "policy_version": "policy-1"
+      },
+      "happy": true
+    },
+    {
+      "scenario": "As an operator, I want missing day-boundary inputs rejected so that a close record is never synthesized from incomplete scheduling context.",
+      "input_example": {
+        "locationId": "golden-bc",
+        "coverage": "partial",
+        "observationIds": [],
+        "unknownIds": [],
+        "watermark": "capture-watermark-001",
+        "policy": { "version": "policy-1" }
+      },
+      "output_example": {
+        "error": "localDate is required"
+      },
+      "happy": false
+    }
+  ],
+  "inputs": {
+    "schema": {
+      "type": "object",
+      "required": ["locationId", "localDate", "coverage", "watermark", "policy"],
+      "properties": {
+        "locationId": { "type": "string", "minLength": 1 },
+        "localDate": { "type": "string", "minLength": 1 },
+        "coverage": { "type": "string", "minLength": 1 },
+        "observationIds": { "type": "array", "items": { "type": "string" } },
+        "unknownIds": { "type": "array", "items": { "type": "string" } },
+        "watermark": { "type": "string", "minLength": 1 },
+        "policy": {
+          "type": "object",
+          "required": ["version"],
+          "properties": {
+            "version": { "type": "string", "minLength": 1 }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "outputs": {
+    "schema": {
+      "type": "object",
+      "required": ["idempotency_key", "location_id", "local_date", "coverage", "observation_ids", "unknown_ids", "policy_version"],
+      "properties": {
+        "idempotency_key": { "type": "string" },
+        "location_id": { "type": "string" },
+        "local_date": { "type": "string" },
+        "coverage": { "type": "string" },
+        "observation_ids": { "type": "array", "items": { "type": "string" } },
+        "unknown_ids": { "type": "array", "items": { "type": "string" } },
+        "policy_version": { "type": "string" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "preconditions": [
+    {
+      "id": "day-boundary-is-supplied",
+      "description": "A non-empty location id, local date, watermark, and policy version are supplied."
+    }
+  ],
+  "postconditions": [
+    {
+      "id": "idempotency-is-stable",
+      "description": "The idempotency key is always locationId, localDate, and watermark joined by colons."
+    },
+    {
+      "id": "references-are-sorted",
+      "description": "Observation and unknown ids are returned in sorted order."
+    }
+  ],
+  "side_effects": [
+    {
+      "kind": "memory_only",
+      "description": "Pure calculation; no host, network, filesystem, model, state, or workflow access."
+    }
+  ],
+  "emits": [],
+  "consumes": [],
+  "permissions": [
+    {
+      "id": "daily.close.execute"
+    }
+  ],
+  "execution": {
+    "binary_format": "wasm",
+    "entrypoint": {
+      "kind": "wasi-command",
+      "command": "run"
+    },
+    "preferred_targets": ["local", "browser", "edge", "device"],
+    "constraints": {
+      "host_api_access": "none",
+      "network_access": "forbidden",
+      "filesystem_access": "none"
+    }
+  },
+  "policies": [
+    { "id": "deterministic-policy-only" },
+    { "id": "one-close-record-per-day-key" }
+  ],
+  "dependencies": [],
+  "provenance": {
+    "source": "greenfield",
+    "author": "Callweave",
+    "created_at": "2026-08-18T00:00:00Z",
+    "spec_ref": "100-capability-package-authoring@1.0.0",
+    "adr_refs": ["DECISION_RECORD.md"],
+    "exception_refs": []
+  },
+  "evidence": [],
+  "state_schema": null,
+  "service_type": "stateless",
+  "permitted_targets": ["local", "browser", "edge", "device"]
+}

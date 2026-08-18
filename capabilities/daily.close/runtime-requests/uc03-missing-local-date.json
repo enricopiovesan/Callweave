@@ -1,0 +1,8 @@
+{
+  "locationId": "golden-bc",
+  "coverage": "partial",
+  "observationIds": [],
+  "unknownIds": [],
+  "watermark": "capture-watermark-001",
+  "policy": { "version": "policy-1" }
+}

@@ -1,0 +1,9 @@
+{
+  "locationId": "golden-bc",
+  "localDate": "2026-08-17",
+  "coverage": "partial",
+  "observationIds": ["obs-2", "obs-1"],
+  "unknownIds": ["unk-1"],
+  "watermark": "capture-watermark-001",
+  "policy": { "version": "policy-1" }
+}

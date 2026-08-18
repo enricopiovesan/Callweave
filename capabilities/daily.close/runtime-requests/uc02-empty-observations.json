@@ -1,0 +1,9 @@
+{
+  "locationId": "quiet-site",
+  "localDate": "2026-08-17",
+  "coverage": "complete",
+  "observationIds": [],
+  "unknownIds": [],
+  "watermark": "capture-watermark-002",
+  "policy": { "version": "policy-1" }
+}
