@@ -1,6 +1,6 @@
 # Callweave capability readiness
 
-**Last verified:** 2026-08-17. “Ready” below means the portable business rule
+**Last verified:** 2026-08-18. “Ready” below means the portable business rule
 exists and has deterministic smoke or fixture coverage. It does not mean an
 application contract is active or that the host adapter is available.
 
@@ -15,7 +15,7 @@ application contract is active or that the host adapter is available.
 | `privacy-protect` | Fail-closed review gate; Silero VAD readiness and privacy-evaluation gate verified | Labeled field evaluation + export adapter | Evaluation + adapter required |
 | `model-manage` | Checksum/license/release gate | Model cache activation | Logic ready |
 | `acoustics-classify` | Local BirdNET/Perch evidence runner | Prepared-audio/model host binding | Logic ready |
-| `detection-resolve` | Calibrated policy resolver | Candidate/evidence record reads | Logic ready |
+| `detection-resolve` | Standalone WASM package + calibrated policy resolver | Candidate/evidence record reads | Logic ready |
 | `observation-manage` | Append-only observation transition | Durable state connector | Logic ready |
 | `unknown-organize` | Embedding clustering + curation | Embedding/evidence record reads | Logic ready |
 | `review-prepare` | Privacy-gated advisory package policy | Privacy model + optional LMM connector | Blocked by privacy |
@@ -28,11 +28,11 @@ application contract is active or that the host adapter is available.
 
 ## Binding rules
 
-- The six standalone WASI packages under `capabilities/` are executable now.
+- The seven standalone WASI packages under `capabilities/` are executable now.
 - The connector-free business rules for `location-initialize`,
-  `detection-resolve`, `observation-manage`, `knowledge-manage`,
-  `daily-create`, `daily-close`, and `operations-recover` have deterministic
-  JSON fixtures under `fixtures/pure-capabilities/`.
+  `observation-manage`, `knowledge-manage`, `daily-create`, `daily-close`,
+  and `operations-recover` have deterministic JSON fixtures under
+  `fixtures/pure-capabilities/`.
 - `src/business-logic.mjs` owns portable policy and transition rules.
 - `src/append-only-state.mjs` owns in-memory append-only/idempotency semantics.
 - A future host adapter may persist the state kernel’s records, but may not

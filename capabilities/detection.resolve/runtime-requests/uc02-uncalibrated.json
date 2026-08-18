@@ -1,0 +1,14 @@
+{
+  "evidence": {
+    "id": "ev-raw-logit",
+    "hardware_compatible": true
+  },
+  "candidate": {
+    "taxon": "expected audible taxon",
+    "status": "expected"
+  },
+  "policy": {
+    "version": "resolver-1",
+    "minimum_score_millis": 800
+  }
+}

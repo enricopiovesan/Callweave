@@ -1,0 +1,225 @@
+{
+  "kind": "capability_contract",
+  "schema_version": "1.0.0",
+  "id": "detection.resolve",
+  "namespace": "detection",
+  "name": "resolve",
+  "version": "1.0.0",
+  "lifecycle": "active",
+  "owner": {
+    "team": "callweave",
+    "contact": "maintainers@callweave.local"
+  },
+  "summary": "Resolve supplied calibrated evidence into one governed detection state.",
+  "description": "Pure standalone detection policy. It converts supplied evidence, candidate status, hardware compatibility, and policy thresholds into one of provisional, unknown, surprising, or rejected. It does not run a model, inspect audio, read storage, query location sources, or know any application workflow.",
+  "use_cases": [
+    {
+      "scenario": "As an evidence consumer, I want expected calibrated evidence above policy threshold marked provisional so that downstream review can consider it.",
+      "input_example": {
+        "evidence": {
+          "id": "ev-provisional",
+          "hardware_compatible": true,
+          "calibrated_score_millis": 920
+        },
+        "candidate": {
+          "taxon": "expected audible taxon",
+          "status": "expected"
+        },
+        "policy": {
+          "version": "resolver-1",
+          "minimum_score_millis": 800
+        }
+      },
+      "output_example": {
+        "evidence_id": "ev-provisional",
+        "state": "provisional",
+        "reason": "score_meets_policy",
+        "policy_version": "resolver-1"
+      },
+      "happy": true
+    },
+    {
+      "scenario": "As an evidence consumer, I want rare calibrated evidence above policy threshold quarantined as surprising rather than silently promoted.",
+      "input_example": {
+        "evidence": {
+          "id": "ev-rare",
+          "hardware_compatible": true,
+          "calibrated_score_millis": 920
+        },
+        "candidate": {
+          "taxon": "rare audible taxon",
+          "status": "rare"
+        },
+        "policy": {
+          "version": "resolver-1",
+          "minimum_score_millis": 800
+        }
+      },
+      "output_example": {
+        "evidence_id": "ev-rare",
+        "state": "surprising",
+        "reason": "rare_candidate",
+        "policy_version": "resolver-1"
+      },
+      "happy": false
+    },
+    {
+      "scenario": "As an evidence consumer, I want uncalibrated model evidence kept unknown so that raw logits never become governed observations.",
+      "input_example": {
+        "evidence": {
+          "id": "ev-raw-logit",
+          "hardware_compatible": true
+        },
+        "candidate": {
+          "taxon": "expected audible taxon",
+          "status": "expected"
+        },
+        "policy": {
+          "version": "resolver-1",
+          "minimum_score_millis": 800
+        }
+      },
+      "output_example": {
+        "evidence_id": "ev-raw-logit",
+        "state": "unknown",
+        "reason": "uncalibrated_evidence",
+        "policy_version": "resolver-1"
+      },
+      "happy": false
+    },
+    {
+      "scenario": "As an evidence consumer, I want incompatible hardware evidence rejected so that impossible claims cannot enter review.",
+      "input_example": {
+        "evidence": {
+          "id": "ev-hardware",
+          "hardware_compatible": false,
+          "calibrated_score_millis": 1000
+        },
+        "candidate": {
+          "taxon": "expected audible taxon",
+          "status": "expected"
+        },
+        "policy": {
+          "version": "resolver-1",
+          "minimum_score_millis": 800
+        }
+      },
+      "output_example": {
+        "evidence_id": "ev-hardware",
+        "state": "rejected",
+        "reason": "hardware_incompatible",
+        "policy_version": "resolver-1"
+      },
+      "happy": false
+    }
+  ],
+  "inputs": {
+    "schema": {
+      "type": "object",
+      "required": ["evidence", "policy"],
+      "properties": {
+        "evidence": {
+          "type": "object",
+          "required": ["id", "hardware_compatible"],
+          "properties": {
+            "id": { "type": "string", "minLength": 1 },
+            "hardware_compatible": { "type": "boolean" },
+            "calibrated_score_millis": { "type": "integer", "minimum": 0, "maximum": 1000 }
+          },
+          "additionalProperties": true
+        },
+        "candidate": {
+          "type": "object",
+          "required": ["status"],
+          "properties": {
+            "taxon": { "type": "string" },
+            "status": { "type": "string", "enum": ["expected", "rare", "absent"] }
+          },
+          "additionalProperties": true
+        },
+        "policy": {
+          "type": "object",
+          "required": ["version", "minimum_score_millis"],
+          "properties": {
+            "version": { "type": "string", "minLength": 1 },
+            "minimum_score_millis": { "type": "integer", "minimum": 0, "maximum": 1000 }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "outputs": {
+    "schema": {
+      "type": "object",
+      "required": ["evidence_id", "state", "reason", "policy_version"],
+      "properties": {
+        "evidence_id": { "type": "string" },
+        "state": { "type": "string", "enum": ["provisional", "unknown", "surprising", "rejected"] },
+        "reason": { "type": "string", "enum": ["score_meets_policy", "score_below_policy", "rare_candidate", "candidate_not_listed", "uncalibrated_evidence", "hardware_incompatible"] },
+        "policy_version": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "preconditions": [
+    {
+      "id": "policy-is-versioned",
+      "description": "A non-empty policy version and bounded score threshold are supplied."
+    }
+  ],
+  "postconditions": [
+    {
+      "id": "exclusive-state",
+      "description": "Exactly one governed state is returned for each evidence input."
+    },
+    {
+      "id": "uncalibrated-is-never-promoted",
+      "description": "Evidence without calibrated_score_millis can only resolve to unknown or rejected."
+    }
+  ],
+  "side_effects": [
+    {
+      "kind": "memory_only",
+      "description": "Pure calculation; no host, network, filesystem, model, state, or workflow access."
+    }
+  ],
+  "emits": [],
+  "consumes": [],
+  "permissions": [
+    {
+      "id": "detection.resolve.execute"
+    }
+  ],
+  "execution": {
+    "binary_format": "wasm",
+    "entrypoint": {
+      "kind": "wasi-command",
+      "command": "run"
+    },
+    "preferred_targets": ["local", "browser", "edge", "device"],
+    "constraints": {
+      "host_api_access": "none",
+      "network_access": "forbidden",
+      "filesystem_access": "none"
+    }
+  },
+  "policies": [
+    { "id": "deterministic-policy-only" },
+    { "id": "absence-not-inferred" }
+  ],
+  "dependencies": [],
+  "provenance": {
+    "source": "greenfield",
+    "author": "Callweave",
+    "created_at": "2026-08-17T00:00:00Z",
+    "spec_ref": "100-capability-package-authoring@1.0.0",
+    "adr_refs": ["DECISION_RECORD.md"],
+    "exception_refs": []
+  },
+  "evidence": [],
+  "state_schema": null,
+  "service_type": "stateless",
+  "permitted_targets": ["local", "browser", "edge", "device"]
+}

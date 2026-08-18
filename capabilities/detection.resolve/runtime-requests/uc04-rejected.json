@@ -1,0 +1,15 @@
+{
+  "evidence": {
+    "id": "ev-hardware",
+    "hardware_compatible": false,
+    "calibrated_score_millis": 1000
+  },
+  "candidate": {
+    "taxon": "expected audible taxon",
+    "status": "expected"
+  },
+  "policy": {
+    "version": "resolver-1",
+    "minimum_score_millis": 800
+  }
+}
