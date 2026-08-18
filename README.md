@@ -33,3 +33,9 @@ Bats and ultrasonic insects are explicitly out of scope.
 
 See [DECISION_RECORD.md](DECISION_RECORD.md) for the full product and Traverse
 architecture record.
+
+## macOS test app
+
+A native SwiftUI macOS developer test app lives in
+[`apps/CallweaveMac`](apps/CallweaveMac). It runs the local checks that are
+already available before Traverse connector support lands.
