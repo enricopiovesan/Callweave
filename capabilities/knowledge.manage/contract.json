@@ -1,0 +1,155 @@
+{
+  "kind": "capability_contract",
+  "schema_version": "1.0.0",
+  "id": "knowledge.manage",
+  "namespace": "knowledge",
+  "name": "manage",
+  "version": "1.0.0",
+  "lifecycle": "active",
+  "owner": {
+    "team": "callweave",
+    "contact": "maintainers@callweave.local"
+  },
+  "summary": "Apply human approval to produce durable knowledge versions.",
+  "description": "Pure standalone knowledge policy. It validates the proposal and approval envelope, blocks any non-approved change, and increments the knowledge version only for explicit human approval. It does not persist state, fetch prior versions, or know any application workflow.",
+  "use_cases": [
+    {
+      "scenario": "As a reviewer, I want approved knowledge proposals to create the next durable version so that reviewed taxonomy or locality updates can take effect.",
+      "input_example": {
+        "proposal": { "id": "proposal-2" },
+        "approval": {
+          "reviewer_id": "reviewer-2",
+          "decision": "approve"
+        },
+        "previousVersion": 3
+      },
+      "output_example": {
+        "applied": true,
+        "version": 4,
+        "proposal_id": "proposal-2",
+        "approved_by": "reviewer-2"
+      },
+      "happy": true
+    },
+    {
+      "scenario": "As a reviewer, I want denied proposals to remain non-durable so that advisory suggestions cannot mutate knowledge without approval.",
+      "input_example": {
+        "proposal": { "id": "proposal-1" },
+        "approval": {
+          "reviewer_id": "reviewer-1",
+          "decision": "deny"
+        },
+        "previousVersion": 3
+      },
+      "output_example": {
+        "applied": false,
+        "proposal_id": "proposal-1",
+        "reason": "human_approval_required"
+      },
+      "happy": false
+    }
+  ],
+  "inputs": {
+    "schema": {
+      "type": "object",
+      "required": ["proposal", "approval"],
+      "properties": {
+        "proposal": {
+          "type": "object",
+          "required": ["id"],
+          "properties": {
+            "id": { "type": "string", "minLength": 1 }
+          },
+          "additionalProperties": true
+        },
+        "approval": {
+          "type": "object",
+          "required": ["reviewer_id", "decision"],
+          "properties": {
+            "reviewer_id": { "type": "string", "minLength": 1 },
+            "decision": { "type": "string", "enum": ["approve", "deny"] }
+          },
+          "additionalProperties": true
+        },
+        "previousVersion": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "outputs": {
+    "schema": {
+      "type": "object",
+      "required": ["applied", "proposal_id"],
+      "properties": {
+        "applied": { "type": "boolean" },
+        "proposal_id": { "type": "string" },
+        "reason": { "type": "string" },
+        "version": { "type": "integer", "minimum": 1 },
+        "approved_by": { "type": "string" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "preconditions": [
+    {
+      "id": "proposal-and-human-approval-supplied",
+      "description": "A non-empty proposal id, approval decision, and reviewer id are supplied."
+    }
+  ],
+  "postconditions": [
+    {
+      "id": "approval-is-mandatory",
+      "description": "Only an explicit approve decision can set applied to true."
+    },
+    {
+      "id": "version-increments-on-approval",
+      "description": "Successful results increment the previous version or start at one."
+    }
+  ],
+  "side_effects": [
+    {
+      "kind": "memory_only",
+      "description": "Pure calculation; no host, network, filesystem, model, state, or workflow access."
+    }
+  ],
+  "emits": [],
+  "consumes": [],
+  "permissions": [
+    {
+      "id": "knowledge.manage.execute"
+    }
+  ],
+  "execution": {
+    "binary_format": "wasm",
+    "entrypoint": {
+      "kind": "wasi-command",
+      "command": "run"
+    },
+    "preferred_targets": ["local", "browser", "edge", "device"],
+    "constraints": {
+      "host_api_access": "none",
+      "network_access": "forbidden",
+      "filesystem_access": "none"
+    }
+  },
+  "policies": [
+    { "id": "deterministic-policy-only" },
+    { "id": "durable-knowledge-requires-human-approval" }
+  ],
+  "dependencies": [],
+  "provenance": {
+    "source": "greenfield",
+    "author": "Callweave",
+    "created_at": "2026-08-18T00:00:00Z",
+    "spec_ref": "100-capability-package-authoring@1.0.0",
+    "adr_refs": ["DECISION_RECORD.md"],
+    "exception_refs": []
+  },
+  "evidence": [],
+  "state_schema": null,
+  "service_type": "stateless",
+  "permitted_targets": ["local", "browser", "edge", "device"]
+}

@@ -1,0 +1,8 @@
+{
+  "proposal": { "id": "proposal-3" },
+  "approval": {
+    "reviewer_id": "reviewer-3",
+    "decision": "approve"
+  },
+  "previousVersion": 0
+}

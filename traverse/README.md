@@ -1,7 +1,7 @@
 # Callweave Traverse Contracts
 
 This directory is the contract-first UMA/Traverse surface for Callweave. Its
-application contracts remain draft; nine reusable, standalone WASI capability
+application contracts remain draft; ten reusable, standalone WASI capability
 packages live in `../capabilities/` and are deliberately not coupled to this
 application workflow.
 
@@ -44,6 +44,7 @@ deterministic runtime requests:
 - `detection.resolve`
 - `location.initialize`
 - `observation.manage`
+- `knowledge.manage`
 - `evidence.retention-classify`
 - `evidence.cluster-curate`
 - `evidence.visual-artifact-render`
@@ -56,8 +57,8 @@ network, model, or workflow authority.
 The connector-free policy and transition rules that are not yet packaged as
 WASI artifacts are covered by deterministic JSON fixtures in
 `../fixtures/pure-capabilities/`. These fixtures are the current executable
-behavior contract for the pure portions of `knowledge-manage`, `daily-create`,
-`daily-close`, and `operations-recover`.
+behavior contract for the pure portions of `daily-create`, `daily-close`, and
+`operations-recover`.
 
 The planned model and host-integrated modules appear in
 [wasm/implementation-plan.json](wasm/implementation-plan.json). When an

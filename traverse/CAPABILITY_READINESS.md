@@ -19,7 +19,7 @@ application contract is active or that the host adapter is available.
 | `observation-manage` | Standalone WASM package + append-only observation transition | Durable state connector | Logic ready |
 | `unknown-organize` | Embedding clustering + curation | Embedding/evidence record reads | Logic ready |
 | `review-prepare` | Privacy-gated advisory package policy | Privacy model + optional LMM connector | Blocked by privacy |
-| `knowledge-manage` | Human-approved version transition | Durable state connector | Logic ready |
+| `knowledge-manage` | Standalone WASM package + human-approved version transition | Durable state connector | Logic ready |
 | `model-improve` | Evaluation/release decision gate | Training/evaluation runner | Adapter required |
 | `daily-create` | Canvas-plan facts + visual-parameter package | Renderer/archive connector | Logic ready |
 | `daily-revise` | Immutable revision package | Artifact state/archive connector | Logic ready |
@@ -28,11 +28,10 @@ application contract is active or that the host adapter is available.
 
 ## Binding rules
 
-- The nine standalone WASI packages under `capabilities/` are executable now.
+- The ten standalone WASI packages under `capabilities/` are executable now.
 - The connector-free business rules for `location-initialize`,
-  `knowledge-manage`, `daily-create`, `daily-close`, and
-  `operations-recover` have deterministic JSON fixtures under
-  `fixtures/pure-capabilities/`.
+  `daily-create`, `daily-close`, and `operations-recover` have
+  deterministic JSON fixtures under `fixtures/pure-capabilities/`.
 - `src/business-logic.mjs` owns portable policy and transition rules.
 - `src/append-only-state.mjs` owns in-memory append-only/idempotency semantics.
 - A future host adapter may persist the state kernel’s records, but may not

@@ -1,0 +1,29 @@
+{
+  "binary": {
+    "abi_version": "1.0.0",
+    "expected_digest": "fnv1a64:93c9c80b473e268a",
+    "format": "wasm",
+    "path": "artifacts/knowledge-manage.wasm"
+  },
+  "capability_ref": {
+    "contract_path": "contract.json",
+    "id": "knowledge.manage",
+    "version": "1.0.0"
+  },
+  "constraints": {
+    "filesystem_access": "none",
+    "host_api_access": "none",
+    "network_access": "forbidden"
+  },
+  "kind": "capability_package",
+  "known_compositions": [],
+  "package_id": "knowledge.manage",
+  "schema_version": "1.0.0",
+  "source": {
+    "entry": "run",
+    "language": "rust",
+    "path": "src/agent.rs"
+  },
+  "summary": "Pure WASM package for deterministic human-approved knowledge transitions.",
+  "version": "1.0.0"
+}
