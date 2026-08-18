@@ -62,7 +62,7 @@ final class AppModel: ObservableObject {
                 title: "Audio analyzer help",
                 detail: "Shows the current CLI usage surface for offline audio analysis.",
                 launchPath: "/bin/zsh",
-                arguments: ["-lc", "node scripts/analyze-audio.mjs --help || true"]
+                arguments: ["-lc", "node scripts/analyze-audio.mjs --help"]
             )
         ]
 

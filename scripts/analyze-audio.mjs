@@ -5,7 +5,14 @@ import { basename, dirname, resolve } from 'node:path';
 import { spawn, spawnSync } from 'node:child_process';
 import ffmpegPath from 'ffmpeg-static';
 
-const [audioPath, outputPath = 'output'] = process.argv.slice(2);
+const args = process.argv.slice(2);
+if (args.includes('--help') || args.includes('-h')) {
+  console.log('Usage: npm run analyze:audio -- <audio-file> [output-directory]');
+  console.log('Decodes local WAV/FLAC audio, runs local BirdNET and Perch models, and writes evidence outputs.');
+  process.exit(0);
+}
+
+const [audioPath, outputPath = 'output'] = args;
 if (!audioPath) {
   console.error('Usage: npm run analyze:audio -- <audio-file> [output-directory]');
   process.exit(2);
