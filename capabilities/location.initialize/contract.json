@@ -1,0 +1,175 @@
+{
+  "kind": "capability_contract",
+  "schema_version": "1.0.0",
+  "id": "location.initialize",
+  "namespace": "location",
+  "name": "initialize",
+  "version": "1.0.0",
+  "lifecycle": "active",
+  "owner": {
+    "team": "callweave",
+    "contact": "maintainers@callweave.local"
+  },
+  "summary": "Normalize supplied occurrence facts into a deterministic location candidate set.",
+  "description": "Pure standalone location policy. It validates supplied location and source records, normalizes season defaults, and sorts candidate entries deterministically. It does not fetch sources, inspect a map, read storage, or know any application workflow.",
+  "use_cases": [
+    {
+      "scenario": "As a location owner, I want supplied occurrence facts normalized into a stable candidate set so that downstream detection policy starts from deterministic inputs.",
+      "input_example": {
+        "location": { "id": "golden-bc" },
+        "policy": { "version": "location-policy-1" },
+        "sources": [
+          { "id": "source-b", "license": "CC-BY-4.0", "taxon": "Taxon beta", "status": "rare", "season": "summer" },
+          { "id": "source-a", "license": "CC-BY-4.0", "taxon": "Taxon alpha", "status": "expected" }
+        ]
+      },
+      "output_example": {
+        "location_id": "golden-bc",
+        "policy_version": "location-policy-1",
+        "candidates": [
+          { "taxon": "Taxon alpha", "status": "expected", "source_id": "source-a", "season": "all" },
+          { "taxon": "Taxon beta", "status": "rare", "source_id": "source-b", "season": "summer" }
+        ]
+      },
+      "happy": true
+    },
+    {
+      "scenario": "As a location owner, I want malformed occurrence facts rejected so that a candidate set is never synthesized from incomplete records.",
+      "input_example": {
+        "location": { "id": "golden-bc" },
+        "policy": { "version": "location-policy-1" },
+        "sources": [
+          { "id": "source-a", "taxon": "Taxon alpha", "status": "expected" }
+        ]
+      },
+      "output_example": {
+        "error": "every source needs license, taxon, and status"
+      },
+      "happy": false
+    }
+  ],
+  "inputs": {
+    "schema": {
+      "type": "object",
+      "required": ["location", "sources", "policy"],
+      "properties": {
+        "location": {
+          "type": "object",
+          "required": ["id"],
+          "properties": {
+            "id": { "type": "string", "minLength": 1 }
+          },
+          "additionalProperties": true
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "license", "taxon", "status"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "license": { "type": "string", "minLength": 1 },
+              "taxon": { "type": "string", "minLength": 1 },
+              "status": { "type": "string", "minLength": 1 },
+              "season": { "type": "string", "minLength": 1 }
+            },
+            "additionalProperties": true
+          }
+        },
+        "policy": {
+          "type": "object",
+          "required": ["version"],
+          "properties": {
+            "version": { "type": "string", "minLength": 1 }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "outputs": {
+    "schema": {
+      "type": "object",
+      "required": ["location_id", "policy_version", "candidates"],
+      "properties": {
+        "location_id": { "type": "string" },
+        "policy_version": { "type": "string" },
+        "candidates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["taxon", "status", "source_id", "season"],
+            "properties": {
+              "taxon": { "type": "string" },
+              "status": { "type": "string" },
+              "source_id": { "type": "string" },
+              "season": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "preconditions": [
+    {
+      "id": "policy-and-location-are-versioned",
+      "description": "A non-empty location id and non-empty policy version are supplied."
+    }
+  ],
+  "postconditions": [
+    {
+      "id": "deterministic-order",
+      "description": "Identical source facts yield the same candidate ordering."
+    },
+    {
+      "id": "default-season-applied",
+      "description": "A missing source season resolves to all."
+    }
+  ],
+  "side_effects": [
+    {
+      "kind": "memory_only",
+      "description": "Pure calculation; no host, network, filesystem, model, state, or workflow access."
+    }
+  ],
+  "emits": [],
+  "consumes": [],
+  "permissions": [
+    {
+      "id": "location.initialize.execute"
+    }
+  ],
+  "execution": {
+    "binary_format": "wasm",
+    "entrypoint": {
+      "kind": "wasi-command",
+      "command": "run"
+    },
+    "preferred_targets": ["local", "browser", "edge", "device"],
+    "constraints": {
+      "host_api_access": "none",
+      "network_access": "forbidden",
+      "filesystem_access": "none"
+    }
+  },
+  "policies": [
+    { "id": "deterministic-policy-only" },
+    { "id": "source-facts-must-be-complete" }
+  ],
+  "dependencies": [],
+  "provenance": {
+    "source": "greenfield",
+    "author": "Callweave",
+    "created_at": "2026-08-18T00:00:00Z",
+    "spec_ref": "100-capability-package-authoring@1.0.0",
+    "adr_refs": ["DECISION_RECORD.md"],
+    "exception_refs": []
+  },
+  "evidence": [],
+  "state_schema": null,
+  "service_type": "stateless",
+  "permitted_targets": ["local", "browser", "edge", "device"]
+}

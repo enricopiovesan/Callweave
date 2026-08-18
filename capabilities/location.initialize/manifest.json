@@ -1,0 +1,29 @@
+{
+  "binary": {
+    "abi_version": "1.0.0",
+    "expected_digest": "fnv1a64:0ee3d8d7659a3fff",
+    "format": "wasm",
+    "path": "artifacts/location-initialize.wasm"
+  },
+  "capability_ref": {
+    "contract_path": "contract.json",
+    "id": "location.initialize",
+    "version": "1.0.0"
+  },
+  "constraints": {
+    "filesystem_access": "none",
+    "host_api_access": "none",
+    "network_access": "forbidden"
+  },
+  "kind": "capability_package",
+  "known_compositions": [],
+  "package_id": "location.initialize",
+  "schema_version": "1.0.0",
+  "source": {
+    "entry": "run",
+    "language": "rust",
+    "path": "src/agent.rs"
+  },
+  "summary": "Pure WASM package for deterministic location candidate-set initialization.",
+  "version": "1.0.0"
+}

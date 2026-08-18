@@ -6,7 +6,7 @@ application contract is active or that the host adapter is available.
 
 | Contract | Portable business logic | Remaining activation boundary | Readiness |
 |---|---|---|---|
-| `location-initialize` | Candidate-set normalization/versioning | Source lookup + private persistence | Logic ready |
+| `location-initialize` | Standalone WASM package + candidate-set normalization/versioning | Source lookup + private persistence | Logic ready |
 | `audio-source-configure` | Configuration validation only | Microphone discovery/calibration | Adapter required |
 | `audio-capture` | Segment metadata policy | Microphone + file finalization | Adapter required |
 | `audio-prepare` | Local WAV/FLAC decode, resample, windowing | Recording reference/storage | Logic ready |
@@ -28,7 +28,7 @@ application contract is active or that the host adapter is available.
 
 ## Binding rules
 
-- The seven standalone WASI packages under `capabilities/` are executable now.
+- The eight standalone WASI packages under `capabilities/` are executable now.
 - The connector-free business rules for `location-initialize`,
   `observation-manage`, `knowledge-manage`, `daily-create`, `daily-close`,
   and `operations-recover` have deterministic JSON fixtures under
