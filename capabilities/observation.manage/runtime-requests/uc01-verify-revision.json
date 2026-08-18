@@ -1,0 +1,14 @@
+{
+  "resolution": {
+    "id": "resolution-1",
+    "state": "provisional"
+  },
+  "reviewer": {
+    "id": "reviewer-1",
+    "decision": "verify"
+  },
+  "previous": {
+    "id": "observation-previous",
+    "revision": 2
+  }
+}

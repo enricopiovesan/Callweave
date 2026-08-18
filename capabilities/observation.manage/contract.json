@@ -1,0 +1,192 @@
+{
+  "kind": "capability_contract",
+  "schema_version": "1.0.0",
+  "id": "observation.manage",
+  "namespace": "observation",
+  "name": "manage",
+  "version": "1.0.0",
+  "lifecycle": "active",
+  "owner": {
+    "team": "callweave",
+    "contact": "maintainers@callweave.local"
+  },
+  "summary": "Apply reviewer decisions to evidence as append-only observation revisions.",
+  "description": "Pure standalone observation policy. It applies reviewer decisions to a supplied resolution, enforces that only provisional evidence can be verified, increments revision numbers, and records supersession links. It does not persist state, fetch prior records, or know any application workflow.",
+  "use_cases": [
+    {
+      "scenario": "As a reviewer, I want a verified observation to supersede the previous revision so that the observation history stays append-only.",
+      "input_example": {
+        "resolution": {
+          "id": "resolution-1",
+          "state": "provisional"
+        },
+        "reviewer": {
+          "id": "reviewer-1",
+          "decision": "verify"
+        },
+        "previous": {
+          "id": "observation-previous",
+          "revision": 2
+        }
+      },
+      "output_example": {
+        "revision": 3,
+        "supersedes": "observation-previous",
+        "resolution_id": "resolution-1",
+        "state": "verified",
+        "reviewer_id": "reviewer-1"
+      },
+      "happy": true
+    },
+    {
+      "scenario": "As a reviewer, I want non-provisional evidence blocked from verification so that uncertain or rejected evidence cannot become verified by mistake.",
+      "input_example": {
+        "resolution": {
+          "id": "resolution-unknown",
+          "state": "unknown"
+        },
+        "reviewer": {
+          "id": "reviewer-1",
+          "decision": "verify"
+        }
+      },
+      "output_example": {
+        "error": "only provisional evidence may be verified"
+      },
+      "happy": false
+    },
+    {
+      "scenario": "As a reviewer, I want a rejection recorded as a new append-only observation revision so that rejection remains traceable.",
+      "input_example": {
+        "resolution": {
+          "id": "resolution-2",
+          "state": "unknown"
+        },
+        "reviewer": {
+          "id": "reviewer-2",
+          "decision": "reject"
+        },
+        "previous": {
+          "id": "observation-2",
+          "revision": 0
+        }
+      },
+      "output_example": {
+        "revision": 1,
+        "supersedes": "observation-2",
+        "resolution_id": "resolution-2",
+        "state": "rejected",
+        "reviewer_id": "reviewer-2"
+      },
+      "happy": false
+    }
+  ],
+  "inputs": {
+    "schema": {
+      "type": "object",
+      "required": ["resolution", "reviewer"],
+      "properties": {
+        "resolution": {
+          "type": "object",
+          "required": ["id", "state"],
+          "properties": {
+            "id": { "type": "string", "minLength": 1 },
+            "state": { "type": "string", "enum": ["provisional", "unknown", "surprising", "rejected"] }
+          },
+          "additionalProperties": true
+        },
+        "reviewer": {
+          "type": "object",
+          "required": ["decision"],
+          "properties": {
+            "id": { "type": "string" },
+            "decision": { "type": "string", "enum": ["verify", "reject", "provisional"] }
+          },
+          "additionalProperties": true
+        },
+        "previous": {
+          "type": "object",
+          "properties": {
+            "id": { "type": "string" },
+            "revision": { "type": "integer", "minimum": 0 }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "outputs": {
+    "schema": {
+      "type": "object",
+      "required": ["revision", "supersedes", "resolution_id", "state", "reviewer_id"],
+      "properties": {
+        "revision": { "type": "integer", "minimum": 1 },
+        "supersedes": { "type": ["string", "null"] },
+        "resolution_id": { "type": "string" },
+        "state": { "type": "string", "enum": ["verified", "rejected", "provisional"] },
+        "reviewer_id": { "type": ["string", "null"] }
+      },
+      "additionalProperties": true
+    }
+  },
+  "preconditions": [
+    {
+      "id": "resolution-and-reviewer-supplied",
+      "description": "A non-empty resolution id and reviewer decision are supplied."
+    }
+  ],
+  "postconditions": [
+    {
+      "id": "append-only-revision",
+      "description": "Each successful result increments revision from the previous revision or from zero."
+    },
+    {
+      "id": "verification-is-governed",
+      "description": "Only provisional evidence can become verified."
+    }
+  ],
+  "side_effects": [
+    {
+      "kind": "memory_only",
+      "description": "Pure calculation; no host, network, filesystem, model, state, or workflow access."
+    }
+  ],
+  "emits": [],
+  "consumes": [],
+  "permissions": [
+    {
+      "id": "observation.manage.execute"
+    }
+  ],
+  "execution": {
+    "binary_format": "wasm",
+    "entrypoint": {
+      "kind": "wasi-command",
+      "command": "run"
+    },
+    "preferred_targets": ["local", "browser", "edge", "device"],
+    "constraints": {
+      "host_api_access": "none",
+      "network_access": "forbidden",
+      "filesystem_access": "none"
+    }
+  },
+  "policies": [
+    { "id": "deterministic-policy-only" },
+    { "id": "verification-requires-provisional-evidence" }
+  ],
+  "dependencies": [],
+  "provenance": {
+    "source": "greenfield",
+    "author": "Callweave",
+    "created_at": "2026-08-18T00:00:00Z",
+    "spec_ref": "100-capability-package-authoring@1.0.0",
+    "adr_refs": ["DECISION_RECORD.md"],
+    "exception_refs": []
+  },
+  "evidence": [],
+  "state_schema": null,
+  "service_type": "stateless",
+  "permitted_targets": ["local", "browser", "edge", "device"]
+}
