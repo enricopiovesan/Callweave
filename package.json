@@ -9,7 +9,8 @@
     "business-logic:smoke": "node scripts/business-logic-smoke.mjs",
     "silero-vad:readiness": "node scripts/silero-vad-readiness.mjs",
     "host-adapters:smoke": "node scripts/host-adapter-smoke.mjs",
-    "local-object-store:smoke": "node scripts/local-object-store-smoke.mjs"
+    "local-object-store:smoke": "node scripts/local-object-store-smoke.mjs",
+    "local-state-store:smoke": "node scripts/local-state-store-smoke.mjs"
   },
   "dependencies": {
     "ffmpeg-static": "^5.3.0",
