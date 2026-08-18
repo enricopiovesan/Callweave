@@ -1,0 +1,20 @@
+{
+  "capability": "daily-create",
+  "case": "happy path turns daily close facts into workflow-neutral visual facts",
+  "input": {
+    "close": {
+      "id": "close-1",
+      "coverage": "partial",
+      "observation_ids": ["obs-1", "obs-2", "obs-3"],
+      "unknown_ids": ["unk-1"]
+    },
+    "policy": { "version": "art-policy-1" }
+  },
+  "expect": {
+    "close_id": "close-1",
+    "policy_version": "art-policy-1",
+    "visual_facts.evidence_count": 3,
+    "visual_facts.unknown_count": 1,
+    "visual_facts.uncertainty_millis": 250
+  }
+}

@@ -8,6 +8,7 @@
     "analyze:audio": "node scripts/analyze-audio.mjs",
     "business-logic:smoke": "node scripts/business-logic-smoke.mjs",
     "silero-vad:readiness": "node scripts/silero-vad-readiness.mjs",
+    "pure-capabilities:fixtures": "node scripts/run_pure_capability_fixtures.mjs",
     "host-adapters:smoke": "node scripts/host-adapter-smoke.mjs",
     "local-object-store:smoke": "node scripts/local-object-store-smoke.mjs",
     "local-state-store:smoke": "node scripts/local-state-store-smoke.mjs",

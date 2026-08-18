@@ -1,0 +1,17 @@
+{
+  "capability": "knowledge-manage",
+  "case": "unhappy path refuses durable knowledge changes without human approval",
+  "input": {
+    "proposal": { "id": "proposal-1" },
+    "approval": {
+      "reviewer_id": "reviewer-1",
+      "decision": "deny"
+    },
+    "previousVersion": 3
+  },
+  "expect": {
+    "applied": false,
+    "proposal_id": "proposal-1",
+    "reason": "human_approval_required"
+  }
+}

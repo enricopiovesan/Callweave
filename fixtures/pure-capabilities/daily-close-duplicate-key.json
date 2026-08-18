@@ -1,0 +1,21 @@
+{
+  "capability": "daily-close",
+  "case": "happy path creates a deterministic close keyed by local day and watermark",
+  "input": {
+    "locationId": "golden-bc",
+    "localDate": "2026-08-17",
+    "coverage": "partial",
+    "observationIds": ["obs-2", "obs-1"],
+    "unknownIds": ["unk-1"],
+    "watermark": "capture-watermark-001",
+    "policy": { "version": "policy-1" }
+  },
+  "expect": {
+    "idempotency_key": "golden-bc:2026-08-17:capture-watermark-001",
+    "location_id": "golden-bc",
+    "local_date": "2026-08-17",
+    "observation_ids": ["obs-1", "obs-2"],
+    "unknown_ids": ["unk-1"],
+    "policy_version": "policy-1"
+  }
+}

@@ -1,8 +1,8 @@
 # Callweave capability readiness
 
 **Last verified:** 2026-08-17. “Ready” below means the portable business rule
-exists and is smoke-tested. It does not mean an application contract is active
-or that the host adapter is available.
+exists and has deterministic smoke or fixture coverage. It does not mean an
+application contract is active or that the host adapter is available.
 
 | Contract | Portable business logic | Remaining activation boundary | Readiness |
 |---|---|---|---|
@@ -29,9 +29,22 @@ or that the host adapter is available.
 ## Binding rules
 
 - The six standalone WASI packages under `capabilities/` are executable now.
+- The connector-free business rules for `location-initialize`,
+  `detection-resolve`, `observation-manage`, `knowledge-manage`,
+  `daily-create`, `daily-close`, and `operations-recover` have deterministic
+  JSON fixtures under `fixtures/pure-capabilities/`.
 - `src/business-logic.mjs` owns portable policy and transition rules.
 - `src/append-only-state.mjs` owns in-memory append-only/idempotency semantics.
 - A future host adapter may persist the state kernel’s records, but may not
   rewrite record payloads or bypass the business rules.
 - All `traverse/contracts/callweave/*` remain `draft` until the approved
   Traverse connector bindings are available and real package evidence exists.
+
+## Local checks
+
+```bash
+npm run business-logic:smoke
+npm run pure-capabilities:fixtures
+node scripts/validate_traverse_contracts.mjs
+node scripts/run_workflow_fixtures.mjs
+```

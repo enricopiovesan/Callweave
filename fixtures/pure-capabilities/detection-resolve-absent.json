@@ -1,0 +1,25 @@
+{
+  "capability": "detection-resolve",
+  "case": "unhappy path keeps absent candidate evidence unknown even with a high score",
+  "input": {
+    "evidence": {
+      "id": "ev-absent",
+      "hardware_compatible": true,
+      "calibrated_score_millis": 980
+    },
+    "candidate": {
+      "taxon": "out-of-scope example",
+      "status": "absent"
+    },
+    "policy": {
+      "version": "resolver-1",
+      "minimum_score_millis": 800
+    }
+  },
+  "expect": {
+    "evidence_id": "ev-absent",
+    "state": "unknown",
+    "reason": "candidate_not_listed",
+    "policy_version": "resolver-1"
+  }
+}

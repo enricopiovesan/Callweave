@@ -1,0 +1,16 @@
+{
+  "capability": "location-initialize",
+  "case": "unhappy path rejects source records without license and taxon status",
+  "input": {
+    "location": { "id": "golden-bc" },
+    "policy": { "version": "location-policy-1" },
+    "sources": [
+      {
+        "id": "source-a",
+        "taxon": "Taxon alpha",
+        "status": "expected"
+      }
+    ]
+  },
+  "expect_error": "every source needs license, taxon, and status"
+}

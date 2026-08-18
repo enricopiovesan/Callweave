@@ -1,0 +1,15 @@
+{
+  "capability": "observation-manage",
+  "case": "unhappy path refuses verification of non-provisional evidence",
+  "input": {
+    "resolution": {
+      "id": "resolution-unknown",
+      "state": "unknown"
+    },
+    "reviewer": {
+      "id": "reviewer-1",
+      "decision": "verify"
+    }
+  },
+  "expect_error": "only provisional evidence may be verified"
+}

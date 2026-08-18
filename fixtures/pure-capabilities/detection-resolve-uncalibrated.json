@@ -1,0 +1,24 @@
+{
+  "capability": "detection-resolve",
+  "case": "unhappy path never promotes uncalibrated model evidence",
+  "input": {
+    "evidence": {
+      "id": "ev-raw-logit",
+      "hardware_compatible": true
+    },
+    "candidate": {
+      "taxon": "expected audible species",
+      "status": "expected"
+    },
+    "policy": {
+      "version": "resolver-1",
+      "minimum_score_millis": 800
+    }
+  },
+  "expect": {
+    "evidence_id": "ev-raw-logit",
+    "state": "unknown",
+    "reason": "uncalibrated_evidence",
+    "policy_version": "resolver-1"
+  }
+}

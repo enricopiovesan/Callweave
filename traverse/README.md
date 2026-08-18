@@ -13,6 +13,7 @@ events/callweave/<event>/contract.json          stable domain-event contracts an
 schemas/domain-records.schema.json              shared immutable local-record schemas
 workflows/daily-local-first.workflow.json       draft routing, retries, and host boundaries
 workflows/fixtures/                             deterministic workflow fixtures
+../fixtures/pure-capabilities/                  connector-free business-rule fixtures
 host-adapters/local-first-host-adapters.json    explicit host authority and failure boundaries
 personas/<persona>/1.0.0/persona.json           persona references used by contract use cases
 capability-inventory.json                        inventory of all contract-first capabilities
@@ -49,6 +50,13 @@ They are reusable building blocks, not implementations of the draft
 Callweave application contracts. Their guests have no host API, filesystem,
 network, model, or workflow authority.
 
+The connector-free policy and transition rules that are not yet packaged as
+WASI artifacts are covered by deterministic JSON fixtures in
+`../fixtures/pure-capabilities/`. These fixtures are the current executable
+behavior contract for the pure portions of `location-initialize`,
+`detection-resolve`, `observation-manage`, `knowledge-manage`, `daily-create`,
+`daily-close`, and `operations-recover`.
+
 The planned model and host-integrated modules appear in
 [wasm/implementation-plan.json](wasm/implementation-plan.json). When an
 implementation begins:
@@ -67,6 +75,7 @@ Contracts are generated from the checked-in source of truth:
 
 ```bash
 node scripts/generate_traverse_contracts.mjs
+npm run pure-capabilities:fixtures
 node scripts/run_workflow_fixtures.mjs
 find traverse/contracts/callweave -name contract.json -print0 | xargs -0 -n1 jq -e .
 ```

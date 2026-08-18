@@ -1,0 +1,31 @@
+{
+  "capability": "location-initialize",
+  "case": "happy path normalizes source records into a sorted candidate set",
+  "input": {
+    "location": { "id": "golden-bc" },
+    "policy": { "version": "location-policy-1" },
+    "sources": [
+      {
+        "id": "source-b",
+        "license": "CC-BY-4.0",
+        "taxon": "Taxon beta",
+        "status": "rare",
+        "season": "summer"
+      },
+      {
+        "id": "source-a",
+        "license": "CC-BY-4.0",
+        "taxon": "Taxon alpha",
+        "status": "expected"
+      }
+    ]
+  },
+  "expect": {
+    "location_id": "golden-bc",
+    "policy_version": "location-policy-1",
+    "candidates.0.taxon": "Taxon alpha",
+    "candidates.0.season": "all",
+    "candidates.1.taxon": "Taxon beta",
+    "candidates.1.status": "rare"
+  }
+}

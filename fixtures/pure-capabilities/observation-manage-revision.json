@@ -1,0 +1,25 @@
+{
+  "capability": "observation-manage",
+  "case": "happy path creates an append-only superseding revision",
+  "input": {
+    "resolution": {
+      "id": "resolution-1",
+      "state": "provisional"
+    },
+    "reviewer": {
+      "id": "reviewer-1",
+      "decision": "verify"
+    },
+    "previous": {
+      "id": "observation-previous",
+      "revision": 2
+    }
+  },
+  "expect": {
+    "revision": 3,
+    "supersedes": "observation-previous",
+    "resolution_id": "resolution-1",
+    "state": "verified",
+    "reviewer_id": "reviewer-1"
+  }
+}
