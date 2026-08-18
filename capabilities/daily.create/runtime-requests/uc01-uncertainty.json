@@ -1,0 +1,9 @@
+{
+  "close": {
+    "id": "close-1",
+    "coverage": "partial",
+    "observation_ids": ["obs-1", "obs-2", "obs-3"],
+    "unknown_ids": ["unk-1"]
+  },
+  "policy": { "version": "art-policy-1" }
+}

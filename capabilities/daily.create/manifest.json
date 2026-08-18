@@ -1,0 +1,29 @@
+{
+  "binary": {
+    "abi_version": "1.0.0",
+    "expected_digest": "fnv1a64:679ab689b6ad5561",
+    "format": "wasm",
+    "path": "artifacts/daily-create.wasm"
+  },
+  "capability_ref": {
+    "contract_path": "contract.json",
+    "id": "daily.create",
+    "version": "1.0.0"
+  },
+  "constraints": {
+    "filesystem_access": "none",
+    "host_api_access": "none",
+    "network_access": "forbidden"
+  },
+  "kind": "capability_package",
+  "known_compositions": [],
+  "package_id": "daily.create",
+  "schema_version": "1.0.0",
+  "source": {
+    "entry": "run",
+    "language": "rust",
+    "path": "src/agent.rs"
+  },
+  "summary": "Pure WASM package for deterministic daily canvas planning facts.",
+  "version": "1.0.0"
+}

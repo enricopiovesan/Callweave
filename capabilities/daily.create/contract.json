@@ -1,0 +1,172 @@
+{
+  "kind": "capability_contract",
+  "schema_version": "1.0.0",
+  "id": "daily.create",
+  "namespace": "daily",
+  "name": "create",
+  "version": "1.0.0",
+  "lifecycle": "active",
+  "owner": {
+    "team": "callweave",
+    "contact": "maintainers@callweave.local"
+  },
+  "summary": "Turn a closed day into deterministic visual planning facts.",
+  "description": "Pure standalone daily-canvas planning policy. It validates the supplied closed-day facts, counts evidence and unknowns, carries forward coverage, and derives an uncertainty metric for a later renderer. It does not render images, persist artifacts, or know any application workflow.",
+  "use_cases": [
+    {
+      "scenario": "As an artist, I want a closed day converted into explainable visual facts so that rendering can remain separate from ecological interpretation.",
+      "input_example": {
+        "close": {
+          "id": "close-1",
+          "coverage": "partial",
+          "observation_ids": ["obs-1", "obs-2", "obs-3"],
+          "unknown_ids": ["unk-1"]
+        },
+        "policy": { "version": "art-policy-1" }
+      },
+      "output_example": {
+        "close_id": "close-1",
+        "policy_version": "art-policy-1",
+        "visual_facts": {
+          "evidence_count": 3,
+          "unknown_count": 1,
+          "coverage": "partial",
+          "uncertainty_millis": 250
+        }
+      },
+      "happy": true
+    },
+    {
+      "scenario": "As an artist, I want a day with no resolved evidence to surface full uncertainty so that silence and missing certainty are not conflated.",
+      "input_example": {
+        "close": {
+          "id": "close-2",
+          "coverage": "complete",
+          "observation_ids": [],
+          "unknown_ids": []
+        },
+        "policy": { "version": "art-policy-1" }
+      },
+      "output_example": {
+        "close_id": "close-2",
+        "policy_version": "art-policy-1",
+        "visual_facts": {
+          "evidence_count": 0,
+          "unknown_count": 0,
+          "coverage": "complete",
+          "uncertainty_millis": 1000
+        }
+      },
+      "happy": false
+    }
+  ],
+  "inputs": {
+    "schema": {
+      "type": "object",
+      "required": ["close", "policy"],
+      "properties": {
+        "close": {
+          "type": "object",
+          "required": ["id", "coverage", "observation_ids", "unknown_ids"],
+          "properties": {
+            "id": { "type": "string", "minLength": 1 },
+            "coverage": { "type": "string", "minLength": 1 },
+            "observation_ids": { "type": "array", "items": { "type": "string" } },
+            "unknown_ids": { "type": "array", "items": { "type": "string" } }
+          },
+          "additionalProperties": true
+        },
+        "policy": {
+          "type": "object",
+          "required": ["version"],
+          "properties": {
+            "version": { "type": "string", "minLength": 1 }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "outputs": {
+    "schema": {
+      "type": "object",
+      "required": ["close_id", "policy_version", "visual_facts"],
+      "properties": {
+        "close_id": { "type": "string" },
+        "policy_version": { "type": "string" },
+        "visual_facts": {
+          "type": "object",
+          "required": ["evidence_count", "unknown_count", "coverage", "uncertainty_millis"],
+          "properties": {
+            "evidence_count": { "type": "integer", "minimum": 0 },
+            "unknown_count": { "type": "integer", "minimum": 0 },
+            "coverage": { "type": "string" },
+            "uncertainty_millis": { "type": "integer", "minimum": 0, "maximum": 1000 }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "preconditions": [
+    {
+      "id": "closed-day-and-policy-supplied",
+      "description": "A non-empty close id and non-empty policy version are supplied."
+    }
+  ],
+  "postconditions": [
+    {
+      "id": "renderer-stays-separate",
+      "description": "The result contains only visual planning facts and no rendered artifact."
+    },
+    {
+      "id": "uncertainty-is-explicit",
+      "description": "When there is no evidence or unknown signal, uncertainty_millis is 1000."
+    }
+  ],
+  "side_effects": [
+    {
+      "kind": "memory_only",
+      "description": "Pure calculation; no host, network, filesystem, model, state, or workflow access."
+    }
+  ],
+  "emits": [],
+  "consumes": [],
+  "permissions": [
+    {
+      "id": "daily.create.execute"
+    }
+  ],
+  "execution": {
+    "binary_format": "wasm",
+    "entrypoint": {
+      "kind": "wasi-command",
+      "command": "run"
+    },
+    "preferred_targets": ["local", "browser", "edge", "device"],
+    "constraints": {
+      "host_api_access": "none",
+      "network_access": "forbidden",
+      "filesystem_access": "none"
+    }
+  },
+  "policies": [
+    { "id": "deterministic-policy-only" },
+    { "id": "uncertainty-must-remain-visible" }
+  ],
+  "dependencies": [],
+  "provenance": {
+    "source": "greenfield",
+    "author": "Callweave",
+    "created_at": "2026-08-18T00:00:00Z",
+    "spec_ref": "100-capability-package-authoring@1.0.0",
+    "adr_refs": ["DECISION_RECORD.md"],
+    "exception_refs": []
+  },
+  "evidence": [],
+  "state_schema": null,
+  "service_type": "stateless",
+  "permitted_targets": ["local", "browser", "edge", "device"]
+}
