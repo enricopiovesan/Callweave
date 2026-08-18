@@ -1,0 +1,135 @@
+{
+  "kind": "capability_contract",
+  "schema_version": "1.0.0",
+  "id": "operations.recover",
+  "namespace": "operations",
+  "name": "recover",
+  "version": "1.0.0",
+  "lifecycle": "active",
+  "owner": {
+    "team": "callweave",
+    "contact": "maintainers@callweave.local"
+  },
+  "summary": "Plan which idempotent operations still need replay.",
+  "description": "Pure standalone recovery policy. It compares expected operation ids against completed ids, removes duplicates, sorts the missing ids, and reports whether replay is needed. It does not execute recovery, persist state, or know any application workflow.",
+  "use_cases": [
+    {
+      "scenario": "As an operator, I want only missing idempotent operations replayed so that restart recovery does not duplicate successful work.",
+      "input_example": {
+        "expectedIds": ["op-3", "op-1", "op-2", "op-2"],
+        "completedIds": ["op-1"],
+        "policy": { "version": "ops-policy-1" }
+      },
+      "output_example": {
+        "policy_version": "ops-policy-1",
+        "replay_ids": ["op-2", "op-3"],
+        "action": "replay_missing_idempotently"
+      },
+      "happy": true
+    },
+    {
+      "scenario": "As an operator, I want a no-op recovery result when all expected work has already completed so that replay stays bounded and deterministic.",
+      "input_example": {
+        "expectedIds": ["op-1", "op-2"],
+        "completedIds": ["op-1", "op-2"],
+        "policy": { "version": "ops-policy-1" }
+      },
+      "output_example": {
+        "policy_version": "ops-policy-1",
+        "replay_ids": [],
+        "action": "no_action"
+      },
+      "happy": false
+    }
+  ],
+  "inputs": {
+    "schema": {
+      "type": "object",
+      "required": ["expectedIds", "policy"],
+      "properties": {
+        "expectedIds": { "type": "array", "items": { "type": "string" } },
+        "completedIds": { "type": "array", "items": { "type": "string" } },
+        "policy": {
+          "type": "object",
+          "required": ["version"],
+          "properties": {
+            "version": { "type": "string", "minLength": 1 }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "outputs": {
+    "schema": {
+      "type": "object",
+      "required": ["policy_version", "replay_ids", "action"],
+      "properties": {
+        "policy_version": { "type": "string" },
+        "replay_ids": { "type": "array", "items": { "type": "string" } },
+        "action": { "type": "string", "enum": ["replay_missing_idempotently", "no_action"] }
+      },
+      "additionalProperties": false
+    }
+  },
+  "preconditions": [
+    {
+      "id": "policy-is-versioned",
+      "description": "A non-empty policy version is supplied."
+    }
+  ],
+  "postconditions": [
+    {
+      "id": "replay-set-is-deduplicated",
+      "description": "The returned replay_ids list contains no duplicates."
+    },
+    {
+      "id": "replay-set-is-sorted",
+      "description": "The returned replay_ids list is sorted deterministically."
+    }
+  ],
+  "side_effects": [
+    {
+      "kind": "memory_only",
+      "description": "Pure calculation; no host, network, filesystem, model, state, or workflow access."
+    }
+  ],
+  "emits": [],
+  "consumes": [],
+  "permissions": [
+    {
+      "id": "operations.recover.execute"
+    }
+  ],
+  "execution": {
+    "binary_format": "wasm",
+    "entrypoint": {
+      "kind": "wasi-command",
+      "command": "run"
+    },
+    "preferred_targets": ["local", "browser", "edge", "device"],
+    "constraints": {
+      "host_api_access": "none",
+      "network_access": "forbidden",
+      "filesystem_access": "none"
+    }
+  },
+  "policies": [
+    { "id": "deterministic-policy-only" },
+    { "id": "recovery-replays-only-missing-work" }
+  ],
+  "dependencies": [],
+  "provenance": {
+    "source": "greenfield",
+    "author": "Callweave",
+    "created_at": "2026-08-18T00:00:00Z",
+    "spec_ref": "100-capability-package-authoring@1.0.0",
+    "adr_refs": ["DECISION_RECORD.md"],
+    "exception_refs": []
+  },
+  "evidence": [],
+  "state_schema": null,
+  "service_type": "stateless",
+  "permitted_targets": ["local", "browser", "edge", "device"]
+}
