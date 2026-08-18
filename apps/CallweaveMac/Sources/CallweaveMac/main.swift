@@ -16,6 +16,7 @@ final class AppModel: ObservableObject {
     @Published var output = "Select a check, then run it.\n"
     @Published var isRunning = false
     @Published var lastExitCode: Int32?
+    @Published var lastRunActionID: String?
 
     let workspaceRoot: String
     let actions: [ToolAction]
@@ -73,12 +74,21 @@ final class AppModel: ObservableObject {
         actions.first { $0.id == selectedActionID } ?? actions.first
     }
 
+    func selectAction(_ actionID: String?) {
+        guard selectedActionID != actionID else { return }
+        selectedActionID = actionID
+        lastExitCode = nil
+        lastRunActionID = nil
+        output = "Select a check, then run it.\n"
+    }
+
     func runSelected() {
         guard !isRunning, let action = selectedAction else { return }
 
         isRunning = true
         output = "$ \(action.launchPath) \(action.arguments.joined(separator: " "))\n\n"
         lastExitCode = nil
+        lastRunActionID = action.id
 
         let process = Process()
         process.executableURL = URL(fileURLWithPath: action.launchPath)
@@ -121,7 +131,10 @@ struct ContentView: View {
 
     var body: some View {
         NavigationSplitView {
-            List(model.actions, selection: $model.selectedActionID) { action in
+            List(model.actions, selection: Binding(
+                get: { model.selectedActionID },
+                set: { model.selectAction($0) }
+            )) { action in
                 VStack(alignment: .leading, spacing: 4) {
                     Text(action.title)
                     Text(action.detail)
@@ -162,7 +175,7 @@ struct ContentView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
 
-                if let code = model.lastExitCode {
+                if let code = model.lastExitCode, model.lastRunActionID == model.selectedAction?.id {
                     Text(code == 0 ? "Last run passed." : "Last run failed with exit code \(code).")
                         .foregroundStyle(code == 0 ? .green : .red)
                 }
