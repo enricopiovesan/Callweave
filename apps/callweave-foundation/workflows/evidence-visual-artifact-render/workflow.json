@@ -1,0 +1,134 @@
+{
+  "kind": "workflow_definition",
+  "schema_version": "1.0.0",
+  "id": "callweave.foundation.evidence.visual-artifact-render",
+  "name": "evidence.visual-artifact-render",
+  "version": "1.0.0",
+  "lifecycle": "active",
+  "owner": {
+    "team": "callweave",
+    "contact": "maintainers@callweave.local"
+  },
+  "summary": "Exercise the standalone evidence.visual-artifact-render capability as a one-node Traverse workflow.",
+  "inputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "summary",
+        "visual_policy"
+      ],
+      "properties": {
+        "summary": {
+          "type": "object",
+          "required": [
+            "evidence_count",
+            "coverage_millis",
+            "uncertainty_millis"
+          ],
+          "properties": {
+            "evidence_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "coverage_millis": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000
+            },
+            "uncertainty_millis": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000
+            }
+          },
+          "additionalProperties": false
+        },
+        "visual_policy": {
+          "type": "object",
+          "required": [
+            "version",
+            "palette_seed"
+          ],
+          "properties": {
+            "version": {
+              "type": "string"
+            },
+            "palette_seed": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "outputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "palette_seed",
+        "density_millis",
+        "motion_millis",
+        "uncertainty_treatment",
+        "policy_version"
+      ],
+      "properties": {
+        "palette_seed": {
+          "type": "integer"
+        },
+        "density_millis": {
+          "type": "integer"
+        },
+        "motion_millis": {
+          "type": "integer"
+        },
+        "uncertainty_treatment": {
+          "type": "string",
+          "enum": [
+            "subtle",
+            "visible"
+          ]
+        },
+        "policy_version": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "nodes": [
+    {
+      "node_id": "run_capability",
+      "capability_id": "evidence.visual-artifact-render",
+      "capability_version": "1.0.0",
+      "input": {
+        "from_workflow_input": [
+          "summary",
+          "visual_policy"
+        ]
+      },
+      "output": {
+        "to_workflow_state": [
+          "palette_seed",
+          "density_millis",
+          "motion_millis",
+          "uncertainty_treatment",
+          "policy_version"
+        ]
+      }
+    }
+  ],
+  "edges": [],
+  "start_node": "run_capability",
+  "terminal_nodes": [
+    "run_capability"
+  ],
+  "tags": [
+    "callweave",
+    "foundation",
+    "standalone-capability"
+  ],
+  "governing_spec": "007-workflow-registry-traversal"
+}

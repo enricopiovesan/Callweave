@@ -1,0 +1,30 @@
+{
+  "component_id": "callweave.foundation.evidence.policy-resolve-component",
+  "version": "1.0.0",
+  "schema_version": "1.0.0",
+  "capability_id": "evidence.policy-resolve",
+  "capability_version": "1.0.0",
+  "contract_path": "../../../../capabilities/evidence.policy-resolve/contract.json",
+  "wasm_binary_path": "../../../../capabilities/evidence.policy-resolve/artifacts/policy-resolve.wasm",
+  "wasm_digest": "sha256:702572bb0e186591196d1ccab754a60e6d73316b7344fa7f0b7ed9bd02935295",
+  "runtime_constraints": {
+    "host_api_access": "none",
+    "network_access": "forbidden",
+    "filesystem_access": "none"
+  },
+  "permitted_targets": [
+    "local",
+    "device",
+    "edge",
+    "cloud"
+  ],
+  "dependencies": [],
+  "connector_requirements": [],
+  "validation_evidence": [
+    {
+      "evidence_type": "checked_in_fixture",
+      "status": "passed",
+      "produced_by": "callweave_foundation_generation"
+    }
+  ]
+}

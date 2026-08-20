@@ -38,10 +38,35 @@ architecture record.
 
 A native SwiftUI macOS developer test app lives in
 [`apps/CallweaveMac`](apps/CallweaveMac). It runs the local checks that are
-already available before Traverse connector support lands.
+already available in this repo.
 
 ## Web test app
 
 A browser test app lives in [`apps/CallweaveWeb`](apps/CallweaveWeb). It runs
 the browser-safe checks over the same shared business-logic modules used by
 the Node and macOS test surfaces.
+
+## Traverse foundation app bundle
+
+A real Traverse application bundle now lives in
+[`apps/callweave-foundation`](apps/callweave-foundation). It packages the
+thirteen standalone executable WASM capabilities already present in this repo
+into:
+
+- concrete component manifests
+- active one-node workflows
+- a governed application manifest
+- local validation and registration wrappers
+
+Generate and verify it with:
+
+```bash
+npm run traverse:foundation:generate
+npm run traverse:foundation:validate
+npm run traverse:foundation:register
+```
+
+This is the first executable Traverse integration path for Callweave. The full
+daily local-first Callweave application contracts under `traverse/` still
+remain draft until the remaining host-integrated and model-integrated
+capabilities have real executable package coverage.

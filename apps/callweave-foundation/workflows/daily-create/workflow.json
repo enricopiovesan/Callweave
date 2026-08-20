@@ -1,0 +1,148 @@
+{
+  "kind": "workflow_definition",
+  "schema_version": "1.0.0",
+  "id": "callweave.foundation.daily.create",
+  "name": "daily.create",
+  "version": "1.0.0",
+  "lifecycle": "active",
+  "owner": {
+    "team": "callweave",
+    "contact": "maintainers@callweave.local"
+  },
+  "summary": "Exercise the standalone daily.create capability as a one-node Traverse workflow.",
+  "inputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "close",
+        "policy"
+      ],
+      "properties": {
+        "close": {
+          "type": "object",
+          "required": [
+            "id",
+            "coverage",
+            "observation_ids",
+            "unknown_ids"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "coverage": {
+              "type": "string",
+              "minLength": 1
+            },
+            "observation_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "unknown_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": true
+        },
+        "policy": {
+          "type": "object",
+          "required": [
+            "version"
+          ],
+          "properties": {
+            "version": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "outputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "close_id",
+        "policy_version",
+        "visual_facts"
+      ],
+      "properties": {
+        "close_id": {
+          "type": "string"
+        },
+        "policy_version": {
+          "type": "string"
+        },
+        "visual_facts": {
+          "type": "object",
+          "required": [
+            "evidence_count",
+            "unknown_count",
+            "coverage",
+            "uncertainty_millis"
+          ],
+          "properties": {
+            "evidence_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "unknown_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "coverage": {
+              "type": "string"
+            },
+            "uncertainty_millis": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "nodes": [
+    {
+      "node_id": "run_capability",
+      "capability_id": "daily.create",
+      "capability_version": "1.0.0",
+      "input": {
+        "from_workflow_input": [
+          "close",
+          "policy"
+        ]
+      },
+      "output": {
+        "to_workflow_state": [
+          "close_id",
+          "policy_version",
+          "visual_facts"
+        ]
+      }
+    }
+  ],
+  "edges": [],
+  "start_node": "run_capability",
+  "terminal_nodes": [
+    "run_capability"
+  ],
+  "tags": [
+    "callweave",
+    "foundation",
+    "standalone-capability"
+  ],
+  "governing_spec": "007-workflow-registry-traversal"
+}

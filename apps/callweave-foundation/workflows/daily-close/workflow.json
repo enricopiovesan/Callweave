@@ -1,0 +1,153 @@
+{
+  "kind": "workflow_definition",
+  "schema_version": "1.0.0",
+  "id": "callweave.foundation.daily.close",
+  "name": "daily.close",
+  "version": "1.0.0",
+  "lifecycle": "active",
+  "owner": {
+    "team": "callweave",
+    "contact": "maintainers@callweave.local"
+  },
+  "summary": "Exercise the standalone daily.close capability as a one-node Traverse workflow.",
+  "inputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "locationId",
+        "localDate",
+        "coverage",
+        "watermark",
+        "policy"
+      ],
+      "properties": {
+        "locationId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "localDate": {
+          "type": "string",
+          "minLength": 1
+        },
+        "coverage": {
+          "type": "string",
+          "minLength": 1
+        },
+        "observationIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "unknownIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "watermark": {
+          "type": "string",
+          "minLength": 1
+        },
+        "policy": {
+          "type": "object",
+          "required": [
+            "version"
+          ],
+          "properties": {
+            "version": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "outputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "idempotency_key",
+        "location_id",
+        "local_date",
+        "coverage",
+        "observation_ids",
+        "unknown_ids",
+        "policy_version"
+      ],
+      "properties": {
+        "idempotency_key": {
+          "type": "string"
+        },
+        "location_id": {
+          "type": "string"
+        },
+        "local_date": {
+          "type": "string"
+        },
+        "coverage": {
+          "type": "string"
+        },
+        "observation_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "unknown_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "policy_version": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "nodes": [
+    {
+      "node_id": "run_capability",
+      "capability_id": "daily.close",
+      "capability_version": "1.0.0",
+      "input": {
+        "from_workflow_input": [
+          "locationId",
+          "localDate",
+          "coverage",
+          "observationIds",
+          "unknownIds",
+          "watermark",
+          "policy"
+        ]
+      },
+      "output": {
+        "to_workflow_state": [
+          "idempotency_key",
+          "location_id",
+          "local_date",
+          "coverage",
+          "observation_ids",
+          "unknown_ids",
+          "policy_version"
+        ]
+      }
+    }
+  ],
+  "edges": [],
+  "start_node": "run_capability",
+  "terminal_nodes": [
+    "run_capability"
+  ],
+  "tags": [
+    "callweave",
+    "foundation",
+    "standalone-capability"
+  ],
+  "governing_spec": "007-workflow-registry-traversal"
+}

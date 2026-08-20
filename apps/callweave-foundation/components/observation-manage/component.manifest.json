@@ -1,0 +1,30 @@
+{
+  "component_id": "callweave.foundation.observation.manage-component",
+  "version": "1.0.0",
+  "schema_version": "1.0.0",
+  "capability_id": "observation.manage",
+  "capability_version": "1.0.0",
+  "contract_path": "../../../../capabilities/observation.manage/contract.json",
+  "wasm_binary_path": "../../../../capabilities/observation.manage/artifacts/observation-manage.wasm",
+  "wasm_digest": "sha256:166018017a0a52f388bc5b429df95fd1bd01b043dd5e98124eb1211e621a8510",
+  "runtime_constraints": {
+    "host_api_access": "none",
+    "network_access": "forbidden",
+    "filesystem_access": "none"
+  },
+  "permitted_targets": [
+    "local",
+    "device",
+    "edge",
+    "cloud"
+  ],
+  "dependencies": [],
+  "connector_requirements": [],
+  "validation_evidence": [
+    {
+      "evidence_type": "checked_in_fixture",
+      "status": "passed",
+      "produced_by": "callweave_foundation_generation"
+    }
+  ]
+}

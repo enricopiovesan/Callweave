@@ -1,0 +1,111 @@
+{
+  "kind": "workflow_definition",
+  "schema_version": "1.0.0",
+  "id": "callweave.foundation.operations.recover",
+  "name": "operations.recover",
+  "version": "1.0.0",
+  "lifecycle": "active",
+  "owner": {
+    "team": "callweave",
+    "contact": "maintainers@callweave.local"
+  },
+  "summary": "Exercise the standalone operations.recover capability as a one-node Traverse workflow.",
+  "inputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "expectedIds",
+        "policy"
+      ],
+      "properties": {
+        "expectedIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "completedIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "policy": {
+          "type": "object",
+          "required": [
+            "version"
+          ],
+          "properties": {
+            "version": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "outputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "policy_version",
+        "replay_ids",
+        "action"
+      ],
+      "properties": {
+        "policy_version": {
+          "type": "string"
+        },
+        "replay_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "replay_missing_idempotently",
+            "no_action"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "nodes": [
+    {
+      "node_id": "run_capability",
+      "capability_id": "operations.recover",
+      "capability_version": "1.0.0",
+      "input": {
+        "from_workflow_input": [
+          "expectedIds",
+          "completedIds",
+          "policy"
+        ]
+      },
+      "output": {
+        "to_workflow_state": [
+          "policy_version",
+          "replay_ids",
+          "action"
+        ]
+      }
+    }
+  ],
+  "edges": [],
+  "start_node": "run_capability",
+  "terminal_nodes": [
+    "run_capability"
+  ],
+  "tags": [
+    "callweave",
+    "foundation",
+    "standalone-capability"
+  ],
+  "governing_spec": "007-workflow-registry-traversal"
+}

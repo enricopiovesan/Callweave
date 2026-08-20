@@ -1,0 +1,125 @@
+{
+  "kind": "workflow_definition",
+  "schema_version": "1.0.0",
+  "id": "callweave.foundation.knowledge.manage",
+  "name": "knowledge.manage",
+  "version": "1.0.0",
+  "lifecycle": "active",
+  "owner": {
+    "team": "callweave",
+    "contact": "maintainers@callweave.local"
+  },
+  "summary": "Exercise the standalone knowledge.manage capability as a one-node Traverse workflow.",
+  "inputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "proposal",
+        "approval"
+      ],
+      "properties": {
+        "proposal": {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": true
+        },
+        "approval": {
+          "type": "object",
+          "required": [
+            "reviewer_id",
+            "decision"
+          ],
+          "properties": {
+            "reviewer_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "decision": {
+              "type": "string",
+              "enum": [
+                "approve",
+                "deny"
+              ]
+            }
+          },
+          "additionalProperties": true
+        },
+        "previousVersion": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "outputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "applied",
+        "proposal_id"
+      ],
+      "properties": {
+        "applied": {
+          "type": "boolean"
+        },
+        "proposal_id": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "approved_by": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "nodes": [
+    {
+      "node_id": "run_capability",
+      "capability_id": "knowledge.manage",
+      "capability_version": "1.0.0",
+      "input": {
+        "from_workflow_input": [
+          "proposal",
+          "approval",
+          "previousVersion"
+        ]
+      },
+      "output": {
+        "to_workflow_state": [
+          "applied",
+          "proposal_id",
+          "reason",
+          "version",
+          "approved_by"
+        ]
+      }
+    }
+  ],
+  "edges": [],
+  "start_node": "run_capability",
+  "terminal_nodes": [
+    "run_capability"
+  ],
+  "tags": [
+    "callweave",
+    "foundation",
+    "standalone-capability"
+  ],
+  "governing_spec": "007-workflow-registry-traversal"
+}

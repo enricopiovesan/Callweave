@@ -1,0 +1,30 @@
+{
+  "component_id": "callweave.foundation.evidence.visual-artifact-render-component",
+  "version": "1.0.0",
+  "schema_version": "1.0.0",
+  "capability_id": "evidence.visual-artifact-render",
+  "capability_version": "1.0.0",
+  "contract_path": "../../../../capabilities/evidence.visual-artifact-render/contract.json",
+  "wasm_binary_path": "../../../../capabilities/evidence.visual-artifact-render/artifacts/visual-artifact-render.wasm",
+  "wasm_digest": "sha256:4c21ef8a132fa52c62fa488c4635f4fd0fb17f658867ecb68ca85ac2e6f3a773",
+  "runtime_constraints": {
+    "host_api_access": "none",
+    "network_access": "forbidden",
+    "filesystem_access": "none"
+  },
+  "permitted_targets": [
+    "local",
+    "device",
+    "edge",
+    "cloud"
+  ],
+  "dependencies": [],
+  "connector_requirements": [],
+  "validation_evidence": [
+    {
+      "evidence_type": "checked_in_fixture",
+      "status": "passed",
+      "produced_by": "callweave_foundation_generation"
+    }
+  ]
+}

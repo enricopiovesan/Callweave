@@ -1,0 +1,146 @@
+{
+  "kind": "workflow_definition",
+  "schema_version": "1.0.0",
+  "id": "callweave.foundation.evidence.policy-resolve",
+  "name": "evidence.policy-resolve",
+  "version": "1.0.0",
+  "lifecycle": "active",
+  "owner": {
+    "team": "callweave",
+    "contact": "maintainers@callweave.local"
+  },
+  "summary": "Exercise the standalone evidence.policy-resolve capability as a one-node Traverse workflow.",
+  "inputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "evidence",
+        "resolution_policy"
+      ],
+      "properties": {
+        "evidence": {
+          "type": "object",
+          "required": [
+            "claim_id",
+            "score_millis",
+            "candidate_status",
+            "hardware_compatible"
+          ],
+          "properties": {
+            "claim_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "score_millis": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000
+            },
+            "candidate_status": {
+              "type": "string",
+              "enum": [
+                "expected",
+                "possible",
+                "rare"
+              ]
+            },
+            "hardware_compatible": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        "resolution_policy": {
+          "type": "object",
+          "required": [
+            "version",
+            "minimum_score_millis"
+          ],
+          "properties": {
+            "version": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minimum_score_millis": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "outputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "claim_id",
+        "resolution_state",
+        "reason_code",
+        "policy_version"
+      ],
+      "properties": {
+        "claim_id": {
+          "type": "string"
+        },
+        "resolution_state": {
+          "type": "string",
+          "enum": [
+            "provisional",
+            "unknown",
+            "surprising",
+            "rejected"
+          ]
+        },
+        "reason_code": {
+          "type": "string",
+          "enum": [
+            "score_meets_policy",
+            "score_below_policy",
+            "rare_candidate",
+            "hardware_incompatible"
+          ]
+        },
+        "policy_version": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "nodes": [
+    {
+      "node_id": "run_capability",
+      "capability_id": "evidence.policy-resolve",
+      "capability_version": "1.0.0",
+      "input": {
+        "from_workflow_input": [
+          "evidence",
+          "resolution_policy"
+        ]
+      },
+      "output": {
+        "to_workflow_state": [
+          "claim_id",
+          "resolution_state",
+          "reason_code",
+          "policy_version"
+        ]
+      }
+    }
+  ],
+  "edges": [],
+  "start_node": "run_capability",
+  "terminal_nodes": [
+    "run_capability"
+  ],
+  "tags": [
+    "callweave",
+    "foundation",
+    "standalone-capability"
+  ],
+  "governing_spec": "007-workflow-registry-traversal"
+}

@@ -1,0 +1,30 @@
+{
+  "component_id": "callweave.foundation.artifact.versioned-revision-create-component",
+  "version": "1.0.0",
+  "schema_version": "1.0.0",
+  "capability_id": "artifact.versioned-revision-create",
+  "capability_version": "1.0.0",
+  "contract_path": "../../../../capabilities/artifact.versioned-revision-create/contract.json",
+  "wasm_binary_path": "../../../../capabilities/artifact.versioned-revision-create/artifacts/versioned-revision-create.wasm",
+  "wasm_digest": "sha256:1ded54079fbe041a068463554821d9d07311d0c0dbf8577e9db943920ddaac10",
+  "runtime_constraints": {
+    "host_api_access": "none",
+    "network_access": "forbidden",
+    "filesystem_access": "none"
+  },
+  "permitted_targets": [
+    "local",
+    "device",
+    "edge",
+    "cloud"
+  ],
+  "dependencies": [],
+  "connector_requirements": [],
+  "validation_evidence": [
+    {
+      "evidence_type": "checked_in_fixture",
+      "status": "passed",
+      "produced_by": "callweave_foundation_generation"
+    }
+  ]
+}

@@ -1,0 +1,188 @@
+{
+  "app_id": "callweave.foundation",
+  "version": "1.0.0",
+  "schema_version": "1.0.0",
+  "workspace_defaults": {
+    "workspace_id": "callweave-foundation-local",
+    "registry_scope": "private"
+  },
+  "components": [
+    {
+      "component_id": "callweave.foundation.artifact.versioned-revision-create-component",
+      "version": "1.0.0",
+      "digest": "sha256:1ded54079fbe041a068463554821d9d07311d0c0dbf8577e9db943920ddaac10",
+      "manifest_path": "components/artifact-versioned-revision-create/component.manifest.json"
+    },
+    {
+      "component_id": "callweave.foundation.daily.close-component",
+      "version": "1.0.0",
+      "digest": "sha256:7e8b36fce1028671ec7467b551e6380fce77557d0914b8da2235ec320369037a",
+      "manifest_path": "components/daily-close/component.manifest.json"
+    },
+    {
+      "component_id": "callweave.foundation.daily.create-component",
+      "version": "1.0.0",
+      "digest": "sha256:8aa07e104723dd467ead1e053920d2ecbf07fde3f7dd725b7ce70c985b946712",
+      "manifest_path": "components/daily-create/component.manifest.json"
+    },
+    {
+      "component_id": "callweave.foundation.detection.resolve-component",
+      "version": "1.0.0",
+      "digest": "sha256:16c184ff3be6dc9884cc26c0eb942c631c90b1bb249e4c01bedf5fd1a020fc30",
+      "manifest_path": "components/detection-resolve/component.manifest.json"
+    },
+    {
+      "component_id": "callweave.foundation.evidence.cluster-curate-component",
+      "version": "1.0.0",
+      "digest": "sha256:c15157bf5947896aa806df61636bd614483e261791f8b59e14814b80f456a0a7",
+      "manifest_path": "components/evidence-cluster-curate/component.manifest.json"
+    },
+    {
+      "component_id": "callweave.foundation.evidence.coverage-assess-component",
+      "version": "1.0.0",
+      "digest": "sha256:13be80099798b689beab1d7f95623a0612f15b57aa71d5156d8a700dc155f7d0",
+      "manifest_path": "components/evidence-coverage-assess/component.manifest.json"
+    },
+    {
+      "component_id": "callweave.foundation.evidence.policy-resolve-component",
+      "version": "1.0.0",
+      "digest": "sha256:702572bb0e186591196d1ccab754a60e6d73316b7344fa7f0b7ed9bd02935295",
+      "manifest_path": "components/evidence-policy-resolve/component.manifest.json"
+    },
+    {
+      "component_id": "callweave.foundation.evidence.retention-classify-component",
+      "version": "1.0.0",
+      "digest": "sha256:17a417938262ff9c9994e014a88ffca61ed5ee66d57a5d10354239734a64f504",
+      "manifest_path": "components/evidence-retention-classify/component.manifest.json"
+    },
+    {
+      "component_id": "callweave.foundation.evidence.visual-artifact-render-component",
+      "version": "1.0.0",
+      "digest": "sha256:4c21ef8a132fa52c62fa488c4635f4fd0fb17f658867ecb68ca85ac2e6f3a773",
+      "manifest_path": "components/evidence-visual-artifact-render/component.manifest.json"
+    },
+    {
+      "component_id": "callweave.foundation.knowledge.manage-component",
+      "version": "1.0.0",
+      "digest": "sha256:42d27b610f1ec14a620d02cf0c978445b3284d4009334cf85ce765db8e01dc2c",
+      "manifest_path": "components/knowledge-manage/component.manifest.json"
+    },
+    {
+      "component_id": "callweave.foundation.location.initialize-component",
+      "version": "1.0.0",
+      "digest": "sha256:26f2c732df012844571409db6a2ac195b2d1f8a496520e82760a3c748eea8269",
+      "manifest_path": "components/location-initialize/component.manifest.json"
+    },
+    {
+      "component_id": "callweave.foundation.observation.manage-component",
+      "version": "1.0.0",
+      "digest": "sha256:166018017a0a52f388bc5b429df95fd1bd01b043dd5e98124eb1211e621a8510",
+      "manifest_path": "components/observation-manage/component.manifest.json"
+    },
+    {
+      "component_id": "callweave.foundation.operations.recover-component",
+      "version": "1.0.0",
+      "digest": "sha256:c57a32f9c9a8707866e67f999878c2a65fc37e7749ab64ac0680dd9e459f7ec0",
+      "manifest_path": "components/operations-recover/component.manifest.json"
+    }
+  ],
+  "workflows": [
+    {
+      "workflow_id": "callweave.foundation.artifact.versioned-revision-create",
+      "workflow_version": "1.0.0",
+      "path": "workflows/artifact-versioned-revision-create/workflow.json"
+    },
+    {
+      "workflow_id": "callweave.foundation.daily.close",
+      "workflow_version": "1.0.0",
+      "path": "workflows/daily-close/workflow.json"
+    },
+    {
+      "workflow_id": "callweave.foundation.daily.create",
+      "workflow_version": "1.0.0",
+      "path": "workflows/daily-create/workflow.json"
+    },
+    {
+      "workflow_id": "callweave.foundation.detection.resolve",
+      "workflow_version": "1.0.0",
+      "path": "workflows/detection-resolve/workflow.json"
+    },
+    {
+      "workflow_id": "callweave.foundation.evidence.cluster-curate",
+      "workflow_version": "1.0.0",
+      "path": "workflows/evidence-cluster-curate/workflow.json"
+    },
+    {
+      "workflow_id": "callweave.foundation.evidence.coverage-assess",
+      "workflow_version": "1.0.0",
+      "path": "workflows/evidence-coverage-assess/workflow.json"
+    },
+    {
+      "workflow_id": "callweave.foundation.evidence.policy-resolve",
+      "workflow_version": "1.0.0",
+      "path": "workflows/evidence-policy-resolve/workflow.json"
+    },
+    {
+      "workflow_id": "callweave.foundation.evidence.retention-classify",
+      "workflow_version": "1.0.0",
+      "path": "workflows/evidence-retention-classify/workflow.json"
+    },
+    {
+      "workflow_id": "callweave.foundation.evidence.visual-artifact-render",
+      "workflow_version": "1.0.0",
+      "path": "workflows/evidence-visual-artifact-render/workflow.json"
+    },
+    {
+      "workflow_id": "callweave.foundation.knowledge.manage",
+      "workflow_version": "1.0.0",
+      "path": "workflows/knowledge-manage/workflow.json"
+    },
+    {
+      "workflow_id": "callweave.foundation.location.initialize",
+      "workflow_version": "1.0.0",
+      "path": "workflows/location-initialize/workflow.json"
+    },
+    {
+      "workflow_id": "callweave.foundation.observation.manage",
+      "workflow_version": "1.0.0",
+      "path": "workflows/observation-manage/workflow.json"
+    },
+    {
+      "workflow_id": "callweave.foundation.operations.recover",
+      "workflow_version": "1.0.0",
+      "path": "workflows/operations-recover/workflow.json"
+    }
+  ],
+  "model_dependencies": [],
+  "config_schema": {
+    "type": "object",
+    "required": [
+      "workspace_id"
+    ],
+    "properties": {
+      "workspace_id": {
+        "type": "string"
+      },
+      "mode": {
+        "type": "string",
+        "enum": [
+          "foundation"
+        ]
+      }
+    },
+    "additionalProperties": false
+  },
+  "default_config": {
+    "workspace_id": "callweave-foundation-local",
+    "mode": "foundation"
+  },
+  "placement_policy": {
+    "preferred_targets": [
+      "local"
+    ],
+    "allow_fallback": false
+  },
+  "public_surfaces": [
+    "cli"
+  ]
+}

@@ -1,0 +1,159 @@
+{
+  "kind": "workflow_definition",
+  "schema_version": "1.0.0",
+  "id": "callweave.foundation.detection.resolve",
+  "name": "detection.resolve",
+  "version": "1.0.0",
+  "lifecycle": "active",
+  "owner": {
+    "team": "callweave",
+    "contact": "maintainers@callweave.local"
+  },
+  "summary": "Exercise the standalone detection.resolve capability as a one-node Traverse workflow.",
+  "inputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "evidence",
+        "policy"
+      ],
+      "properties": {
+        "evidence": {
+          "type": "object",
+          "required": [
+            "id",
+            "hardware_compatible"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "hardware_compatible": {
+              "type": "boolean"
+            },
+            "calibrated_score_millis": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000
+            }
+          },
+          "additionalProperties": true
+        },
+        "candidate": {
+          "type": "object",
+          "required": [
+            "status"
+          ],
+          "properties": {
+            "taxon": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "expected",
+                "rare",
+                "absent"
+              ]
+            }
+          },
+          "additionalProperties": true
+        },
+        "policy": {
+          "type": "object",
+          "required": [
+            "version",
+            "minimum_score_millis"
+          ],
+          "properties": {
+            "version": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minimum_score_millis": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "outputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "evidence_id",
+        "state",
+        "reason",
+        "policy_version"
+      ],
+      "properties": {
+        "evidence_id": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "provisional",
+            "unknown",
+            "surprising",
+            "rejected"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "enum": [
+            "score_meets_policy",
+            "score_below_policy",
+            "rare_candidate",
+            "candidate_not_listed",
+            "uncalibrated_evidence",
+            "hardware_incompatible"
+          ]
+        },
+        "policy_version": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "nodes": [
+    {
+      "node_id": "run_capability",
+      "capability_id": "detection.resolve",
+      "capability_version": "1.0.0",
+      "input": {
+        "from_workflow_input": [
+          "evidence",
+          "candidate",
+          "policy"
+        ]
+      },
+      "output": {
+        "to_workflow_state": [
+          "evidence_id",
+          "state",
+          "reason",
+          "policy_version"
+        ]
+      }
+    }
+  ],
+  "edges": [],
+  "start_node": "run_capability",
+  "terminal_nodes": [
+    "run_capability"
+  ],
+  "tags": [
+    "callweave",
+    "foundation",
+    "standalone-capability"
+  ],
+  "governing_spec": "007-workflow-registry-traversal"
+}

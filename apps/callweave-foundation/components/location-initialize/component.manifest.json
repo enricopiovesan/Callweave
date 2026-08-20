@@ -1,0 +1,30 @@
+{
+  "component_id": "callweave.foundation.location.initialize-component",
+  "version": "1.0.0",
+  "schema_version": "1.0.0",
+  "capability_id": "location.initialize",
+  "capability_version": "1.0.0",
+  "contract_path": "../../../../capabilities/location.initialize/contract.json",
+  "wasm_binary_path": "../../../../capabilities/location.initialize/artifacts/location-initialize.wasm",
+  "wasm_digest": "sha256:26f2c732df012844571409db6a2ac195b2d1f8a496520e82760a3c748eea8269",
+  "runtime_constraints": {
+    "host_api_access": "none",
+    "network_access": "forbidden",
+    "filesystem_access": "none"
+  },
+  "permitted_targets": [
+    "local",
+    "device",
+    "edge",
+    "cloud"
+  ],
+  "dependencies": [],
+  "connector_requirements": [],
+  "validation_evidence": [
+    {
+      "evidence_type": "checked_in_fixture",
+      "status": "passed",
+      "produced_by": "callweave_foundation_generation"
+    }
+  ]
+}

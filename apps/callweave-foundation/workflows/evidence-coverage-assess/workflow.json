@@ -1,0 +1,151 @@
+{
+  "kind": "workflow_definition",
+  "schema_version": "1.0.0",
+  "id": "callweave.foundation.evidence.coverage-assess",
+  "name": "evidence.coverage-assess",
+  "version": "1.0.0",
+  "lifecycle": "active",
+  "owner": {
+    "team": "callweave",
+    "contact": "maintainers@callweave.local"
+  },
+  "summary": "Exercise the standalone evidence.coverage-assess capability as a one-node Traverse workflow.",
+  "inputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "coverage_facts",
+        "coverage_policy"
+      ],
+      "properties": {
+        "coverage_facts": {
+          "type": "object",
+          "required": [
+            "expected_minutes",
+            "captured_minutes",
+            "valid_minutes",
+            "processed_minutes",
+            "source_health"
+          ],
+          "properties": {
+            "expected_minutes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "captured_minutes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "valid_minutes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "processed_minutes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "source_health": {
+              "type": "string",
+              "enum": [
+                "healthy",
+                "unhealthy"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "coverage_policy": {
+          "type": "object",
+          "required": [
+            "version",
+            "complete_threshold_millis"
+          ],
+          "properties": {
+            "version": {
+              "type": "string",
+              "minLength": 1
+            },
+            "complete_threshold_millis": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "outputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "coverage_state",
+        "coverage_millis",
+        "reason_code",
+        "policy_version"
+      ],
+      "properties": {
+        "coverage_state": {
+          "type": "string",
+          "enum": [
+            "complete",
+            "partial",
+            "unavailable"
+          ]
+        },
+        "coverage_millis": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000
+        },
+        "reason_code": {
+          "type": "string",
+          "enum": [
+            "coverage_complete",
+            "coverage_partial",
+            "source_unhealthy",
+            "invalid_scope"
+          ]
+        },
+        "policy_version": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "nodes": [
+    {
+      "node_id": "run_capability",
+      "capability_id": "evidence.coverage-assess",
+      "capability_version": "1.0.0",
+      "input": {
+        "from_workflow_input": [
+          "coverage_facts",
+          "coverage_policy"
+        ]
+      },
+      "output": {
+        "to_workflow_state": [
+          "coverage_state",
+          "coverage_millis",
+          "reason_code",
+          "policy_version"
+        ]
+      }
+    }
+  ],
+  "edges": [],
+  "start_node": "run_capability",
+  "terminal_nodes": [
+    "run_capability"
+  ],
+  "tags": [
+    "callweave",
+    "foundation",
+    "standalone-capability"
+  ],
+  "governing_spec": "007-workflow-registry-traversal"
+}

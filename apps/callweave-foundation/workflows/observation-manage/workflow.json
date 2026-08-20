@@ -1,0 +1,157 @@
+{
+  "kind": "workflow_definition",
+  "schema_version": "1.0.0",
+  "id": "callweave.foundation.observation.manage",
+  "name": "observation.manage",
+  "version": "1.0.0",
+  "lifecycle": "active",
+  "owner": {
+    "team": "callweave",
+    "contact": "maintainers@callweave.local"
+  },
+  "summary": "Exercise the standalone observation.manage capability as a one-node Traverse workflow.",
+  "inputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "resolution",
+        "reviewer"
+      ],
+      "properties": {
+        "resolution": {
+          "type": "object",
+          "required": [
+            "id",
+            "state"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "state": {
+              "type": "string",
+              "enum": [
+                "provisional",
+                "unknown",
+                "surprising",
+                "rejected"
+              ]
+            }
+          },
+          "additionalProperties": true
+        },
+        "reviewer": {
+          "type": "object",
+          "required": [
+            "decision"
+          ],
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "decision": {
+              "type": "string",
+              "enum": [
+                "verify",
+                "reject",
+                "provisional"
+              ]
+            }
+          },
+          "additionalProperties": true
+        },
+        "previous": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "revision": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "outputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "revision",
+        "supersedes",
+        "resolution_id",
+        "state",
+        "reviewer_id"
+      ],
+      "properties": {
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "supersedes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "resolution_id": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "verified",
+            "rejected",
+            "provisional"
+          ]
+        },
+        "reviewer_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "nodes": [
+    {
+      "node_id": "run_capability",
+      "capability_id": "observation.manage",
+      "capability_version": "1.0.0",
+      "input": {
+        "from_workflow_input": [
+          "resolution",
+          "reviewer",
+          "previous"
+        ]
+      },
+      "output": {
+        "to_workflow_state": [
+          "revision",
+          "supersedes",
+          "resolution_id",
+          "state",
+          "reviewer_id"
+        ]
+      }
+    }
+  ],
+  "edges": [],
+  "start_node": "run_capability",
+  "terminal_nodes": [
+    "run_capability"
+  ],
+  "tags": [
+    "callweave",
+    "foundation",
+    "standalone-capability"
+  ],
+  "governing_spec": "007-workflow-registry-traversal"
+}

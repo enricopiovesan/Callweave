@@ -1,9 +1,9 @@
 # Callweave Traverse Contracts
 
 This directory is the contract-first UMA/Traverse surface for Callweave. Its
-application contracts remain draft; thirteen reusable, standalone WASI capability
-packages live in `../capabilities/` and are deliberately not coupled to this
-application workflow.
+application contracts remain draft; thirteen reusable, standalone WASI
+capability packages live in `../capabilities/`, and a real executable Traverse
+foundation app bundle now lives in `../apps/callweave-foundation/`.
 
 ## Layout
 
@@ -57,6 +57,13 @@ They are reusable building blocks, not implementations of the draft
 Callweave application contracts. Their guests have no host API, filesystem,
 network, model, or workflow authority.
 
+Those packages are now also composed into a validated and locally registered
+Traverse application bundle at `../apps/callweave-foundation/`. That bundle is
+the current executable integration boundary for Traverse app manifests,
+component manifests, workflow registration, and workspace registration. The
+broader `traverse/contracts/callweave/*` surface remains draft because several
+application-specific capabilities still lack executable package coverage.
+
 The connector-free policy and transition rules that are not yet packaged as
 WASI artifacts are covered by deterministic JSON fixtures in
 `../fixtures/pure-capabilities/`. These fixtures are the current executable
@@ -85,4 +92,8 @@ node scripts/run_workflow_fixtures.mjs
 find traverse/contracts/callweave -name contract.json -print0 | xargs -0 -n1 jq -e .
 ```
 
-Before publishing to a Traverse registry, move or publish the persona records to the target registry and run the registry-aware `capability publish --dry-run` flow. The contracts are intentionally `draft` until their WASM packages and governed evidence exist.
+Before publishing to a Traverse registry, move or publish the persona records to
+the target registry and run the registry-aware `capability publish --dry-run`
+flow. The application contracts in this directory are intentionally `draft`
+until their application-specific executable packages and governed evidence
+exist.

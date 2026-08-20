@@ -1,0 +1,30 @@
+{
+  "component_id": "callweave.foundation.daily.close-component",
+  "version": "1.0.0",
+  "schema_version": "1.0.0",
+  "capability_id": "daily.close",
+  "capability_version": "1.0.0",
+  "contract_path": "../../../../capabilities/daily.close/contract.json",
+  "wasm_binary_path": "../../../../capabilities/daily.close/artifacts/daily-close.wasm",
+  "wasm_digest": "sha256:7e8b36fce1028671ec7467b551e6380fce77557d0914b8da2235ec320369037a",
+  "runtime_constraints": {
+    "host_api_access": "none",
+    "network_access": "forbidden",
+    "filesystem_access": "none"
+  },
+  "permitted_targets": [
+    "local",
+    "device",
+    "edge",
+    "cloud"
+  ],
+  "dependencies": [],
+  "connector_requirements": [],
+  "validation_evidence": [
+    {
+      "evidence_type": "checked_in_fixture",
+      "status": "passed",
+      "produced_by": "callweave_foundation_generation"
+    }
+  ]
+}

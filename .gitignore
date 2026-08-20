@@ -3,3 +3,6 @@ models/birdnet/*.onnx
 models/perch/*.onnx
 models/silero-vad/*.onnx
 output/
+.traverse/local/
+.traverse/workspaces/
+apps/CallweaveMac/.build/
