@@ -1,0 +1,56 @@
+{
+  "app_id": "callweave.operations-recover-test",
+  "version": "0.1.0",
+  "schema_version": "1.0.0",
+  "workspace_defaults": {
+    "workspace_id": "callweave-operations-recover-local",
+    "registry_scope": "private"
+  },
+  "components": [
+    {
+      "component_id": "callweave.operations-recover-compatible-component",
+      "version": "0.1.0",
+      "digest": "sha256:31a25c1c2618cd18fb52c796e4fb2c5d18165aa1505052a1457d46beaa5e3924",
+      "manifest_path": "components/operations-recover/component.manifest.json"
+    }
+  ],
+  "workflows": [
+    {
+      "workflow_id": "callweave.operations-recover-test.workflow",
+      "workflow_version": "0.1.0",
+      "path": "workflows/operations-recover/workflow.json"
+    }
+  ],
+  "model_dependencies": [],
+  "config_schema": {
+    "type": "object",
+    "required": [
+      "workspace_id"
+    ],
+    "properties": {
+      "workspace_id": {
+        "type": "string"
+      },
+      "mode": {
+        "type": "string",
+        "enum": [
+          "compatible-test"
+        ]
+      }
+    },
+    "additionalProperties": false
+  },
+  "default_config": {
+    "workspace_id": "callweave-operations-recover-local",
+    "mode": "compatible-test"
+  },
+  "placement_policy": {
+    "preferred_targets": [
+      "local"
+    ],
+    "allow_fallback": false
+  },
+  "public_surfaces": [
+    "cli"
+  ]
+}

@@ -5,21 +5,7 @@
 This file records the remaining Callweave app-level contracts that are not yet
 honestly executable through the checked-in Traverse bundles.
 
-## 1. `callweave.operations-recover`
-
-Current state:
-
-- Pure logic exists.
-- The app-level surface includes export, backup, and recovery/report actions.
-- The checked-in local host-adapter document does not yet declare backup or
-  network/export authority.
-
-What this means:
-
-- Not blocked by Traverse packaging mechanics.
-- Blocked by missing declared host authority in this repo.
-
-## 2. `callweave.model-improve`
+## 1. `callweave.model-improve`
 
 Current state:
 
@@ -32,7 +18,7 @@ What this means:
 - Not blocked by Traverse packaging mechanics.
 - Blocked by missing declared model-training/release authority in this repo.
 
-## 3. `callweave.review-prepare`
+## 2. `callweave.review-prepare`
 
 Current state:
 

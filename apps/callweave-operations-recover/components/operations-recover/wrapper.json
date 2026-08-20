@@ -1,0 +1,5 @@
+{
+  "kind": "compatible_wrapper",
+  "capability_id": "callweave.operations-recover",
+  "notes": "Thin wrapper only. Host-owned recovery reads, privacy-filtered export, backup verification/writes, and append-only operations reporting remain outside the portable contract."
+}

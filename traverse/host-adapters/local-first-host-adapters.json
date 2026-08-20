@@ -109,6 +109,40 @@
       ]
     },
     {
+      "id": "operations-export",
+      "authority": "export privacy-filtered governed state and reports to approved local or remote destinations under bounded network authority",
+      "inputs": [
+        "operations_request",
+        "operations_policy"
+      ],
+      "outputs": [
+        "export_bundle_ref",
+        "export_trace_ref"
+      ],
+      "failure_modes": [
+        "network_unavailable",
+        "destination_unavailable",
+        "export_policy_denied"
+      ]
+    },
+    {
+      "id": "backup-destination",
+      "authority": "verify and write encrypted backup material to an approved destination under bounded network authority",
+      "inputs": [
+        "backup_payload_ref",
+        "operations_policy"
+      ],
+      "outputs": [
+        "backup_receipt_ref",
+        "backup_trace_ref"
+      ],
+      "failure_modes": [
+        "network_unavailable",
+        "destination_unavailable",
+        "verification_failed"
+      ]
+    },
+    {
       "id": "local-state-store",
       "authority": "resolve typed records and atomically append idempotent transitions",
       "inputs": [

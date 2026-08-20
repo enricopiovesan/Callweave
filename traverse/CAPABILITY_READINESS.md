@@ -27,7 +27,7 @@ complete.
 | `daily-create` | Standalone WASM package + canvas-plan facts + visual-parameter package | Yes | Renderer/archive connector | Compatible app executable |
 | `daily-revise` | Immutable revision package | Yes | Artifact state/archive connector | Compatible app executable |
 | `daily-close` | Standalone WASM package + idempotent close calculation | Yes | Scheduler + durable state connector | Compatible app executable |
-| `operations-recover` | Standalone WASM package + idempotent replay planning | No | Durable state/backup/export connector | Logic ready; app blocked on missing network/backup authority |
+| `operations-recover` | Standalone WASM package + idempotent replay planning | Yes | Durable state/backup/export connector | Compatible app executable |
 
 ## Binding rules
 
@@ -55,7 +55,7 @@ complete.
 
 ## Remaining honest gaps
 
-1. `operations-recover` and `model-improve` depend on
+1. `model-improve` depends on
    host authority that is not yet declared in the checked-in local host-adapter
    surface.
 2. `review-prepare` remains blocked on the advisory LMM boundary and its final
