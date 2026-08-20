@@ -98,3 +98,15 @@ npm run traverse:model-manage:generate
 npm run traverse:model-manage:validate
 npm run traverse:model-manage:register
 ```
+
+A third compatible-mode test app now lives in
+[`apps/callweave-acoustics-classify`](apps/callweave-acoustics-classify). It
+exercises the registration path for `callweave.acoustics-classify` without
+claiming real inference runs inside the wrapper.
+
+```bash
+npm run acoustics-classify:compatible:smoke
+npm run traverse:acoustics-classify:generate
+npm run traverse:acoustics-classify:validate
+npm run traverse:acoustics-classify:register
+```

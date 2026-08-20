@@ -80,6 +80,12 @@ A second compatible-mode host-integrated test bundle now lives at
 through a thin wrapper and a host-side smoke harness. This extends the checked-
 in connector-bound path from device/source setup into model-cache management.
 
+A third compatible-mode host-integrated test bundle now lives at
+`../apps/callweave-acoustics-classify/`. It validates and registers a single
+`callweave.acoustics-classify` component in `execution_mode: compatible`,
+through a thin wrapper and a host-side smoke harness. This extends the checked-
+in connector-bound path into prepared-audio evidence production.
+
 The connector-free policy and transition rules that are not yet packaged as
 WASI artifacts are covered by deterministic JSON fixtures in
 `../fixtures/pure-capabilities/`. These fixtures are the current executable

@@ -1,0 +1,5 @@
+{
+  "kind": "compatible_wrapper",
+  "capability_id": "callweave.acoustics-classify",
+  "notes": "Thin wrapper only. Host-owned model runtime executes prepared-audio classification outside the portable contract."
+}
