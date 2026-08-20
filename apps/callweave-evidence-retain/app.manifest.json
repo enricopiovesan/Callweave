@@ -1,0 +1,56 @@
+{
+  "app_id": "callweave.evidence-retain-test",
+  "version": "0.1.0",
+  "schema_version": "1.0.0",
+  "workspace_defaults": {
+    "workspace_id": "callweave-evidence-retain-local",
+    "registry_scope": "private"
+  },
+  "components": [
+    {
+      "component_id": "callweave.evidence-retain-compatible-component",
+      "version": "0.1.0",
+      "digest": "sha256:391e687a180878aa12a6803f3d1c4982bcf118bd983f98cd992b134039d33b3b",
+      "manifest_path": "components/evidence-retain/component.manifest.json"
+    }
+  ],
+  "workflows": [
+    {
+      "workflow_id": "callweave.evidence-retain-test.workflow",
+      "workflow_version": "0.1.0",
+      "path": "workflows/evidence-retain/workflow.json"
+    }
+  ],
+  "model_dependencies": [],
+  "config_schema": {
+    "type": "object",
+    "required": [
+      "workspace_id"
+    ],
+    "properties": {
+      "workspace_id": {
+        "type": "string"
+      },
+      "mode": {
+        "type": "string",
+        "enum": [
+          "compatible-test"
+        ]
+      }
+    },
+    "additionalProperties": false
+  },
+  "default_config": {
+    "workspace_id": "callweave-evidence-retain-local",
+    "mode": "compatible-test"
+  },
+  "placement_policy": {
+    "preferred_targets": [
+      "local"
+    ],
+    "allow_fallback": false
+  },
+  "public_surfaces": [
+    "cli"
+  ]
+}

@@ -119,6 +119,13 @@ through a thin wrapper and a host-side smoke harness. This extends the checked-
 in connector-bound path into deterministic daily-canvas creation and archive
 publication boundaries.
 
+A ninth compatible-mode host-integrated test bundle now lives at
+`../apps/callweave-evidence-retain/`. It validates and registers a single
+`callweave.evidence-retain` component in `execution_mode: compatible`,
+through a thin wrapper and a host-side smoke harness. This extends the checked-
+in connector-bound path into governed retention classification and append-only
+lifecycle decision recording.
+
 The connector-free policy and transition rules that are not yet packaged as
 WASI artifacts are covered by deterministic JSON fixtures in
 `../fixtures/pure-capabilities/`. These fixtures are the current executable

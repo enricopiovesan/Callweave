@@ -170,3 +170,16 @@ npm run traverse:daily-create:generate
 npm run traverse:daily-create:validate
 npm run traverse:daily-create:register
 ```
+
+A ninth compatible-mode test app now lives in
+[`apps/callweave-evidence-retain`](apps/callweave-evidence-retain). It
+exercises the registration path for `callweave.evidence-retain` without
+claiming real lifecycle deletion or storage mutation outside the declared
+wrapper boundary.
+
+```bash
+npm run evidence-retain:compatible:smoke
+npm run traverse:evidence-retain:generate
+npm run traverse:evidence-retain:validate
+npm run traverse:evidence-retain:register
+```

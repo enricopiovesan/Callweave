@@ -1,0 +1,5 @@
+{
+  "kind": "compatible_wrapper",
+  "capability_id": "callweave.evidence-retain",
+  "notes": "Thin wrapper only. Host-owned retention reference resolution, evidence persistence, and append-only lifecycle state remain outside the portable contract."
+}
