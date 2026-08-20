@@ -138,6 +138,12 @@ A eleventh compatible-mode host-integrated test bundle now lives at
 through a thin wrapper and a host-side smoke harness. This extends the checked-
 in connector-bound path into reviewer-governed knowledge versioning.
 
+A twelfth compatible-mode host-integrated test bundle now lives at
+`../apps/callweave-unknown-organize/`. It validates and registers a single
+`callweave.unknown-organize` component in `execution_mode: compatible`,
+through a thin wrapper and a host-side smoke harness. This extends the checked-
+in connector-bound path into governed local unknown-cluster organization.
+
 The connector-free policy and transition rules that are not yet packaged as
 WASI artifacts are covered by deterministic JSON fixtures in
 `../fixtures/pure-capabilities/`. These fixtures are the current executable

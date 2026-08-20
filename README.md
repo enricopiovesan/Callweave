@@ -209,3 +209,16 @@ npm run traverse:knowledge-manage:generate
 npm run traverse:knowledge-manage:validate
 npm run traverse:knowledge-manage:register
 ```
+
+A twelfth compatible-mode test app now lives in
+[`apps/callweave-unknown-organize`](apps/callweave-unknown-organize). It
+exercises the registration path for `callweave.unknown-organize` without
+claiming direct local cluster persistence outside the declared wrapper
+boundary.
+
+```bash
+npm run unknown-organize:compatible:smoke
+npm run traverse:unknown-organize:generate
+npm run traverse:unknown-organize:validate
+npm run traverse:unknown-organize:register
+```

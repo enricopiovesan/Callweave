@@ -1,0 +1,56 @@
+{
+  "app_id": "callweave.unknown-organize-test",
+  "version": "0.1.0",
+  "schema_version": "1.0.0",
+  "workspace_defaults": {
+    "workspace_id": "callweave-unknown-organize-local",
+    "registry_scope": "private"
+  },
+  "components": [
+    {
+      "component_id": "callweave.unknown-organize-compatible-component",
+      "version": "0.1.0",
+      "digest": "sha256:fc700a10bc3233161b9340c237d1593494c200c7e746b353c3846c580f2bbcb7",
+      "manifest_path": "components/unknown-organize/component.manifest.json"
+    }
+  ],
+  "workflows": [
+    {
+      "workflow_id": "callweave.unknown-organize-test.workflow",
+      "workflow_version": "0.1.0",
+      "path": "workflows/unknown-organize/workflow.json"
+    }
+  ],
+  "model_dependencies": [],
+  "config_schema": {
+    "type": "object",
+    "required": [
+      "workspace_id"
+    ],
+    "properties": {
+      "workspace_id": {
+        "type": "string"
+      },
+      "mode": {
+        "type": "string",
+        "enum": [
+          "compatible-test"
+        ]
+      }
+    },
+    "additionalProperties": false
+  },
+  "default_config": {
+    "workspace_id": "callweave-unknown-organize-local",
+    "mode": "compatible-test"
+  },
+  "placement_policy": {
+    "preferred_targets": [
+      "local"
+    ],
+    "allow_fallback": false
+  },
+  "public_surfaces": [
+    "cli"
+  ]
+}

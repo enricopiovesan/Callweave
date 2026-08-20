@@ -1,0 +1,5 @@
+{
+  "kind": "compatible_wrapper",
+  "capability_id": "callweave.unknown-organize",
+  "notes": "Thin wrapper only. Host-owned unknown evidence lookup and append-only cluster state remain outside the portable contract."
+}
