@@ -144,6 +144,12 @@ A twelfth compatible-mode host-integrated test bundle now lives at
 through a thin wrapper and a host-side smoke harness. This extends the checked-
 in connector-bound path into governed local unknown-cluster organization.
 
+A thirteenth compatible-mode host-integrated test bundle now lives at
+`../apps/callweave-coverage-assess/`. It validates and registers a single
+`callweave.coverage-assess` component in `execution_mode: compatible`,
+through a thin wrapper and a host-side smoke harness. This extends the checked-
+in connector-bound path into durable daily coverage assessment.
+
 The connector-free policy and transition rules that are not yet packaged as
 WASI artifacts are covered by deterministic JSON fixtures in
 `../fixtures/pure-capabilities/`. These fixtures are the current executable

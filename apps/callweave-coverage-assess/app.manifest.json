@@ -1,0 +1,56 @@
+{
+  "app_id": "callweave.coverage-assess-test",
+  "version": "0.1.0",
+  "schema_version": "1.0.0",
+  "workspace_defaults": {
+    "workspace_id": "callweave-coverage-assess-local",
+    "registry_scope": "private"
+  },
+  "components": [
+    {
+      "component_id": "callweave.coverage-assess-compatible-component",
+      "version": "0.1.0",
+      "digest": "sha256:2f66d93c33571cf2622f6d8c98104a53772ccee6f0b07524dcf84e828e822039",
+      "manifest_path": "components/coverage-assess/component.manifest.json"
+    }
+  ],
+  "workflows": [
+    {
+      "workflow_id": "callweave.coverage-assess-test.workflow",
+      "workflow_version": "0.1.0",
+      "path": "workflows/coverage-assess/workflow.json"
+    }
+  ],
+  "model_dependencies": [],
+  "config_schema": {
+    "type": "object",
+    "required": [
+      "workspace_id"
+    ],
+    "properties": {
+      "workspace_id": {
+        "type": "string"
+      },
+      "mode": {
+        "type": "string",
+        "enum": [
+          "compatible-test"
+        ]
+      }
+    },
+    "additionalProperties": false
+  },
+  "default_config": {
+    "workspace_id": "callweave-coverage-assess-local",
+    "mode": "compatible-test"
+  },
+  "placement_policy": {
+    "preferred_targets": [
+      "local"
+    ],
+    "allow_fallback": false
+  },
+  "public_surfaces": [
+    "cli"
+  ]
+}

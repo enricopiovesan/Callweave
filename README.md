@@ -222,3 +222,16 @@ npm run traverse:unknown-organize:generate
 npm run traverse:unknown-organize:validate
 npm run traverse:unknown-organize:register
 ```
+
+A thirteenth compatible-mode test app now lives in
+[`apps/callweave-coverage-assess`](apps/callweave-coverage-assess). It
+exercises the registration path for `callweave.coverage-assess` without
+claiming direct durable coverage persistence outside the declared wrapper
+boundary.
+
+```bash
+npm run coverage-assess:compatible:smoke
+npm run traverse:coverage-assess:generate
+npm run traverse:coverage-assess:validate
+npm run traverse:coverage-assess:register
+```

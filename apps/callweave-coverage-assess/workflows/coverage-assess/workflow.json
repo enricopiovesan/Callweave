@@ -1,0 +1,205 @@
+{
+  "kind": "workflow_definition",
+  "schema_version": "1.0.0",
+  "id": "callweave.coverage-assess-test.workflow",
+  "name": "coverage-assess-test",
+  "version": "0.1.0",
+  "lifecycle": "active",
+  "owner": {
+    "team": "callweave",
+    "contact": "maintainers@callweave.local"
+  },
+  "summary": "Exercise the compatible coverage-assess component through the app registration path.",
+  "inputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "request_id",
+        "workspace_id",
+        "location_id",
+        "idempotency_key",
+        "coverage_scope",
+        "coverage_policy"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "workspace_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "location_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "idempotency_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "runtime_context": {
+          "type": "object",
+          "required": [
+            "input_reference_state",
+            "dependency_state",
+            "policy_state"
+          ],
+          "properties": {
+            "input_reference_state": {
+              "type": "string",
+              "enum": [
+                "resolvable",
+                "unresolvable"
+              ]
+            },
+            "dependency_state": {
+              "type": "string",
+              "enum": [
+                "available",
+                "unavailable"
+              ]
+            },
+            "policy_state": {
+              "type": "string",
+              "enum": [
+                "allowed",
+                "denied"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "coverage_scope": {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "version": {
+              "type": "string"
+            },
+            "metadata": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {}
+            }
+          },
+          "additionalProperties": false
+        },
+        "coverage_policy": {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "version": {
+              "type": "string"
+            },
+            "metadata": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {}
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "outputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "status",
+        "reason_code",
+        "coverage_report_ref",
+        "trace_ref",
+        "warnings"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "completed",
+            "rejected",
+            "deferred"
+          ]
+        },
+        "reason_code": {
+          "type": "string",
+          "enum": [
+            "ok",
+            "invalid_input",
+            "dependency_unavailable",
+            "policy_denied"
+          ]
+        },
+        "coverage_report_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "trace_ref": {
+          "type": "string"
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "nodes": [
+    {
+      "node_id": "assess_coverage",
+      "capability_id": "callweave.coverage-assess",
+      "capability_version": "0.1.0",
+      "input": {
+        "from_workflow_input": [
+          "request_id",
+          "workspace_id",
+          "location_id",
+          "idempotency_key",
+          "runtime_context",
+          "coverage_scope",
+          "coverage_policy"
+        ]
+      },
+      "output": {
+        "to_workflow_state": [
+          "status",
+          "reason_code",
+          "coverage_report_ref",
+          "trace_ref",
+          "warnings"
+        ]
+      }
+    }
+  ],
+  "edges": [],
+  "start_node": "assess_coverage",
+  "terminal_nodes": [
+    "assess_coverage"
+  ],
+  "tags": [
+    "callweave",
+    "compatible",
+    "host-adapter",
+    "coverage-assess"
+  ],
+  "governing_spec": "007-workflow-registry-traversal"
+}

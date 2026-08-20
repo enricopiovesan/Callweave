@@ -1,0 +1,5 @@
+{
+  "kind": "compatible_wrapper",
+  "capability_id": "callweave.coverage-assess",
+  "notes": "Thin wrapper only. Host-owned evidence reference resolution and durable coverage report persistence remain outside the portable contract."
+}
