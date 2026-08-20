@@ -1,0 +1,190 @@
+{
+  "kind": "capability_contract",
+  "schema_version": "1.0.0",
+  "id": "privacy.gate-evaluate",
+  "namespace": "privacy",
+  "name": "gate-evaluate",
+  "version": "1.0.0",
+  "lifecycle": "active",
+  "owner": {
+    "team": "callweave",
+    "contact": "maintainers@callweave.local"
+  },
+  "summary": "Evaluate a privacy detector release gate from labeled outcomes.",
+  "description": "Pure standalone privacy evaluation policy. It consumes only labeled detector outcomes and a versioned gate policy, computes speech coverage and false-negative rate, and returns an approval or rejection decision. It does not inspect audio, sanitize exports, access storage, or know any application workflow.",
+  "use_cases": [
+    {
+      "scenario": "As a privacy steward, I want a detector with sufficient labeled speech coverage and zero false negatives approved so that a separate host can rely on that policy gate.",
+      "input_example": {
+        "cases": [
+          { "contains_speech": true, "risk_detected": true },
+          { "contains_speech": true, "risk_detected": true },
+          { "contains_speech": false, "risk_detected": false }
+        ],
+        "policy": {
+          "version": "privacy-gate-1",
+          "minimum_speech_cases": 2,
+          "maximum_false_negative_millis": 0
+        }
+      },
+      "output_example": {
+        "decision": "approve_for_policy",
+        "reason": "privacy_gate_passed",
+        "speech_cases": 2,
+        "false_negatives": 0,
+        "false_negative_millis": 0
+      },
+      "happy": true
+    },
+    {
+      "scenario": "As a privacy steward, I want a detector with missed speech risk rejected so that unsafe privacy behavior cannot be promoted.",
+      "input_example": {
+        "cases": [
+          { "contains_speech": true, "risk_detected": false },
+          { "contains_speech": true, "risk_detected": true }
+        ],
+        "policy": {
+          "version": "privacy-gate-1",
+          "minimum_speech_cases": 2,
+          "maximum_false_negative_millis": 0
+        }
+      },
+      "output_example": {
+        "decision": "reject",
+        "reason": "false_negative_limit_exceeded",
+        "speech_cases": 2,
+        "false_negatives": 1,
+        "false_negative_millis": 500
+      },
+      "happy": false
+    },
+    {
+      "scenario": "As a privacy steward, I want insufficient speech coverage rejected so that approval cannot be claimed from weak evaluation data.",
+      "input_example": {
+        "cases": [
+          { "contains_speech": false, "risk_detected": false }
+        ],
+        "policy": {
+          "version": "privacy-gate-1",
+          "minimum_speech_cases": 1,
+          "maximum_false_negative_millis": 0
+        }
+      },
+      "output_example": {
+        "decision": "reject",
+        "reason": "insufficient_speech_cases",
+        "speech_cases": 0,
+        "false_negatives": 0,
+        "false_negative_millis": 1000
+      },
+      "happy": false
+    }
+  ],
+  "inputs": {
+    "schema": {
+      "type": "object",
+      "required": ["cases", "policy"],
+      "properties": {
+        "cases": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["contains_speech", "risk_detected"],
+            "properties": {
+              "contains_speech": { "type": "boolean" },
+              "risk_detected": { "type": "boolean" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "policy": {
+          "type": "object",
+          "required": ["version", "minimum_speech_cases", "maximum_false_negative_millis"],
+          "properties": {
+            "version": { "type": "string", "minLength": 1 },
+            "minimum_speech_cases": { "type": "integer", "minimum": 0 },
+            "maximum_false_negative_millis": { "type": "integer", "minimum": 0, "maximum": 1000 }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "outputs": {
+    "schema": {
+      "type": "object",
+      "required": ["policy_version", "total_cases", "speech_cases", "false_negatives", "false_negative_millis", "decision", "reason"],
+      "properties": {
+        "policy_version": { "type": "string" },
+        "total_cases": { "type": "integer", "minimum": 1 },
+        "speech_cases": { "type": "integer", "minimum": 0 },
+        "false_negatives": { "type": "integer", "minimum": 0 },
+        "false_negative_millis": { "type": "integer", "minimum": 0, "maximum": 1000 },
+        "decision": { "type": "string", "enum": ["approve_for_policy", "reject"] },
+        "reason": { "type": "string", "enum": ["privacy_gate_passed", "insufficient_speech_cases", "false_negative_limit_exceeded"] }
+      },
+      "additionalProperties": true
+    }
+  },
+  "preconditions": [
+    {
+      "id": "labeled-cases-and-policy-supplied",
+      "description": "At least one labeled case and a non-empty policy version are supplied."
+    }
+  ],
+  "postconditions": [
+    {
+      "id": "approval-requires-speech-coverage",
+      "description": "An approval is only possible when the supplied speech-case minimum is met."
+    },
+    {
+      "id": "approval-fails-on-excess-false-negatives",
+      "description": "An approval is impossible when false_negative_millis exceeds the configured limit."
+    }
+  ],
+  "side_effects": [
+    {
+      "kind": "memory_only",
+      "description": "Pure calculation; no host, network, filesystem, audio, model-provider, or workflow access."
+    }
+  ],
+  "emits": [],
+  "consumes": [],
+  "permissions": [
+    {
+      "id": "privacy.gate-evaluate.execute"
+    }
+  ],
+  "execution": {
+    "binary_format": "wasm",
+    "entrypoint": {
+      "kind": "wasi-command",
+      "command": "run"
+    },
+    "preferred_targets": ["local", "browser", "edge", "device"],
+    "constraints": {
+      "host_api_access": "none",
+      "network_access": "forbidden",
+      "filesystem_access": "none"
+    }
+  },
+  "policies": [
+    { "id": "deterministic-policy-only" },
+    { "id": "privacy-evaluation-does-not-sanitize-assets" }
+  ],
+  "dependencies": [],
+  "provenance": {
+    "source": "greenfield",
+    "author": "Callweave",
+    "created_at": "2026-08-20T00:00:00Z",
+    "spec_ref": "100-capability-package-authoring@1.0.0",
+    "adr_refs": ["DECISION_RECORD.md"],
+    "exception_refs": []
+  },
+  "evidence": [],
+  "state_schema": null,
+  "service_type": "stateless",
+  "permitted_targets": ["local", "browser", "edge", "device"]
+}

@@ -1,0 +1,24 @@
+{
+  "capability": "privacy-gate-evaluate",
+  "case": "unhappy path rejects when speech false negatives exceed policy",
+  "input": {
+    "cases": [
+      { "contains_speech": true, "risk_detected": false },
+      { "contains_speech": true, "risk_detected": true }
+    ],
+    "policy": {
+      "version": "privacy-gate-1",
+      "minimum_speech_cases": 2,
+      "maximum_false_negative_millis": 0
+    }
+  },
+  "expect": {
+    "policy_version": "privacy-gate-1",
+    "total_cases": 2,
+    "speech_cases": 2,
+    "false_negatives": 1,
+    "false_negative_millis": 500,
+    "decision": "reject",
+    "reason": "false_negative_limit_exceeded"
+  }
+}

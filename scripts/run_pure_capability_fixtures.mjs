@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import {
   closeDay,
   createDailyCanvasPlan,
+  evaluatePrivacyGate,
   initializeLocation,
   manageKnowledge,
   manageObservation,
@@ -22,6 +23,7 @@ const capabilities = {
   'daily-close': closeDay,
   'daily-create': createDailyCanvasPlan,
   'operations-recover': planRecovery,
+  'privacy-gate-evaluate': evaluatePrivacyGate,
 };
 
 const project = (value, paths) => Object.fromEntries(paths.map((path) => [path, getPath(value, path)]));

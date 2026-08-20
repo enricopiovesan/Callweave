@@ -7,7 +7,7 @@ const capabilitiesRoot = join(repoRoot, 'capabilities');
 const appRoot = join(repoRoot, 'apps', 'callweave-foundation');
 const componentsRoot = join(appRoot, 'components');
 const workflowsRoot = join(appRoot, 'workflows');
-const foundationAppVersion = '1.2.0';
+const foundationAppVersion = '1.3.0';
 
 const encoder = new TextEncoder();
 

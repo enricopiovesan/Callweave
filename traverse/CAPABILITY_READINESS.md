@@ -13,7 +13,7 @@ for Callweave.
 | `audio-prepare` | Local WAV/FLAC decode, resample, windowing | Recording reference/storage | Logic ready |
 | `coverage-assess` | Standalone WASM package | Day-record input/storage | Logic ready |
 | `evidence-retain` | Standalone WASM package | Retention execution/storage | Logic ready |
-| `privacy-protect` | Fail-closed review gate; Silero VAD readiness and privacy-evaluation gate verified | Labeled field evaluation + export adapter | Evaluation + adapter required |
+| `privacy-protect` | Standalone privacy gate evaluator + fail-closed review gate; Silero VAD readiness verified | Export sanitization + field/privacy adapter | Evaluation + adapter required |
 | `model-manage` | Checksum/license/release gate | Model cache activation | Logic ready |
 | `acoustics-classify` | Local BirdNET/Perch evidence runner | Prepared-audio/model host binding | Logic ready |
 | `detection-resolve` | Standalone WASM package + calibrated policy resolver | Candidate/evidence record reads | Logic ready |
@@ -29,8 +29,8 @@ for Callweave.
 
 ## Binding rules
 
-- The sixteen standalone WASI packages under `capabilities/` are executable now.
-- Those same sixteen packages are now bundled as a real Traverse application
+- The seventeen standalone WASI packages under `capabilities/` are executable now.
+- Those same seventeen packages are now bundled as a real Traverse application
   under `apps/callweave-foundation/`, and that bundle validates and registers
   locally through current Traverse CLI flows.
 - The connector-free business rules for `location-initialize` have

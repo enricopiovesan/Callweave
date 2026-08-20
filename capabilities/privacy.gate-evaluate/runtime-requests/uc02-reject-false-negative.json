@@ -1,0 +1,11 @@
+{
+  "cases": [
+    { "contains_speech": true, "risk_detected": false },
+    { "contains_speech": true, "risk_detected": true }
+  ],
+  "policy": {
+    "version": "privacy-gate-1",
+    "minimum_speech_cases": 2,
+    "maximum_false_negative_millis": 0
+  }
+}
