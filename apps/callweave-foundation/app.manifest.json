@@ -1,6 +1,6 @@
 {
   "app_id": "callweave.foundation",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "schema_version": "1.0.0",
   "workspace_defaults": {
     "workspace_id": "callweave-foundation-local",
@@ -96,6 +96,12 @@
       "version": "1.0.0",
       "digest": "sha256:6e0a1cc1257f527b82fb6aa9bac1eedaf756c6654d59c241caa5bd7e3302aeb6",
       "manifest_path": "components/review-prepare/component.manifest.json"
+    },
+    {
+      "component_id": "callweave.foundation.unknown.organize-component",
+      "version": "1.0.0",
+      "digest": "sha256:6d1d35da1c6c270057ef451313b93918c138fe73df20cf5915fff184c3f1ed0e",
+      "manifest_path": "components/unknown-organize/component.manifest.json"
     }
   ],
   "workflows": [
@@ -173,6 +179,11 @@
       "workflow_id": "callweave.foundation.review.prepare",
       "workflow_version": "1.0.0",
       "path": "workflows/review-prepare/workflow.json"
+    },
+    {
+      "workflow_id": "callweave.foundation.unknown.organize",
+      "workflow_version": "1.0.0",
+      "path": "workflows/unknown-organize/workflow.json"
     }
   ],
   "model_dependencies": [],

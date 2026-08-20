@@ -1,0 +1,11 @@
+{
+  "items": [
+    { "id": "ev-1", "embedding": [1, 0, 0] },
+    { "id": "ev-2", "embedding": [0.99, 0.01, 0] },
+    { "id": "ev-3", "embedding": [0, 1, 0] }
+  ],
+  "policy": {
+    "version": "cluster-1",
+    "minimum_cosine": 0.95
+  }
+}

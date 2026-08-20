@@ -1,0 +1,30 @@
+{
+  "component_id": "callweave.foundation.unknown.organize-component",
+  "version": "1.0.0",
+  "schema_version": "1.0.0",
+  "capability_id": "unknown.organize",
+  "capability_version": "1.0.0",
+  "contract_path": "../../../../capabilities/unknown.organize/contract.json",
+  "wasm_binary_path": "../../../../capabilities/unknown.organize/artifacts/unknown-organize.wasm",
+  "wasm_digest": "sha256:6d1d35da1c6c270057ef451313b93918c138fe73df20cf5915fff184c3f1ed0e",
+  "runtime_constraints": {
+    "host_api_access": "none",
+    "network_access": "forbidden",
+    "filesystem_access": "none"
+  },
+  "permitted_targets": [
+    "local",
+    "device",
+    "edge",
+    "cloud"
+  ],
+  "dependencies": [],
+  "connector_requirements": [],
+  "validation_evidence": [
+    {
+      "evidence_type": "checked_in_fixture",
+      "status": "passed",
+      "produced_by": "callweave_foundation_generation"
+    }
+  ]
+}

@@ -50,7 +50,7 @@ the Node and macOS test surfaces.
 
 A real Traverse application bundle now lives in
 [`apps/callweave-foundation`](apps/callweave-foundation). It packages the
-fifteen standalone executable WASM capabilities already present in this repo
+sixteen standalone executable WASM capabilities already present in this repo
 into:
 
 - concrete component manifests

@@ -29,8 +29,8 @@ for Callweave.
 
 ## Binding rules
 
-- The fifteen standalone WASI packages under `capabilities/` are executable now.
-- Those same fifteen packages are now bundled as a real Traverse application
+- The sixteen standalone WASI packages under `capabilities/` are executable now.
+- Those same sixteen packages are now bundled as a real Traverse application
   under `apps/callweave-foundation/`, and that bundle validates and registers
   locally through current Traverse CLI flows.
 - The connector-free business rules for `location-initialize` have
