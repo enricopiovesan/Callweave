@@ -20,6 +20,7 @@ What this means:
 - It needs either:
   - a dedicated pure package for the app-level contract, or
   - an explicit approved composition over existing lower-level pure packages.
+- See `traverse/CONTRACT_RECONCILIATION_PLAN.md` for the concrete mismatch.
 
 ## 2. `callweave.detection-resolve`
 
@@ -38,6 +39,7 @@ What this means:
   - contract alignment between the app-level and package-level surfaces, or
   - a thin, explicit app-level composition layer that maps one contract to the
     other with checked-in rules and evidence.
+- See `traverse/CONTRACT_RECONCILIATION_PLAN.md` for the concrete mismatch.
 
 ## 3. `callweave.location-initialize`
 
