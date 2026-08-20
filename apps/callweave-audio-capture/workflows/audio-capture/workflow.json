@@ -1,0 +1,205 @@
+{
+  "kind": "workflow_definition",
+  "schema_version": "1.0.0",
+  "id": "callweave.audio-capture-test.workflow",
+  "name": "audio-capture-test",
+  "version": "0.1.0",
+  "lifecycle": "active",
+  "owner": {
+    "team": "callweave",
+    "contact": "maintainers@callweave.local"
+  },
+  "summary": "Exercise the compatible audio-capture component through the app registration path.",
+  "inputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "request_id",
+        "workspace_id",
+        "location_id",
+        "idempotency_key",
+        "audio_source_ref",
+        "capture_window"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "workspace_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "location_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "idempotency_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "runtime_context": {
+          "type": "object",
+          "required": [
+            "input_reference_state",
+            "dependency_state",
+            "policy_state"
+          ],
+          "properties": {
+            "input_reference_state": {
+              "type": "string",
+              "enum": [
+                "resolvable",
+                "unresolvable"
+              ]
+            },
+            "dependency_state": {
+              "type": "string",
+              "enum": [
+                "available",
+                "unavailable"
+              ]
+            },
+            "policy_state": {
+              "type": "string",
+              "enum": [
+                "allowed",
+                "denied"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "audio_source_ref": {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "version": {
+              "type": "string"
+            },
+            "metadata": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {}
+            }
+          },
+          "additionalProperties": false
+        },
+        "capture_window": {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "version": {
+              "type": "string"
+            },
+            "metadata": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {}
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "outputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "status",
+        "reason_code",
+        "recording_ref",
+        "trace_ref",
+        "warnings"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "completed",
+            "rejected",
+            "deferred"
+          ]
+        },
+        "reason_code": {
+          "type": "string",
+          "enum": [
+            "ok",
+            "invalid_input",
+            "dependency_unavailable",
+            "policy_denied"
+          ]
+        },
+        "recording_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "trace_ref": {
+          "type": "string"
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "nodes": [
+    {
+      "node_id": "capture_audio",
+      "capability_id": "callweave.audio-capture",
+      "capability_version": "0.1.0",
+      "input": {
+        "from_workflow_input": [
+          "request_id",
+          "workspace_id",
+          "location_id",
+          "idempotency_key",
+          "runtime_context",
+          "audio_source_ref",
+          "capture_window"
+        ]
+      },
+      "output": {
+        "to_workflow_state": [
+          "status",
+          "reason_code",
+          "recording_ref",
+          "trace_ref",
+          "warnings"
+        ]
+      }
+    }
+  ],
+  "edges": [],
+  "start_node": "capture_audio",
+  "terminal_nodes": [
+    "capture_audio"
+  ],
+  "tags": [
+    "callweave",
+    "compatible",
+    "host-adapter",
+    "audio-capture"
+  ],
+  "governing_spec": "007-workflow-registry-traversal"
+}

@@ -1,0 +1,5 @@
+{
+  "kind": "compatible_wrapper",
+  "capability_id": "callweave.audio-capture",
+  "notes": "Thin wrapper only. Host-owned capture, finalization, and storage remain outside the portable contract."
+}

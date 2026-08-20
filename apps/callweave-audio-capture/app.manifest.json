@@ -1,0 +1,56 @@
+{
+  "app_id": "callweave.audio-capture-test",
+  "version": "0.1.0",
+  "schema_version": "1.0.0",
+  "workspace_defaults": {
+    "workspace_id": "callweave-audio-capture-local",
+    "registry_scope": "private"
+  },
+  "components": [
+    {
+      "component_id": "callweave.audio-capture-compatible-component",
+      "version": "0.1.0",
+      "digest": "sha256:0d990900a59f2cd6ece129a3dec3b9cf6c38db906e86f4c5aadb8a81a5008276",
+      "manifest_path": "components/audio-capture/component.manifest.json"
+    }
+  ],
+  "workflows": [
+    {
+      "workflow_id": "callweave.audio-capture-test.workflow",
+      "workflow_version": "0.1.0",
+      "path": "workflows/audio-capture/workflow.json"
+    }
+  ],
+  "model_dependencies": [],
+  "config_schema": {
+    "type": "object",
+    "required": [
+      "workspace_id"
+    ],
+    "properties": {
+      "workspace_id": {
+        "type": "string"
+      },
+      "mode": {
+        "type": "string",
+        "enum": [
+          "compatible-test"
+        ]
+      }
+    },
+    "additionalProperties": false
+  },
+  "default_config": {
+    "workspace_id": "callweave-audio-capture-local",
+    "mode": "compatible-test"
+  },
+  "placement_policy": {
+    "preferred_targets": [
+      "local"
+    ],
+    "allow_fallback": false
+  },
+  "public_surfaces": [
+    "cli"
+  ]
+}

@@ -122,3 +122,15 @@ npm run traverse:privacy-protect:generate
 npm run traverse:privacy-protect:validate
 npm run traverse:privacy-protect:register
 ```
+
+A fifth compatible-mode test app now lives in
+[`apps/callweave-audio-capture`](apps/callweave-audio-capture). It exercises
+the registration path for `callweave.audio-capture` without claiming real
+capture execution inside the wrapper.
+
+```bash
+npm run audio-capture:compatible:smoke
+npm run traverse:audio-capture:generate
+npm run traverse:audio-capture:validate
+npm run traverse:audio-capture:register
+```

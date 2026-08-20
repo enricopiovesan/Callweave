@@ -1,0 +1,32 @@
+{
+  "component_id": "callweave.audio-capture-compatible-component",
+  "version": "0.1.0",
+  "schema_version": "1.0.0",
+  "capability_id": "callweave.audio-capture",
+  "capability_version": "0.1.0",
+  "execution_mode": "compatible",
+  "contract_path": "../../../../traverse/contracts/callweave/audio-capture/contract.json",
+  "wrapper_path": "wrapper.json",
+  "platforms": [
+    "local",
+    "macos"
+  ],
+  "runtime_constraints": {
+    "host_api_access": "exception_required",
+    "network_access": "forbidden",
+    "filesystem_access": "sandbox_only"
+  },
+  "permitted_targets": [
+    "local",
+    "device"
+  ],
+  "dependencies": [],
+  "connector_requirements": [],
+  "validation_evidence": [
+    {
+      "evidence_type": "checked_in_smoke",
+      "status": "passed",
+      "produced_by": "audio_capture_compatible_smoke"
+    }
+  ]
+}

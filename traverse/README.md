@@ -92,6 +92,13 @@ A fourth compatible-mode host-integrated test bundle now lives at
 through a thin wrapper and a host-side smoke harness. This extends the checked-
 in connector-bound path into privacy gating and safe review-package preparation.
 
+A fifth compatible-mode host-integrated test bundle now lives at
+`../apps/callweave-audio-capture/`. It validates and registers a single
+`callweave.audio-capture` component in `execution_mode: compatible`,
+through a thin wrapper and a host-side smoke harness. This extends the checked-
+in connector-bound path by closing the device-side recording boundary between
+source configuration and prepared-audio processing.
+
 The connector-free policy and transition rules that are not yet packaged as
 WASI artifacts are covered by deterministic JSON fixtures in
 `../fixtures/pure-capabilities/`. These fixtures are the current executable
