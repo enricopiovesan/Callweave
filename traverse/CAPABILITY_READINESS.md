@@ -9,7 +9,7 @@ complete.
 
 | Contract | Portable business logic | Executable app coverage | Remaining activation boundary | Readiness |
 |---|---|---|---|
-| `location-initialize` | Standalone WASM package + candidate-set normalization/versioning | No | Source lookup + private persistence | Logic ready; app blocked on missing source/network authority |
+| `location-initialize` | Standalone WASM package + candidate-set normalization/versioning | Yes | Source lookup + private persistence | Compatible app executable |
 | `audio-source-configure` | Configuration validation only | Yes | Microphone discovery/calibration | Compatible app executable |
 | `audio-capture` | Segment metadata policy | Yes | Microphone + file finalization | Compatible app executable |
 | `audio-prepare` | Local WAV/FLAC decode, resample, windowing | Yes | Recording reference/storage | Reconciled compatible app executable |
@@ -37,13 +37,14 @@ complete.
   locally through current Traverse CLI flows.
 - The following Callweave app-level compatible Traverse bundles now also
   validate and register locally:
-  `audio-source-configure`, `audio-capture`, `audio-prepare`,
-  `acoustics-classify`, `privacy-protect`, `model-manage`,
+  `location-initialize`, `audio-source-configure`, `audio-capture`,
+  `audio-prepare`, `acoustics-classify`, `privacy-protect`, `model-manage`,
   `coverage-assess`, `detection-resolve`, `daily-close`, `daily-create`,
   `daily-revise`, `evidence-retain`, `observation-manage`,
   `knowledge-manage`, and `unknown-organize`.
-- The connector-free business rules for `location-initialize` have
-  deterministic JSON fixtures under `fixtures/pure-capabilities/`.
+- The connector-free business rules for `location-initialize` still have
+  deterministic JSON fixtures under `fixtures/pure-capabilities/`, while the
+  app-level contract now also has compatible executable coverage.
 - `src/business-logic.mjs` owns portable policy and transition rules.
 - `src/append-only-state.mjs` owns in-memory append-only/idempotency semantics.
 - A future host adapter may persist the state kernel’s records, but may not
@@ -54,7 +55,7 @@ complete.
 
 ## Remaining honest gaps
 
-1. `location-initialize`, `operations-recover`, and `model-improve` depend on
+1. `operations-recover` and `model-improve` depend on
    host authority that is not yet declared in the checked-in local host-adapter
    surface.
 2. `review-prepare` remains blocked on the advisory LMM boundary and its final

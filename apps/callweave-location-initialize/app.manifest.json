@@ -1,0 +1,56 @@
+{
+  "app_id": "callweave.location-initialize-test",
+  "version": "0.1.0",
+  "schema_version": "1.0.0",
+  "workspace_defaults": {
+    "workspace_id": "callweave-location-initialize-local",
+    "registry_scope": "private"
+  },
+  "components": [
+    {
+      "component_id": "callweave.location-initialize-compatible-component",
+      "version": "0.1.0",
+      "digest": "sha256:9c264364e5935b2fe8502db53514ac57aa9c39040604bf636cab995faf5dc043",
+      "manifest_path": "components/location-initialize/component.manifest.json"
+    }
+  ],
+  "workflows": [
+    {
+      "workflow_id": "callweave.location-initialize-test.workflow",
+      "workflow_version": "0.1.0",
+      "path": "workflows/location-initialize/workflow.json"
+    }
+  ],
+  "model_dependencies": [],
+  "config_schema": {
+    "type": "object",
+    "required": [
+      "workspace_id"
+    ],
+    "properties": {
+      "workspace_id": {
+        "type": "string"
+      },
+      "mode": {
+        "type": "string",
+        "enum": [
+          "compatible-test"
+        ]
+      }
+    },
+    "additionalProperties": false
+  },
+  "default_config": {
+    "workspace_id": "callweave-location-initialize-local",
+    "mode": "compatible-test"
+  },
+  "placement_policy": {
+    "preferred_targets": [
+      "local"
+    ],
+    "allow_fallback": false
+  },
+  "public_surfaces": [
+    "cli"
+  ]
+}

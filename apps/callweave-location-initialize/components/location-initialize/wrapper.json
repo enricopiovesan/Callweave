@@ -1,0 +1,5 @@
+{
+  "kind": "compatible_wrapper",
+  "capability_id": "callweave.location-initialize",
+  "notes": "Thin wrapper only. Host-owned occurrence-source import, private location-profile persistence, and append-only profile provenance remain outside the portable contract."
+}

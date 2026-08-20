@@ -42,6 +42,23 @@
       ]
     },
     {
+      "id": "occurrence-source-provider",
+      "authority": "import permitted occurrence facts from approved source providers under bounded network authority",
+      "inputs": [
+        "location_input",
+        "candidate_source_policy"
+      ],
+      "outputs": [
+        "source_fact_set_ref",
+        "license_manifest_ref"
+      ],
+      "failure_modes": [
+        "network_unavailable",
+        "provider_unavailable",
+        "license_policy_denied"
+      ]
+    },
+    {
       "id": "audio-device",
       "authority": "capture configured microphone samples",
       "inputs": [
@@ -72,6 +89,23 @@
         "storage_full",
         "checksum_mismatch",
         "write_interrupted"
+      ]
+    },
+    {
+      "id": "private-location-store",
+      "authority": "persist private location profiles and seasonal candidate sets under append-only local ownership",
+      "inputs": [
+        "location_profile_payload",
+        "idempotency_key"
+      ],
+      "outputs": [
+        "location_profile_ref",
+        "trace_ref"
+      ],
+      "failure_modes": [
+        "storage_full",
+        "write_interrupted",
+        "idempotency_conflict"
       ]
     },
     {
