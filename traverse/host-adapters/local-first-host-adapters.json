@@ -194,6 +194,57 @@
       ]
     },
     {
+      "id": "review-package-builder",
+      "authority": "assemble sanitized advisory review bundles and strict prompts from protected local assets under bounded local authority",
+      "inputs": [
+        "unknown_cluster_ref",
+        "review_policy"
+      ],
+      "outputs": [
+        "review_bundle_ref",
+        "prompt_ref"
+      ],
+      "failure_modes": [
+        "reference_unresolvable",
+        "privacy_not_protected",
+        "bundle_build_failed"
+      ]
+    },
+    {
+      "id": "advisory-response-ingest",
+      "authority": "ingest a bounded external advisory response supplied by the host and expose only typed response content",
+      "inputs": [
+        "review_bundle_ref",
+        "response_payload"
+      ],
+      "outputs": [
+        "advisory_response_ref",
+        "response_trace_ref"
+      ],
+      "failure_modes": [
+        "response_missing",
+        "response_schema_invalid",
+        "response_provenance_missing"
+      ]
+    },
+    {
+      "id": "review-proposal-store",
+      "authority": "persist validated review proposals under append-only local ownership",
+      "inputs": [
+        "review_proposal",
+        "idempotency_key"
+      ],
+      "outputs": [
+        "review_proposal_ref",
+        "proposal_trace_ref"
+      ],
+      "failure_modes": [
+        "storage_full",
+        "write_interrupted",
+        "idempotency_conflict"
+      ]
+    },
+    {
       "id": "local-state-store",
       "authority": "resolve typed records and atomically append idempotent transitions",
       "inputs": [

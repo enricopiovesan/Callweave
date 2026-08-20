@@ -1,0 +1,56 @@
+{
+  "app_id": "callweave.review-prepare-test",
+  "version": "0.1.0",
+  "schema_version": "1.0.0",
+  "workspace_defaults": {
+    "workspace_id": "callweave-review-prepare-local",
+    "registry_scope": "private"
+  },
+  "components": [
+    {
+      "component_id": "callweave.review-prepare-compatible-component",
+      "version": "0.1.0",
+      "digest": "sha256:388718787c39180ee2033f09484c2086f8b066a2ef430ae5d31669088d07ad00",
+      "manifest_path": "components/review-prepare/component.manifest.json"
+    }
+  ],
+  "workflows": [
+    {
+      "workflow_id": "callweave.review-prepare-test.workflow",
+      "workflow_version": "0.1.0",
+      "path": "workflows/review-prepare/workflow.json"
+    }
+  ],
+  "model_dependencies": [],
+  "config_schema": {
+    "type": "object",
+    "required": [
+      "workspace_id"
+    ],
+    "properties": {
+      "workspace_id": {
+        "type": "string"
+      },
+      "mode": {
+        "type": "string",
+        "enum": [
+          "compatible-test"
+        ]
+      }
+    },
+    "additionalProperties": false
+  },
+  "default_config": {
+    "workspace_id": "callweave-review-prepare-local",
+    "mode": "compatible-test"
+  },
+  "placement_policy": {
+    "preferred_targets": [
+      "local"
+    ],
+    "allow_fallback": false
+  },
+  "public_surfaces": [
+    "cli"
+  ]
+}

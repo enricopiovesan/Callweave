@@ -1,0 +1,5 @@
+{
+  "kind": "compatible_wrapper",
+  "capability_id": "callweave.review-prepare",
+  "notes": "Thin wrapper only. Host-owned sanitized bundle creation, external advisory response ingress, and append-only review proposal persistence remain outside the portable contract."
+}

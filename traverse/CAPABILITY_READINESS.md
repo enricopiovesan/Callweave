@@ -21,7 +21,7 @@ complete.
 | `detection-resolve` | Standalone WASM package + calibrated policy resolver | Yes | Candidate/evidence record reads | Reconciled compatible app executable |
 | `observation-manage` | Standalone WASM package + append-only observation transition | Yes | Durable state connector | Compatible app executable |
 | `unknown-organize` | Embedding clustering + curation | Yes | Embedding/evidence record reads | Compatible app executable |
-| `review-prepare` | Standalone WASM package for privacy-gated advisory package policy | No | Privacy model + optional LMM connector | Pure logic ready; external-boundary reconciliation needed |
+| `review-prepare` | Standalone WASM package for privacy-gated advisory package policy | Yes | Privacy model + host-supplied advisory response ingress | Compatible app executable |
 | `knowledge-manage` | Standalone WASM package + human-approved version transition | Yes | Durable state connector | Compatible app executable |
 | `model-improve` | Standalone WASM package for evaluation/release decision gate | Yes | Training/evaluation runner | Compatible app executable |
 | `daily-create` | Standalone WASM package + canvas-plan facts + visual-parameter package | Yes | Renderer/archive connector | Compatible app executable |
@@ -55,8 +55,8 @@ complete.
 
 ## Remaining honest gaps
 
-1. `review-prepare` remains blocked on the advisory LMM boundary and its final
-   host/external execution rules.
+No remaining honest executable app-boundary gaps remain in the checked-in
+Callweave capability set.
 
 ## Local checks
 
