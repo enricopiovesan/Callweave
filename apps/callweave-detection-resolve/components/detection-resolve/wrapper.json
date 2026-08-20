@@ -1,0 +1,5 @@
+{
+  "kind": "compatible_wrapper",
+  "capability_id": "callweave.detection-resolve",
+  "notes": "Thin wrapper only. Host-owned evidence/context dereference and append-only governed result persistence remain outside the portable contract."
+}

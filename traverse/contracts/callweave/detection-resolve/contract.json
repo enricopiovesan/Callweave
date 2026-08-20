@@ -11,7 +11,7 @@
     "contact": "maintainers@callweave.local"
   },
   "summary": "Resolve model evidence through deterministic ecological and hardware policy.",
-  "description": "Scores plausibility, applies range/season and hardware filters, evaluates model agreement, aggregates repeat detections, quarantines surprising biological evidence, and resolves the result into a governed observation state. This is the authority boundary: it preserves rare evidence but rejects impossible hardware claims.\n\nImplementation status: contract-first. A WASM component/agent will be generated after contract approval. The host provides only the declared adapter authority.\n\nUse-case coverage: one happy path plus invalid-input, dependency-unavailable, and policy-denied unhappy paths.",
+  "description": "Scores plausibility, applies range/season and hardware filters, evaluates model agreement, aggregates repeat detections, quarantines surprising biological evidence, and resolves the result into a governed observation state. This is the authority boundary: it preserves rare evidence but rejects impossible hardware claims.\n\nImplementation status: host-composed contract over a reusable pure resolver kernel. The host resolves app-level evidence/context references, invokes the deterministic resolver policy, appends the governed result, and emits the corresponding event using only the declared adapter authority.\n\nUse-case coverage: four governed happy-path outcomes plus invalid-input, dependency-unavailable, and policy-denied unhappy paths.",
   "use_cases": [
     {
       "scenario": "As a Callweave Runtime, I want resolve model evidence through deterministic ecological and hardware policy. so that the governed workflow can continue with traceable evidence.",
@@ -528,9 +528,9 @@
       "cloud"
     ],
     "constraints": {
-      "host_api_access": "none",
+      "host_api_access": "exception_required",
       "network_access": "forbidden",
-      "filesystem_access": "none"
+      "filesystem_access": "sandbox_only"
     }
   },
   "policies": [
@@ -556,7 +556,9 @@
     "adr_refs": [
       "DECISION_RECORD.md"
     ],
-    "exception_refs": []
+    "exception_refs": [
+      "callweave-host-adapter-boundary"
+    ]
   },
   "evidence": [],
   "domain_schema_ref": "schemas/domain-records.schema.json",

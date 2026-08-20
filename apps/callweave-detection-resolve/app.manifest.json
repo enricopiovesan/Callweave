@@ -1,0 +1,56 @@
+{
+  "app_id": "callweave.detection-resolve-test",
+  "version": "0.1.0",
+  "schema_version": "1.0.0",
+  "workspace_defaults": {
+    "workspace_id": "callweave-detection-resolve-local",
+    "registry_scope": "private"
+  },
+  "components": [
+    {
+      "component_id": "callweave.detection-resolve-compatible-component",
+      "version": "0.1.0",
+      "digest": "sha256:a206034c982504cb977c7bac0a7d510ed867fdbbd0553e22c90a486cbc882803",
+      "manifest_path": "components/detection-resolve/component.manifest.json"
+    }
+  ],
+  "workflows": [
+    {
+      "workflow_id": "callweave.detection-resolve-test.workflow",
+      "workflow_version": "0.1.0",
+      "path": "workflows/detection-resolve/workflow.json"
+    }
+  ],
+  "model_dependencies": [],
+  "config_schema": {
+    "type": "object",
+    "required": [
+      "workspace_id"
+    ],
+    "properties": {
+      "workspace_id": {
+        "type": "string"
+      },
+      "mode": {
+        "type": "string",
+        "enum": [
+          "compatible-test"
+        ]
+      }
+    },
+    "additionalProperties": false
+  },
+  "default_config": {
+    "workspace_id": "callweave-detection-resolve-local",
+    "mode": "compatible-test"
+  },
+  "placement_policy": {
+    "preferred_targets": [
+      "local"
+    ],
+    "allow_fallback": false
+  },
+  "public_surfaces": [
+    "cli"
+  ]
+}

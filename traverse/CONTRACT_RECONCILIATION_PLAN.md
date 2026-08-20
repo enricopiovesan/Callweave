@@ -6,7 +6,7 @@ This file records the remaining app-level contracts that cannot be honestly
 made executable by repeating the compatible-wrapper pattern. These require
 contract/package reconciliation first.
 
-## 1. `callweave.detection-resolve`
+## 1. `callweave.detection-resolve` — resolved on 2026-08-20
 
 ### Current state
 
@@ -44,32 +44,37 @@ That means:
 - therefore its current ref-shaped input/output surface is not aligned with a
   truly pure executable package boundary
 
-### Required decision
+### Decision taken
 
-Pick one of these and make it explicit:
+Choice 2 was adopted.
 
-1. **Pure package alignment**
-   - narrow the app-level contract until it matches a pure executable boundary
-   - pass concrete evidence facts and policy facts directly
-   - move record lookup and durable persistence into surrounding workflow/app
-     orchestration
+- the app-level contract now explicitly models a host-owned composition
+  boundary
+- `host_api_access` is now `exception_required`
+- a compatible Traverse bundle now exists at
+  `apps/callweave-detection-resolve/`
+- the bundle passes smoke, generate, validate, and register locally
 
-2. **Host-owned composition boundary**
-   - keep the current ref-shaped app-level contract
-   - change the contract to `host_api_access: exception_required`
-   - define an explicit composition layer:
-     - host resolves evidence/context refs
-     - pure `detection.resolve` package evaluates policy
-     - host appends durable result and emits governed event
+### Why this was the correct choice
 
-### Recommended choice
+The app-level surface already modeled:
 
-Choice 2 is the cleaner fit for the current app-level contract, because the
-existing draft already models a host-owned result record and emitted event.
+- ref-shaped inputs
+- governed result refs
+- emitted governed event ids
+- trace/idempotency envelopes
 
-That change should be made explicitly rather than implied.
+That is an app boundary, not the lower-level reusable pure kernel boundary.
 
-## 2. `callweave.audio-prepare`
+### Remaining note
+
+The reusable `capabilities/detection.resolve/` package still exists as the pure
+deterministic resolver kernel. The repo may later add an explicit checked-in
+composition layer that maps the app-level inputs to that pure package at a
+finer-grained implementation level, but the contract boundary itself is now
+coherent.
+
+## 2. `callweave.audio-prepare` — resolved on 2026-08-20
 
 ### Current state
 
@@ -92,31 +97,32 @@ If the package is truly pure and has no host access:
 - it cannot dereference `recording_ref`
 - it cannot persist or allocate `prepared_audio_ref`
 
-### Required decision
+### Decision taken
 
-Pick one of these and make it explicit:
+Choice 2 was adopted.
 
-1. **Pure package boundary**
-   - replace ref-shaped I/O with direct payload facts
-   - example: PCM/windowing inputs and deterministic preparation outputs
-   - host/workflow owns recording lookup and durable asset persistence
+- the app-level contract now explicitly models a host-owned composition
+  boundary
+- `host_api_access` is now `exception_required`
+- a compatible Traverse bundle now exists at
+  `apps/callweave-audio-prepare/`
+- the bundle passes smoke, generate, validate, and register locally
 
-2. **Host-integrated app boundary**
-   - keep `recording_ref` and `prepared_audio_ref`
-   - change contract to `host_api_access: exception_required`
-   - declare the host-owned recording/object-store boundary explicitly
+### Why this was the correct choice
 
-### Recommended choice
+The app-level surface already modeled ref-based recording lookup and governed
+prepared-audio outputs. That is an app boundary, not a narrower reusable pure
+kernel boundary.
 
-Choice 2 is the better fit if this contract is intended to stay at the
-Callweave app layer. Choice 1 is better only if the team wants a narrower
-reusable pure package in addition to the app-level capability.
+### Remaining note
+
+The repo may still add a finer-grained pure preparation package later, but the
+current app-level contract is now coherent and executable as a compatible
+bundle.
 
 ## 3. Practical next implementation order
 
-1. Resolve `callweave.detection-resolve`
-2. Resolve `callweave.audio-prepare`
-3. After that, continue with the host-authority gaps:
+1. Continue with the host-authority gaps:
    - `location-initialize`
    - `operations-recover`
    - `model-improve`

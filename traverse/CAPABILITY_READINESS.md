@@ -12,13 +12,13 @@ complete.
 | `location-initialize` | Standalone WASM package + candidate-set normalization/versioning | No | Source lookup + private persistence | Logic ready; app blocked on missing source/network authority |
 | `audio-source-configure` | Configuration validation only | Yes | Microphone discovery/calibration | Compatible app executable |
 | `audio-capture` | Segment metadata policy | Yes | Microphone + file finalization | Compatible app executable |
-| `audio-prepare` | Local WAV/FLAC decode, resample, windowing | No | Recording reference/storage; no executable package checked in yet for the app-level contract | Pure logic ready; app reconciliation needed |
+| `audio-prepare` | Local WAV/FLAC decode, resample, windowing | Yes | Recording reference/storage | Reconciled compatible app executable |
 | `coverage-assess` | Standalone WASM package | Yes | Day-record input/storage | Compatible app executable |
 | `evidence-retain` | Standalone WASM package | Yes | Retention execution/storage | Compatible app executable |
 | `privacy-protect` | Standalone privacy gate evaluator + fail-closed review gate; Silero VAD readiness verified | Yes | Export sanitization + field/privacy adapter | Compatible app executable |
 | `model-manage` | Checksum/license/release gate | Yes | Model cache activation | Compatible app executable |
 | `acoustics-classify` | Local BirdNET/Perch evidence runner | Yes | Prepared-audio/model host binding | Compatible app executable |
-| `detection-resolve` | Standalone WASM package + calibrated policy resolver | No | Candidate/evidence record reads; existing pure package contract does not match `callweave.detection-resolve` | Pure logic ready; contract/package reconciliation needed |
+| `detection-resolve` | Standalone WASM package + calibrated policy resolver | Yes | Candidate/evidence record reads | Reconciled compatible app executable |
 | `observation-manage` | Standalone WASM package + append-only observation transition | Yes | Durable state connector | Compatible app executable |
 | `unknown-organize` | Embedding clustering + curation | Yes | Embedding/evidence record reads | Compatible app executable |
 | `review-prepare` | Standalone WASM package for privacy-gated advisory package policy | No | Privacy model + optional LMM connector | Pure logic ready; external-boundary reconciliation needed |
@@ -37,9 +37,10 @@ complete.
   locally through current Traverse CLI flows.
 - The following Callweave app-level compatible Traverse bundles now also
   validate and register locally:
-  `audio-source-configure`, `audio-capture`, `acoustics-classify`,
-  `privacy-protect`, `model-manage`, `coverage-assess`, `daily-close`,
-  `daily-create`, `daily-revise`, `evidence-retain`, `observation-manage`,
+  `audio-source-configure`, `audio-capture`, `audio-prepare`,
+  `acoustics-classify`, `privacy-protect`, `model-manage`,
+  `coverage-assess`, `detection-resolve`, `daily-close`, `daily-create`,
+  `daily-revise`, `evidence-retain`, `observation-manage`,
   `knowledge-manage`, and `unknown-organize`.
 - The connector-free business rules for `location-initialize` have
   deterministic JSON fixtures under `fixtures/pure-capabilities/`.
@@ -53,17 +54,10 @@ complete.
 
 ## Remaining honest gaps
 
-1. `callweave.audio-prepare` is a pure app-level contract (`host_api_access:
-   none`) but has no checked-in executable package or bundle. It needs real
-   package authoring or explicit composition over an approved pure package.
-2. `callweave.detection-resolve` has an existing reusable pure package
-   (`detection.resolve`), but the package contract is not the same as the
-   broader app-level draft contract. This requires explicit contract/package
-   reconciliation rather than silent reuse.
-3. `location-initialize`, `operations-recover`, and `model-improve` depend on
+1. `location-initialize`, `operations-recover`, and `model-improve` depend on
    host authority that is not yet declared in the checked-in local host-adapter
    surface.
-4. `review-prepare` remains blocked on the advisory LMM boundary and its final
+2. `review-prepare` remains blocked on the advisory LMM boundary and its final
    host/external execution rules.
 
 ## Local checks

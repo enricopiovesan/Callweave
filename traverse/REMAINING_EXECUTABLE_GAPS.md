@@ -5,43 +5,7 @@
 This file records the remaining Callweave app-level contracts that are not yet
 honestly executable through the checked-in Traverse bundles.
 
-## 1. `callweave.audio-prepare`
-
-Current state:
-
-- Draft app-level contract exists at
-  `traverse/contracts/callweave/audio-prepare/contract.json`.
-- The contract declares `host_api_access: none`.
-- No checked-in executable package exists for this app-level contract.
-
-What this means:
-
-- This should not be implemented as another compatible host wrapper.
-- It needs either:
-  - a dedicated pure package for the app-level contract, or
-  - an explicit approved composition over existing lower-level pure packages.
-- See `traverse/CONTRACT_RECONCILIATION_PLAN.md` for the concrete mismatch.
-
-## 2. `callweave.detection-resolve`
-
-Current state:
-
-- Draft app-level contract exists at
-  `traverse/contracts/callweave/detection-resolve/contract.json`.
-- A reusable pure package exists at `capabilities/detection.resolve/`.
-- The two contracts are not the same surface.
-
-What this means:
-
-- The existing pure package cannot be silently reused as the app-level
-  executable implementation.
-- The repo needs one of:
-  - contract alignment between the app-level and package-level surfaces, or
-  - a thin, explicit app-level composition layer that maps one contract to the
-    other with checked-in rules and evidence.
-- See `traverse/CONTRACT_RECONCILIATION_PLAN.md` for the concrete mismatch.
-
-## 3. `callweave.location-initialize`
+## 1. `callweave.location-initialize`
 
 Current state:
 
@@ -55,7 +19,7 @@ What this means:
 - Not blocked by Traverse packaging mechanics.
 - Blocked by missing declared host authority in this repo.
 
-## 4. `callweave.operations-recover`
+## 2. `callweave.operations-recover`
 
 Current state:
 
@@ -69,7 +33,7 @@ What this means:
 - Not blocked by Traverse packaging mechanics.
 - Blocked by missing declared host authority in this repo.
 
-## 5. `callweave.model-improve`
+## 3. `callweave.model-improve`
 
 Current state:
 
@@ -82,7 +46,7 @@ What this means:
 - Not blocked by Traverse packaging mechanics.
 - Blocked by missing declared model-training/release authority in this repo.
 
-## 6. `callweave.review-prepare`
+## 4. `callweave.review-prepare`
 
 Current state:
 

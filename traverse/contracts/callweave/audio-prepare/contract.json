@@ -11,7 +11,7 @@
     "contact": "maintainers@callweave.local"
   },
   "summary": "Create model-ready windows and evidence assets from an immutable recording.",
-  "description": "Creates model-specific windows, resamples audio, generates spectrograms, measures soundscape quality, and extracts proof clips. The master recording remains immutable. Deterministic DSP is preferred; any optional quality model must be declared separately and cannot change source audio.\n\nImplementation status: contract-first. A WASM component/agent will be generated after contract approval. The host provides only the declared adapter authority.\n\nUse-case coverage: one happy path plus invalid-input, dependency-unavailable, and policy-denied unhappy paths.",
+  "description": "Creates model-specific windows, resamples audio, generates spectrograms, measures soundscape quality, and extracts proof clips. The master recording remains immutable. Deterministic DSP is preferred; any optional quality model must be declared separately and cannot change source audio.\n\nImplementation status: host-composed contract over deterministic audio-preparation logic. The host resolves the app-level recording reference, executes the preparation pipeline under declared local authority, and persists the prepared result using only the declared adapter boundary.\n\nUse-case coverage: one happy path plus invalid-input, dependency-unavailable, and policy-denied unhappy paths.",
   "use_cases": [
     {
       "scenario": "As a Callweave Runtime, I want create model-ready windows and evidence assets from an immutable recording. so that the governed workflow can continue with traceable evidence.",
@@ -369,7 +369,7 @@
       "edge"
     ],
     "constraints": {
-      "host_api_access": "none",
+      "host_api_access": "exception_required",
       "network_access": "forbidden",
       "filesystem_access": "sandbox_only"
     }
@@ -397,7 +397,9 @@
     "adr_refs": [
       "DECISION_RECORD.md"
     ],
-    "exception_refs": []
+    "exception_refs": [
+      "callweave-host-adapter-boundary"
+    ]
   },
   "evidence": [],
   "domain_schema_ref": "schemas/domain-records.schema.json",

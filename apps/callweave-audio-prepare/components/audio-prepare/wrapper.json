@@ -1,0 +1,5 @@
+{
+  "kind": "compatible_wrapper",
+  "capability_id": "callweave.audio-prepare",
+  "notes": "Thin wrapper only. Host-owned recording dereference, prepared asset persistence, and append-only prepared-audio state remain outside the portable contract."
+}
