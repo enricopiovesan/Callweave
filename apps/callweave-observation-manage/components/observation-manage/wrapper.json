@@ -1,0 +1,5 @@
+{
+  "kind": "compatible_wrapper",
+  "capability_id": "callweave.observation-manage",
+  "notes": "Thin wrapper only. Host-owned append-only observation history and review-governed supersession remain outside the portable contract."
+}

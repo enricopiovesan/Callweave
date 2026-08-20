@@ -1,0 +1,56 @@
+{
+  "app_id": "callweave.observation-manage-test",
+  "version": "0.1.0",
+  "schema_version": "1.0.0",
+  "workspace_defaults": {
+    "workspace_id": "callweave-observation-manage-local",
+    "registry_scope": "private"
+  },
+  "components": [
+    {
+      "component_id": "callweave.observation-manage-compatible-component",
+      "version": "0.1.0",
+      "digest": "sha256:0b4eea5ef6b8aec30bab400bcb8ba8b588dee3484742fd79df3b5cb7d9b32c69",
+      "manifest_path": "components/observation-manage/component.manifest.json"
+    }
+  ],
+  "workflows": [
+    {
+      "workflow_id": "callweave.observation-manage-test.workflow",
+      "workflow_version": "0.1.0",
+      "path": "workflows/observation-manage/workflow.json"
+    }
+  ],
+  "model_dependencies": [],
+  "config_schema": {
+    "type": "object",
+    "required": [
+      "workspace_id"
+    ],
+    "properties": {
+      "workspace_id": {
+        "type": "string"
+      },
+      "mode": {
+        "type": "string",
+        "enum": [
+          "compatible-test"
+        ]
+      }
+    },
+    "additionalProperties": false
+  },
+  "default_config": {
+    "workspace_id": "callweave-observation-manage-local",
+    "mode": "compatible-test"
+  },
+  "placement_policy": {
+    "preferred_targets": [
+      "local"
+    ],
+    "allow_fallback": false
+  },
+  "public_surfaces": [
+    "cli"
+  ]
+}

@@ -126,6 +126,18 @@ through a thin wrapper and a host-side smoke harness. This extends the checked-
 in connector-bound path into governed retention classification and append-only
 lifecycle decision recording.
 
+A tenth compatible-mode host-integrated test bundle now lives at
+`../apps/callweave-observation-manage/`. It validates and registers a single
+`callweave.observation-manage` component in `execution_mode: compatible`,
+through a thin wrapper and a host-side smoke harness. This extends the checked-
+in connector-bound path into append-only observation governance.
+
+A eleventh compatible-mode host-integrated test bundle now lives at
+`../apps/callweave-knowledge-manage/`. It validates and registers a single
+`callweave.knowledge-manage` component in `execution_mode: compatible`,
+through a thin wrapper and a host-side smoke harness. This extends the checked-
+in connector-bound path into reviewer-governed knowledge versioning.
+
 The connector-free policy and transition rules that are not yet packaged as
 WASI artifacts are covered by deterministic JSON fixtures in
 `../fixtures/pure-capabilities/`. These fixtures are the current executable

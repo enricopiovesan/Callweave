@@ -183,3 +183,29 @@ npm run traverse:evidence-retain:generate
 npm run traverse:evidence-retain:validate
 npm run traverse:evidence-retain:register
 ```
+
+A tenth compatible-mode test app now lives in
+[`apps/callweave-observation-manage`](apps/callweave-observation-manage). It
+exercises the registration path for `callweave.observation-manage` without
+claiming direct durable history mutation outside the declared wrapper
+boundary.
+
+```bash
+npm run observation-manage:compatible:smoke
+npm run traverse:observation-manage:generate
+npm run traverse:observation-manage:validate
+npm run traverse:observation-manage:register
+```
+
+An eleventh compatible-mode test app now lives in
+[`apps/callweave-knowledge-manage`](apps/callweave-knowledge-manage). It
+exercises the registration path for `callweave.knowledge-manage` without
+claiming direct durable knowledge promotion outside the declared wrapper
+boundary.
+
+```bash
+npm run knowledge-manage:compatible:smoke
+npm run traverse:knowledge-manage:generate
+npm run traverse:knowledge-manage:validate
+npm run traverse:knowledge-manage:register
+```

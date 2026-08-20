@@ -1,0 +1,5 @@
+{
+  "kind": "compatible_wrapper",
+  "capability_id": "callweave.knowledge-manage",
+  "notes": "Thin wrapper only. Host-owned knowledge version history and reviewer-controlled promotion remain outside the portable contract."
+}

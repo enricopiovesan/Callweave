@@ -1,0 +1,56 @@
+{
+  "app_id": "callweave.knowledge-manage-test",
+  "version": "0.1.0",
+  "schema_version": "1.0.0",
+  "workspace_defaults": {
+    "workspace_id": "callweave-knowledge-manage-local",
+    "registry_scope": "private"
+  },
+  "components": [
+    {
+      "component_id": "callweave.knowledge-manage-compatible-component",
+      "version": "0.1.0",
+      "digest": "sha256:c8db646ffe7f5fb40b8e23c146dedbe2a2014d981ab63552824a10f2177f65b5",
+      "manifest_path": "components/knowledge-manage/component.manifest.json"
+    }
+  ],
+  "workflows": [
+    {
+      "workflow_id": "callweave.knowledge-manage-test.workflow",
+      "workflow_version": "0.1.0",
+      "path": "workflows/knowledge-manage/workflow.json"
+    }
+  ],
+  "model_dependencies": [],
+  "config_schema": {
+    "type": "object",
+    "required": [
+      "workspace_id"
+    ],
+    "properties": {
+      "workspace_id": {
+        "type": "string"
+      },
+      "mode": {
+        "type": "string",
+        "enum": [
+          "compatible-test"
+        ]
+      }
+    },
+    "additionalProperties": false
+  },
+  "default_config": {
+    "workspace_id": "callweave-knowledge-manage-local",
+    "mode": "compatible-test"
+  },
+  "placement_policy": {
+    "preferred_targets": [
+      "local"
+    ],
+    "allow_fallback": false
+  },
+  "public_surfaces": [
+    "cli"
+  ]
+}

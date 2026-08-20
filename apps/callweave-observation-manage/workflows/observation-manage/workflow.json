@@ -1,0 +1,210 @@
+{
+  "kind": "workflow_definition",
+  "schema_version": "1.0.0",
+  "id": "callweave.observation-manage-test.workflow",
+  "name": "observation-manage-test",
+  "version": "0.1.0",
+  "lifecycle": "active",
+  "owner": {
+    "team": "callweave",
+    "contact": "maintainers@callweave.local"
+  },
+  "summary": "Exercise the compatible observation-manage component through the app registration path.",
+  "inputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "request_id",
+        "workspace_id",
+        "location_id",
+        "idempotency_key",
+        "resolution_ref",
+        "review_decision"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "workspace_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "location_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "idempotency_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "runtime_context": {
+          "type": "object",
+          "required": [
+            "input_reference_state",
+            "dependency_state",
+            "policy_state"
+          ],
+          "properties": {
+            "input_reference_state": {
+              "type": "string",
+              "enum": [
+                "resolvable",
+                "unresolvable"
+              ]
+            },
+            "dependency_state": {
+              "type": "string",
+              "enum": [
+                "available",
+                "unavailable"
+              ]
+            },
+            "policy_state": {
+              "type": "string",
+              "enum": [
+                "allowed",
+                "denied"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "resolution_ref": {
+          "type": "object",
+          "required": [
+            "id",
+            "record_type"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "version": {
+              "type": "string"
+            },
+            "metadata": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {}
+            },
+            "record_type": {
+              "type": "string",
+              "const": "Resolution"
+            }
+          },
+          "additionalProperties": false
+        },
+        "review_decision": {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "version": {
+              "type": "string"
+            },
+            "metadata": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {}
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "outputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "status",
+        "reason_code",
+        "observation_ref",
+        "trace_ref",
+        "warnings"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "completed",
+            "rejected",
+            "deferred"
+          ]
+        },
+        "reason_code": {
+          "type": "string",
+          "enum": [
+            "ok",
+            "invalid_input",
+            "dependency_unavailable",
+            "policy_denied"
+          ]
+        },
+        "observation_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "trace_ref": {
+          "type": "string"
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "nodes": [
+    {
+      "node_id": "manage_observation",
+      "capability_id": "callweave.observation-manage",
+      "capability_version": "0.1.0",
+      "input": {
+        "from_workflow_input": [
+          "request_id",
+          "workspace_id",
+          "location_id",
+          "idempotency_key",
+          "runtime_context",
+          "resolution_ref",
+          "review_decision"
+        ]
+      },
+      "output": {
+        "to_workflow_state": [
+          "status",
+          "reason_code",
+          "observation_ref",
+          "trace_ref",
+          "warnings"
+        ]
+      }
+    }
+  ],
+  "edges": [],
+  "start_node": "manage_observation",
+  "terminal_nodes": [
+    "manage_observation"
+  ],
+  "tags": [
+    "callweave",
+    "compatible",
+    "host-adapter",
+    "observation-manage"
+  ],
+  "governing_spec": "007-workflow-registry-traversal"
+}
