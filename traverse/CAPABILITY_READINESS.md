@@ -1,38 +1,46 @@
 # Callweave capability readiness
 
 **Last verified:** 2026-08-20. “Ready” below means the portable business rule
-exists and has deterministic smoke or fixture coverage. It does not mean the
-full application contract is active or that every host adapter is already wired
-for Callweave.
+exists and has deterministic smoke or fixture coverage. “Executable app
+coverage” means the corresponding Callweave app-level surface has a checked-in
+Traverse bundle that passes smoke, generate, validate, and register locally. It
+does not mean the full production host adapter or external-provider boundary is
+complete.
 
-| Contract | Portable business logic | Remaining activation boundary | Readiness |
+| Contract | Portable business logic | Executable app coverage | Remaining activation boundary | Readiness |
 |---|---|---|---|
-| `location-initialize` | Standalone WASM package + candidate-set normalization/versioning | Source lookup + private persistence | Logic ready |
-| `audio-source-configure` | Configuration validation only | Microphone discovery/calibration | Adapter required |
-| `audio-capture` | Segment metadata policy | Microphone + file finalization | Adapter required |
-| `audio-prepare` | Local WAV/FLAC decode, resample, windowing | Recording reference/storage | Logic ready |
-| `coverage-assess` | Standalone WASM package | Day-record input/storage | Logic ready |
-| `evidence-retain` | Standalone WASM package | Retention execution/storage | Logic ready |
-| `privacy-protect` | Standalone privacy gate evaluator + fail-closed review gate; Silero VAD readiness verified | Export sanitization + field/privacy adapter | Evaluation + adapter required |
-| `model-manage` | Checksum/license/release gate | Model cache activation | Logic ready |
-| `acoustics-classify` | Local BirdNET/Perch evidence runner | Prepared-audio/model host binding | Logic ready |
-| `detection-resolve` | Standalone WASM package + calibrated policy resolver | Candidate/evidence record reads | Logic ready |
-| `observation-manage` | Standalone WASM package + append-only observation transition | Durable state connector | Logic ready |
-| `unknown-organize` | Embedding clustering + curation | Embedding/evidence record reads | Logic ready |
-| `review-prepare` | Standalone WASM package for privacy-gated advisory package policy | Privacy model + optional LMM connector | Logic ready |
-| `knowledge-manage` | Standalone WASM package + human-approved version transition | Durable state connector | Logic ready |
-| `model-improve` | Standalone WASM package for evaluation/release decision gate | Training/evaluation runner | Logic ready |
-| `daily-create` | Standalone WASM package + canvas-plan facts + visual-parameter package | Renderer/archive connector | Logic ready |
-| `daily-revise` | Immutable revision package | Artifact state/archive connector | Logic ready |
-| `daily-close` | Standalone WASM package + idempotent close calculation | Scheduler + durable state connector | Logic ready |
-| `operations-recover` | Standalone WASM package + idempotent replay planning | Durable state/backup connector | Logic ready |
+| `location-initialize` | Standalone WASM package + candidate-set normalization/versioning | No | Source lookup + private persistence | Logic ready; app blocked on missing source/network authority |
+| `audio-source-configure` | Configuration validation only | Yes | Microphone discovery/calibration | Compatible app executable |
+| `audio-capture` | Segment metadata policy | Yes | Microphone + file finalization | Compatible app executable |
+| `audio-prepare` | Local WAV/FLAC decode, resample, windowing | No | Recording reference/storage; no executable package checked in yet for the app-level contract | Pure logic ready; app reconciliation needed |
+| `coverage-assess` | Standalone WASM package | Yes | Day-record input/storage | Compatible app executable |
+| `evidence-retain` | Standalone WASM package | Yes | Retention execution/storage | Compatible app executable |
+| `privacy-protect` | Standalone privacy gate evaluator + fail-closed review gate; Silero VAD readiness verified | Yes | Export sanitization + field/privacy adapter | Compatible app executable |
+| `model-manage` | Checksum/license/release gate | Yes | Model cache activation | Compatible app executable |
+| `acoustics-classify` | Local BirdNET/Perch evidence runner | Yes | Prepared-audio/model host binding | Compatible app executable |
+| `detection-resolve` | Standalone WASM package + calibrated policy resolver | No | Candidate/evidence record reads; existing pure package contract does not match `callweave.detection-resolve` | Pure logic ready; contract/package reconciliation needed |
+| `observation-manage` | Standalone WASM package + append-only observation transition | Yes | Durable state connector | Compatible app executable |
+| `unknown-organize` | Embedding clustering + curation | Yes | Embedding/evidence record reads | Compatible app executable |
+| `review-prepare` | Standalone WASM package for privacy-gated advisory package policy | No | Privacy model + optional LMM connector | Pure logic ready; external-boundary reconciliation needed |
+| `knowledge-manage` | Standalone WASM package + human-approved version transition | Yes | Durable state connector | Compatible app executable |
+| `model-improve` | Standalone WASM package for evaluation/release decision gate | No | Training/evaluation runner | Logic ready; app blocked on missing training/release authority |
+| `daily-create` | Standalone WASM package + canvas-plan facts + visual-parameter package | Yes | Renderer/archive connector | Compatible app executable |
+| `daily-revise` | Immutable revision package | Yes | Artifact state/archive connector | Compatible app executable |
+| `daily-close` | Standalone WASM package + idempotent close calculation | Yes | Scheduler + durable state connector | Compatible app executable |
+| `operations-recover` | Standalone WASM package + idempotent replay planning | No | Durable state/backup/export connector | Logic ready; app blocked on missing network/backup authority |
 
 ## Binding rules
 
 - The seventeen standalone WASI packages under `capabilities/` are executable now.
-- Those same seventeen packages are now bundled as a real Traverse application
+- Those same seventeen packages are bundled as a real Traverse application
   under `apps/callweave-foundation/`, and that bundle validates and registers
   locally through current Traverse CLI flows.
+- The following Callweave app-level compatible Traverse bundles now also
+  validate and register locally:
+  `audio-source-configure`, `audio-capture`, `acoustics-classify`,
+  `privacy-protect`, `model-manage`, `coverage-assess`, `daily-close`,
+  `daily-create`, `daily-revise`, `evidence-retain`, `observation-manage`,
+  `knowledge-manage`, and `unknown-organize`.
 - The connector-free business rules for `location-initialize` have
   deterministic JSON fixtures under `fixtures/pure-capabilities/`.
 - `src/business-logic.mjs` owns portable policy and transition rules.
@@ -42,6 +50,21 @@ for Callweave.
 - All `traverse/contracts/callweave/*` remain `draft` until the corresponding
   Callweave application capabilities have executable package coverage and
   governed evidence, not because Traverse connector tickets are still open.
+
+## Remaining honest gaps
+
+1. `callweave.audio-prepare` is a pure app-level contract (`host_api_access:
+   none`) but has no checked-in executable package or bundle. It needs real
+   package authoring or explicit composition over an approved pure package.
+2. `callweave.detection-resolve` has an existing reusable pure package
+   (`detection.resolve`), but the package contract is not the same as the
+   broader app-level draft contract. This requires explicit contract/package
+   reconciliation rather than silent reuse.
+3. `location-initialize`, `operations-recover`, and `model-improve` depend on
+   host authority that is not yet declared in the checked-in local host-adapter
+   surface.
+4. `review-prepare` remains blocked on the advisory LMM boundary and its final
+   host/external execution rules.
 
 ## Local checks
 
