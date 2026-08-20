@@ -99,6 +99,26 @@ through a thin wrapper and a host-side smoke harness. This extends the checked-
 in connector-bound path by closing the device-side recording boundary between
 source configuration and prepared-audio processing.
 
+A sixth compatible-mode host-integrated test bundle now lives at
+`../apps/callweave-daily-close/`. It validates and registers a single
+`callweave.daily-close` component in `execution_mode: compatible`,
+through a thin wrapper and a host-side smoke harness. This extends the checked-
+in connector-bound path into scheduler-adjacent local-day closure and
+append-only close-record authority.
+
+A seventh compatible-mode host-integrated test bundle now lives at
+`../apps/callweave-daily-revise/`. It validates and registers a single
+`callweave.daily-revise` component in `execution_mode: compatible`,
+through a thin wrapper and a host-side smoke harness. This extends the checked-
+in connector-bound path into immutable daily-canvas revision handling.
+
+A eighth compatible-mode host-integrated test bundle now lives at
+`../apps/callweave-daily-create/`. It validates and registers a single
+`callweave.daily-create` component in `execution_mode: compatible`,
+through a thin wrapper and a host-side smoke harness. This extends the checked-
+in connector-bound path into deterministic daily-canvas creation and archive
+publication boundaries.
+
 The connector-free policy and transition rules that are not yet packaged as
 WASI artifacts are covered by deterministic JSON fixtures in
 `../fixtures/pure-capabilities/`. These fixtures are the current executable

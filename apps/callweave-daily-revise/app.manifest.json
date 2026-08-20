@@ -1,0 +1,56 @@
+{
+  "app_id": "callweave.daily-revise-test",
+  "version": "0.1.0",
+  "schema_version": "1.0.0",
+  "workspace_defaults": {
+    "workspace_id": "callweave-daily-revise-local",
+    "registry_scope": "private"
+  },
+  "components": [
+    {
+      "component_id": "callweave.daily-revise-compatible-component",
+      "version": "0.1.0",
+      "digest": "sha256:b6124cb07bbfddb19d2a2b70571935c838481ab91a126d77c0cba4324047a9b1",
+      "manifest_path": "components/daily-revise/component.manifest.json"
+    }
+  ],
+  "workflows": [
+    {
+      "workflow_id": "callweave.daily-revise-test.workflow",
+      "workflow_version": "0.1.0",
+      "path": "workflows/daily-revise/workflow.json"
+    }
+  ],
+  "model_dependencies": [],
+  "config_schema": {
+    "type": "object",
+    "required": [
+      "workspace_id"
+    ],
+    "properties": {
+      "workspace_id": {
+        "type": "string"
+      },
+      "mode": {
+        "type": "string",
+        "enum": [
+          "compatible-test"
+        ]
+      }
+    },
+    "additionalProperties": false
+  },
+  "default_config": {
+    "workspace_id": "callweave-daily-revise-local",
+    "mode": "compatible-test"
+  },
+  "placement_policy": {
+    "preferred_targets": [
+      "local"
+    ],
+    "allow_fallback": false
+  },
+  "public_surfaces": [
+    "cli"
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  "kind": "compatible_wrapper",
+  "capability_id": "callweave.daily-create",
+  "notes": "Thin wrapper only. Host-owned canvas rendering, artifact persistence, and append-only publication remain outside the portable contract."
+}

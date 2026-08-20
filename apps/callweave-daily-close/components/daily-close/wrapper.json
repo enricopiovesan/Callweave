@@ -1,0 +1,5 @@
+{
+  "kind": "compatible_wrapper",
+  "capability_id": "callweave.daily-close",
+  "notes": "Thin wrapper only. Host-owned scheduling, local-day resolution, and append-only close persistence remain outside the portable contract."
+}

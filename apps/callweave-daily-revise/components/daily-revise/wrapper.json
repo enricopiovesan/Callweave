@@ -1,0 +1,5 @@
+{
+  "kind": "compatible_wrapper",
+  "capability_id": "callweave.daily-revise",
+  "notes": "Thin wrapper only. Host-owned artifact persistence and append-only revision history remain outside the portable contract."
+}

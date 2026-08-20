@@ -134,3 +134,39 @@ npm run traverse:audio-capture:generate
 npm run traverse:audio-capture:validate
 npm run traverse:audio-capture:register
 ```
+
+A sixth compatible-mode test app now lives in
+[`apps/callweave-daily-close`](apps/callweave-daily-close). It exercises the
+registration path for `callweave.daily-close` without claiming real scheduler
+or durable close-record execution inside the wrapper.
+
+```bash
+npm run daily-close:compatible:smoke
+npm run traverse:daily-close:generate
+npm run traverse:daily-close:validate
+npm run traverse:daily-close:register
+```
+
+A seventh compatible-mode test app now lives in
+[`apps/callweave-daily-revise`](apps/callweave-daily-revise). It exercises the
+registration path for `callweave.daily-revise` without claiming real artifact
+rendering or revision persistence inside the wrapper.
+
+```bash
+npm run daily-revise:compatible:smoke
+npm run traverse:daily-revise:generate
+npm run traverse:daily-revise:validate
+npm run traverse:daily-revise:register
+```
+
+An eighth compatible-mode test app now lives in
+[`apps/callweave-daily-create`](apps/callweave-daily-create). It exercises the
+registration path for `callweave.daily-create` without claiming real canvas
+rendering or publication persistence inside the wrapper.
+
+```bash
+npm run daily-create:compatible:smoke
+npm run traverse:daily-create:generate
+npm run traverse:daily-create:validate
+npm run traverse:daily-create:register
+```

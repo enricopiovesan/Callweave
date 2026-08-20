@@ -1,0 +1,56 @@
+{
+  "app_id": "callweave.daily-create-test",
+  "version": "0.1.0",
+  "schema_version": "1.0.0",
+  "workspace_defaults": {
+    "workspace_id": "callweave-daily-create-local",
+    "registry_scope": "private"
+  },
+  "components": [
+    {
+      "component_id": "callweave.daily-create-compatible-component",
+      "version": "0.1.0",
+      "digest": "sha256:0aa0b4916a2808ffaa78ca425813ef086dc4a3284f1d49db87806fab1982b270",
+      "manifest_path": "components/daily-create/component.manifest.json"
+    }
+  ],
+  "workflows": [
+    {
+      "workflow_id": "callweave.daily-create-test.workflow",
+      "workflow_version": "0.1.0",
+      "path": "workflows/daily-create/workflow.json"
+    }
+  ],
+  "model_dependencies": [],
+  "config_schema": {
+    "type": "object",
+    "required": [
+      "workspace_id"
+    ],
+    "properties": {
+      "workspace_id": {
+        "type": "string"
+      },
+      "mode": {
+        "type": "string",
+        "enum": [
+          "compatible-test"
+        ]
+      }
+    },
+    "additionalProperties": false
+  },
+  "default_config": {
+    "workspace_id": "callweave-daily-create-local",
+    "mode": "compatible-test"
+  },
+  "placement_policy": {
+    "preferred_targets": [
+      "local"
+    ],
+    "allow_fallback": false
+  },
+  "public_surfaces": [
+    "cli"
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "app_id": "callweave.daily-close-test",
+  "version": "0.1.0",
+  "schema_version": "1.0.0",
+  "workspace_defaults": {
+    "workspace_id": "callweave-daily-close-local",
+    "registry_scope": "private"
+  },
+  "components": [
+    {
+      "component_id": "callweave.daily-close-compatible-component",
+      "version": "0.1.0",
+      "digest": "sha256:210621369408340258137c0cfbf5d5a24b435e177e1ca89e9b7c7c6dccb5452c",
+      "manifest_path": "components/daily-close/component.manifest.json"
+    }
+  ],
+  "workflows": [
+    {
+      "workflow_id": "callweave.daily-close-test.workflow",
+      "workflow_version": "0.1.0",
+      "path": "workflows/daily-close/workflow.json"
+    }
+  ],
+  "model_dependencies": [],
+  "config_schema": {
+    "type": "object",
+    "required": [
+      "workspace_id"
+    ],
+    "properties": {
+      "workspace_id": {
+        "type": "string"
+      },
+      "mode": {
+        "type": "string",
+        "enum": [
+          "compatible-test"
+        ]
+      }
+    },
+    "additionalProperties": false
+  },
+  "default_config": {
+    "workspace_id": "callweave-daily-close-local",
+    "mode": "compatible-test"
+  },
+  "placement_policy": {
+    "preferred_targets": [
+      "local"
+    ],
+    "allow_fallback": false
+  },
+  "public_surfaces": [
+    "cli"
+  ]
+}
