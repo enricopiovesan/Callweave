@@ -19,9 +19,9 @@ for Callweave.
 | `detection-resolve` | Standalone WASM package + calibrated policy resolver | Candidate/evidence record reads | Logic ready |
 | `observation-manage` | Standalone WASM package + append-only observation transition | Durable state connector | Logic ready |
 | `unknown-organize` | Embedding clustering + curation | Embedding/evidence record reads | Logic ready |
-| `review-prepare` | Privacy-gated advisory package policy | Privacy model + optional LMM connector | Blocked by privacy |
+| `review-prepare` | Standalone WASM package for privacy-gated advisory package policy | Privacy model + optional LMM connector | Logic ready |
 | `knowledge-manage` | Standalone WASM package + human-approved version transition | Durable state connector | Logic ready |
-| `model-improve` | Evaluation/release decision gate | Training/evaluation runner | Adapter required |
+| `model-improve` | Standalone WASM package for evaluation/release decision gate | Training/evaluation runner | Logic ready |
 | `daily-create` | Standalone WASM package + canvas-plan facts + visual-parameter package | Renderer/archive connector | Logic ready |
 | `daily-revise` | Immutable revision package | Artifact state/archive connector | Logic ready |
 | `daily-close` | Standalone WASM package + idempotent close calculation | Scheduler + durable state connector | Logic ready |
@@ -29,8 +29,8 @@ for Callweave.
 
 ## Binding rules
 
-- The thirteen standalone WASI packages under `capabilities/` are executable now.
-- Those same thirteen packages are now bundled as a real Traverse application
+- The fifteen standalone WASI packages under `capabilities/` are executable now.
+- Those same fifteen packages are now bundled as a real Traverse application
   under `apps/callweave-foundation/`, and that bundle validates and registers
   locally through current Traverse CLI flows.
 - The connector-free business rules for `location-initialize` have

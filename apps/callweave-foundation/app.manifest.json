@@ -1,6 +1,6 @@
 {
   "app_id": "callweave.foundation",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "schema_version": "1.0.0",
   "workspace_defaults": {
     "workspace_id": "callweave-foundation-local",
@@ -74,6 +74,12 @@
       "manifest_path": "components/location-initialize/component.manifest.json"
     },
     {
+      "component_id": "callweave.foundation.model.improve-component",
+      "version": "1.0.0",
+      "digest": "sha256:01df8aba35fd312b65d6af5dcdfa71e054f128eac07feae2a42ffae83bba1c7e",
+      "manifest_path": "components/model-improve/component.manifest.json"
+    },
+    {
       "component_id": "callweave.foundation.observation.manage-component",
       "version": "1.0.0",
       "digest": "sha256:166018017a0a52f388bc5b429df95fd1bd01b043dd5e98124eb1211e621a8510",
@@ -84,6 +90,12 @@
       "version": "1.0.0",
       "digest": "sha256:c57a32f9c9a8707866e67f999878c2a65fc37e7749ab64ac0680dd9e459f7ec0",
       "manifest_path": "components/operations-recover/component.manifest.json"
+    },
+    {
+      "component_id": "callweave.foundation.review.prepare-component",
+      "version": "1.0.0",
+      "digest": "sha256:6e0a1cc1257f527b82fb6aa9bac1eedaf756c6654d59c241caa5bd7e3302aeb6",
+      "manifest_path": "components/review-prepare/component.manifest.json"
     }
   ],
   "workflows": [
@@ -143,6 +155,11 @@
       "path": "workflows/location-initialize/workflow.json"
     },
     {
+      "workflow_id": "callweave.foundation.model.improve",
+      "workflow_version": "1.0.0",
+      "path": "workflows/model-improve/workflow.json"
+    },
+    {
       "workflow_id": "callweave.foundation.observation.manage",
       "workflow_version": "1.0.0",
       "path": "workflows/observation-manage/workflow.json"
@@ -151,6 +168,11 @@
       "workflow_id": "callweave.foundation.operations.recover",
       "workflow_version": "1.0.0",
       "path": "workflows/operations-recover/workflow.json"
+    },
+    {
+      "workflow_id": "callweave.foundation.review.prepare",
+      "workflow_version": "1.0.0",
+      "path": "workflows/review-prepare/workflow.json"
     }
   ],
   "model_dependencies": [],

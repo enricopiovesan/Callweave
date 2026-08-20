@@ -1,0 +1,145 @@
+{
+  "kind": "workflow_definition",
+  "schema_version": "1.0.0",
+  "id": "callweave.foundation.review.prepare",
+  "name": "review.prepare",
+  "version": "1.0.0",
+  "lifecycle": "active",
+  "owner": {
+    "team": "callweave",
+    "contact": "maintainers@callweave.local"
+  },
+  "summary": "Exercise the standalone review.prepare capability as a one-node Traverse workflow.",
+  "inputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "cluster",
+        "privacy",
+        "policy"
+      ],
+      "properties": {
+        "cluster": {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": true
+        },
+        "privacy": {
+          "type": "object",
+          "required": [
+            "state"
+          ],
+          "properties": {
+            "state": {
+              "type": "string",
+              "enum": [
+                "protected",
+                "unknown",
+                "blocked"
+              ]
+            },
+            "sanitized_assets": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "additionalProperties": true
+        },
+        "policy": {
+          "type": "object",
+          "required": [
+            "version"
+          ],
+          "properties": {
+            "version": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "outputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "allowed",
+        "cluster_id",
+        "policy_version",
+        "assets"
+      ],
+      "properties": {
+        "allowed": {
+          "type": "boolean"
+        },
+        "cluster_id": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string",
+          "enum": [
+            "privacy_not_protected"
+          ]
+        },
+        "policy_version": {
+          "type": "string"
+        },
+        "assets": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "nodes": [
+    {
+      "node_id": "run_capability",
+      "capability_id": "review.prepare",
+      "capability_version": "1.0.0",
+      "input": {
+        "from_workflow_input": [
+          "cluster",
+          "privacy",
+          "policy"
+        ]
+      },
+      "output": {
+        "to_workflow_state": [
+          "allowed",
+          "cluster_id",
+          "reason",
+          "policy_version",
+          "assets"
+        ]
+      }
+    }
+  ],
+  "edges": [],
+  "start_node": "run_capability",
+  "terminal_nodes": [
+    "run_capability"
+  ],
+  "tags": [
+    "callweave",
+    "foundation",
+    "standalone-capability"
+  ],
+  "governing_spec": "007-workflow-registry-traversal"
+}

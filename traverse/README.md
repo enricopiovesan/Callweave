@@ -1,7 +1,7 @@
 # Callweave Traverse Contracts
 
 This directory is the contract-first UMA/Traverse surface for Callweave. Its
-application contracts remain draft; thirteen reusable, standalone WASI
+application contracts remain draft; fifteen reusable, standalone WASI
 capability packages live in `../capabilities/`, and a real executable Traverse
 foundation app bundle now lives in `../apps/callweave-foundation/`.
 
@@ -52,6 +52,8 @@ deterministic runtime requests:
 - `evidence.cluster-curate`
 - `evidence.visual-artifact-render`
 - `artifact.versioned-revision-create`
+- `model.improve`
+- `review.prepare`
 
 They are reusable building blocks, not implementations of the draft
 Callweave application contracts. Their guests have no host API, filesystem,

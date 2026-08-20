@@ -1,0 +1,176 @@
+{
+  "kind": "workflow_definition",
+  "schema_version": "1.0.0",
+  "id": "callweave.foundation.model.improve",
+  "name": "model.improve",
+  "version": "1.0.0",
+  "lifecycle": "active",
+  "owner": {
+    "team": "callweave",
+    "contact": "maintainers@callweave.local"
+  },
+  "summary": "Exercise the standalone model.improve capability as a one-node Traverse workflow.",
+  "inputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "candidate",
+        "policy"
+      ],
+      "properties": {
+        "candidate": {
+          "type": "object",
+          "required": [
+            "id",
+            "sha256",
+            "license",
+            "status"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "minLength": 1
+            },
+            "license": {
+              "type": "string",
+              "minLength": 1
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "verified",
+                "pending",
+                "rejected"
+              ]
+            }
+          },
+          "additionalProperties": true
+        },
+        "evaluation": {
+          "type": "object",
+          "properties": {
+            "held_out_precision_millis": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000
+            },
+            "held_out_recall_millis": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000
+            }
+          },
+          "additionalProperties": true
+        },
+        "policy": {
+          "type": "object",
+          "required": [
+            "version",
+            "minimum_precision_millis",
+            "minimum_recall_millis"
+          ],
+          "properties": {
+            "version": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minimum_precision_millis": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000
+            },
+            "minimum_recall_millis": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000
+            }
+          },
+          "additionalProperties": false
+        },
+        "activeModelId": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "outputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "decision",
+        "reason",
+        "active_model_id"
+      ],
+      "properties": {
+        "decision": {
+          "type": "string",
+          "enum": [
+            "approve",
+            "reject"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "enum": [
+            "release_gate_passed",
+            "artifact_not_verified",
+            "evaluation_below_threshold"
+          ]
+        },
+        "active_model_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "previous_model_id": {
+          "type": "string"
+        },
+        "release_id": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "nodes": [
+    {
+      "node_id": "run_capability",
+      "capability_id": "model.improve",
+      "capability_version": "1.0.0",
+      "input": {
+        "from_workflow_input": [
+          "candidate",
+          "evaluation",
+          "policy",
+          "activeModelId"
+        ]
+      },
+      "output": {
+        "to_workflow_state": [
+          "decision",
+          "reason",
+          "active_model_id",
+          "previous_model_id",
+          "release_id"
+        ]
+      }
+    }
+  ],
+  "edges": [],
+  "start_node": "run_capability",
+  "terminal_nodes": [
+    "run_capability"
+  ],
+  "tags": [
+    "callweave",
+    "foundation",
+    "standalone-capability"
+  ],
+  "governing_spec": "007-workflow-registry-traversal"
+}

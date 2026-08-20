@@ -7,6 +7,7 @@ const capabilitiesRoot = join(repoRoot, 'capabilities');
 const appRoot = join(repoRoot, 'apps', 'callweave-foundation');
 const componentsRoot = join(appRoot, 'components');
 const workflowsRoot = join(appRoot, 'workflows');
+const foundationAppVersion = '1.1.0';
 
 const encoder = new TextEncoder();
 
@@ -134,7 +135,7 @@ for (const directory of capabilityDirs) {
 
 const appManifest = {
   app_id: 'callweave.foundation',
-  version: '1.0.0',
+  version: foundationAppVersion,
   schema_version: '1.0.0',
   workspace_defaults: {
     workspace_id: 'callweave-foundation-local',

@@ -1,0 +1,30 @@
+{
+  "component_id": "callweave.foundation.review.prepare-component",
+  "version": "1.0.0",
+  "schema_version": "1.0.0",
+  "capability_id": "review.prepare",
+  "capability_version": "1.0.0",
+  "contract_path": "../../../../capabilities/review.prepare/contract.json",
+  "wasm_binary_path": "../../../../capabilities/review.prepare/artifacts/review-prepare.wasm",
+  "wasm_digest": "sha256:6e0a1cc1257f527b82fb6aa9bac1eedaf756c6654d59c241caa5bd7e3302aeb6",
+  "runtime_constraints": {
+    "host_api_access": "none",
+    "network_access": "forbidden",
+    "filesystem_access": "none"
+  },
+  "permitted_targets": [
+    "local",
+    "device",
+    "edge",
+    "cloud"
+  ],
+  "dependencies": [],
+  "connector_requirements": [],
+  "validation_evidence": [
+    {
+      "evidence_type": "checked_in_fixture",
+      "status": "passed",
+      "produced_by": "callweave_foundation_generation"
+    }
+  ]
+}

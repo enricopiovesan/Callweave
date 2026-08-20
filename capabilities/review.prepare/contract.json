@@ -1,0 +1,183 @@
+{
+  "kind": "capability_contract",
+  "schema_version": "1.0.0",
+  "id": "review.prepare",
+  "namespace": "review",
+  "name": "prepare",
+  "version": "1.0.0",
+  "lifecycle": "active",
+  "owner": {
+    "team": "callweave",
+    "contact": "maintainers@callweave.local"
+  },
+  "summary": "Permit advisory review assets only when a supplied privacy decision is already protected.",
+  "description": "Pure standalone review gate. It validates the cluster and policy envelope, denies review when privacy is not already protected, and returns only the supplied sanitized asset list when the gate is open. It does not create ZIP files, call an LMM, inspect local storage, or mutate knowledge.",
+  "use_cases": [
+    {
+      "scenario": "As a reviewer, I want a privacy-protected unknown cluster to expose only sanitized assets so that optional external advisory review stays bounded.",
+      "input_example": {
+        "cluster": {
+          "id": "cluster-7"
+        },
+        "privacy": {
+          "state": "protected",
+          "sanitized_assets": [
+            "cluster-7-summary.md",
+            "cluster-7-snippet.flac"
+          ]
+        },
+        "policy": {
+          "version": "review-policy-1"
+        }
+      },
+      "output_example": {
+        "allowed": true,
+        "cluster_id": "cluster-7",
+        "policy_version": "review-policy-1",
+        "assets": [
+          "cluster-7-snippet.flac",
+          "cluster-7-summary.md"
+        ]
+      },
+      "happy": true
+    },
+    {
+      "scenario": "As a reviewer, I want an unprotected cluster blocked from review preparation so that uncertain privacy status fails closed.",
+      "input_example": {
+        "cluster": {
+          "id": "cluster-8"
+        },
+        "privacy": {
+          "state": "unknown",
+          "sanitized_assets": [
+            "cluster-8-summary.md"
+          ]
+        },
+        "policy": {
+          "version": "review-policy-1"
+        }
+      },
+      "output_example": {
+        "allowed": false,
+        "cluster_id": "cluster-8",
+        "reason": "privacy_not_protected",
+        "policy_version": "review-policy-1",
+        "assets": []
+      },
+      "happy": false
+    }
+  ],
+  "inputs": {
+    "schema": {
+      "type": "object",
+      "required": ["cluster", "privacy", "policy"],
+      "properties": {
+        "cluster": {
+          "type": "object",
+          "required": ["id"],
+          "properties": {
+            "id": { "type": "string", "minLength": 1 }
+          },
+          "additionalProperties": true
+        },
+        "privacy": {
+          "type": "object",
+          "required": ["state"],
+          "properties": {
+            "state": { "type": "string", "enum": ["protected", "unknown", "blocked"] },
+            "sanitized_assets": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 }
+            }
+          },
+          "additionalProperties": true
+        },
+        "policy": {
+          "type": "object",
+          "required": ["version"],
+          "properties": {
+            "version": { "type": "string", "minLength": 1 }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "outputs": {
+    "schema": {
+      "type": "object",
+      "required": ["allowed", "cluster_id", "policy_version", "assets"],
+      "properties": {
+        "allowed": { "type": "boolean" },
+        "cluster_id": { "type": "string" },
+        "reason": { "type": "string", "enum": ["privacy_not_protected"] },
+        "policy_version": { "type": "string" },
+        "assets": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "preconditions": [
+    {
+      "id": "cluster-privacy-and-policy-supplied",
+      "description": "A non-empty cluster id, privacy state, and policy version are supplied."
+    }
+  ],
+  "postconditions": [
+    {
+      "id": "review-requires-protected-privacy-state",
+      "description": "Only privacy state protected may set allowed to true."
+    },
+    {
+      "id": "sanitized-assets-only",
+      "description": "Allowed results return only the supplied sanitized asset list."
+    }
+  ],
+  "side_effects": [
+    {
+      "kind": "memory_only",
+      "description": "Pure calculation; no host, network, filesystem, LMM, state, or workflow access."
+    }
+  ],
+  "emits": [],
+  "consumes": [],
+  "permissions": [
+    {
+      "id": "review.prepare.execute"
+    }
+  ],
+  "execution": {
+    "binary_format": "wasm",
+    "entrypoint": {
+      "kind": "wasi-command",
+      "command": "run"
+    },
+    "preferred_targets": ["local", "browser", "edge", "device"],
+    "constraints": {
+      "host_api_access": "none",
+      "network_access": "forbidden",
+      "filesystem_access": "none"
+    }
+  },
+  "policies": [
+    { "id": "deterministic-policy-only" },
+    { "id": "review-fails-closed-without-privacy-protection" }
+  ],
+  "dependencies": [],
+  "provenance": {
+    "source": "greenfield",
+    "author": "Callweave",
+    "created_at": "2026-08-20T00:00:00Z",
+    "spec_ref": "100-capability-package-authoring@1.0.0",
+    "adr_refs": ["DECISION_RECORD.md"],
+    "exception_refs": []
+  },
+  "evidence": [],
+  "state_schema": null,
+  "service_type": "stateless",
+  "permitted_targets": ["local", "browser", "edge", "device"]
+}
