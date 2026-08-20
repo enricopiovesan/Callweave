@@ -74,6 +74,12 @@ single `callweave.audio-source-configure` component in `execution_mode:
 compatible`, backed by a thin wrapper and a host-side smoke harness. This is
 the first checked-in path for a connector-bound Callweave capability.
 
+A second compatible-mode host-integrated test bundle now lives at
+`../apps/callweave-model-manage/`. It validates and registers a single
+`callweave.model-manage` component in `execution_mode: compatible`, again
+through a thin wrapper and a host-side smoke harness. This extends the checked-
+in connector-bound path from device/source setup into model-cache management.
+
 The connector-free policy and transition rules that are not yet packaged as
 WASI artifacts are covered by deterministic JSON fixtures in
 `../fixtures/pure-capabilities/`. These fixtures are the current executable

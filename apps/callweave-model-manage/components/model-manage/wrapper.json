@@ -1,0 +1,5 @@
+{
+  "kind": "compatible_wrapper",
+  "capability_id": "callweave.model-manage",
+  "notes": "Thin wrapper only. Host-owned model cache/runtime operations stay outside the portable capability contract."
+}

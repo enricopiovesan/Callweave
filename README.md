@@ -71,9 +71,9 @@ daily local-first Callweave application contracts under `traverse/` still
 remain draft until the remaining host-integrated and model-integrated
 capabilities have real executable package coverage.
 
-## Traverse compatible test app
+## Traverse compatible test apps
 
-A first host-integrated compatible-mode Traverse test app now also lives in
+A host-integrated compatible-mode Traverse test app now also lives in
 [`apps/callweave-audio-source-configure`](apps/callweave-audio-source-configure).
 It exercises the registration path for `callweave.audio-source-configure`
 without pretending that real microphone capture is fully implemented.
@@ -85,4 +85,16 @@ npm run audio-source-configure:compatible:smoke
 npm run traverse:audio-source:generate
 npm run traverse:audio-source:validate
 npm run traverse:audio-source:register
+```
+
+A second compatible-mode test app now lives in
+[`apps/callweave-model-manage`](apps/callweave-model-manage). It exercises the
+registration path for `callweave.model-manage` without embedding provider or
+download logic into the wrapper.
+
+```bash
+npm run model-manage:compatible:smoke
+npm run traverse:model-manage:generate
+npm run traverse:model-manage:validate
+npm run traverse:model-manage:register
 ```

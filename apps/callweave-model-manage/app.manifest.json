@@ -1,0 +1,56 @@
+{
+  "app_id": "callweave.model-manage-test",
+  "version": "0.1.0",
+  "schema_version": "1.0.0",
+  "workspace_defaults": {
+    "workspace_id": "callweave-model-manage-local",
+    "registry_scope": "private"
+  },
+  "components": [
+    {
+      "component_id": "callweave.model-manage-compatible-component",
+      "version": "0.1.0",
+      "digest": "sha256:a049c8473adca1bcd8ec988e3e4970e5190e4870d122621927bc97ff6936d325",
+      "manifest_path": "components/model-manage/component.manifest.json"
+    }
+  ],
+  "workflows": [
+    {
+      "workflow_id": "callweave.model-manage-test.workflow",
+      "workflow_version": "0.1.0",
+      "path": "workflows/model-manage/workflow.json"
+    }
+  ],
+  "model_dependencies": [],
+  "config_schema": {
+    "type": "object",
+    "required": [
+      "workspace_id"
+    ],
+    "properties": {
+      "workspace_id": {
+        "type": "string"
+      },
+      "mode": {
+        "type": "string",
+        "enum": [
+          "compatible-test"
+        ]
+      }
+    },
+    "additionalProperties": false
+  },
+  "default_config": {
+    "workspace_id": "callweave-model-manage-local",
+    "mode": "compatible-test"
+  },
+  "placement_policy": {
+    "preferred_targets": [
+      "local"
+    ],
+    "allow_fallback": false
+  },
+  "public_surfaces": [
+    "cli"
+  ]
+}
