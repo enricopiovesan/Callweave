@@ -86,6 +86,7 @@
     "traverse:review-prepare:generate": "node scripts/generate_callweave_review_prepare_app.mjs",
     "traverse:review-prepare:validate": "node scripts/traverse_review_prepare_validate.mjs",
     "traverse:review-prepare:register": "node scripts/traverse_review_prepare_register.mjs",
+    "registry:publish-readiness": "node scripts/check_registry_publish_readiness.mjs",
     "silero-vad:readiness": "node scripts/silero-vad-readiness.mjs",
     "pure-capabilities:fixtures": "node scripts/run_pure_capability_fixtures.mjs",
     "host-adapters:smoke": "node scripts/host-adapter-smoke.mjs",
