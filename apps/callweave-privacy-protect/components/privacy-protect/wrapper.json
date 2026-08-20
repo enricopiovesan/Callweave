@@ -1,0 +1,5 @@
+{
+  "kind": "compatible_wrapper",
+  "capability_id": "callweave.privacy-protect",
+  "notes": "Thin wrapper only. Host-owned privacy detection and sanitized asset handling remain outside the portable contract."
+}

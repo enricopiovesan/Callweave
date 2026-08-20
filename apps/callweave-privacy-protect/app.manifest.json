@@ -1,0 +1,56 @@
+{
+  "app_id": "callweave.privacy-protect-test",
+  "version": "0.1.0",
+  "schema_version": "1.0.0",
+  "workspace_defaults": {
+    "workspace_id": "callweave-privacy-protect-local",
+    "registry_scope": "private"
+  },
+  "components": [
+    {
+      "component_id": "callweave.privacy-protect-compatible-component",
+      "version": "0.1.0",
+      "digest": "sha256:4830e8a0e569f3d6cd90669d59b9240b898b368310d6be74a44c3cbef829c380",
+      "manifest_path": "components/privacy-protect/component.manifest.json"
+    }
+  ],
+  "workflows": [
+    {
+      "workflow_id": "callweave.privacy-protect-test.workflow",
+      "workflow_version": "0.1.0",
+      "path": "workflows/privacy-protect/workflow.json"
+    }
+  ],
+  "model_dependencies": [],
+  "config_schema": {
+    "type": "object",
+    "required": [
+      "workspace_id"
+    ],
+    "properties": {
+      "workspace_id": {
+        "type": "string"
+      },
+      "mode": {
+        "type": "string",
+        "enum": [
+          "compatible-test"
+        ]
+      }
+    },
+    "additionalProperties": false
+  },
+  "default_config": {
+    "workspace_id": "callweave-privacy-protect-local",
+    "mode": "compatible-test"
+  },
+  "placement_policy": {
+    "preferred_targets": [
+      "local"
+    ],
+    "allow_fallback": false
+  },
+  "public_surfaces": [
+    "cli"
+  ]
+}

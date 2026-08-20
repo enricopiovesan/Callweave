@@ -110,3 +110,15 @@ npm run traverse:acoustics-classify:generate
 npm run traverse:acoustics-classify:validate
 npm run traverse:acoustics-classify:register
 ```
+
+A fourth compatible-mode test app now lives in
+[`apps/callweave-privacy-protect`](apps/callweave-privacy-protect). It
+exercises the registration path for `callweave.privacy-protect` without
+claiming real privacy detection or export logic inside the wrapper.
+
+```bash
+npm run privacy-protect:compatible:smoke
+npm run traverse:privacy-protect:generate
+npm run traverse:privacy-protect:validate
+npm run traverse:privacy-protect:register
+```

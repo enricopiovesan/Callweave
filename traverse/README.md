@@ -86,6 +86,12 @@ A third compatible-mode host-integrated test bundle now lives at
 through a thin wrapper and a host-side smoke harness. This extends the checked-
 in connector-bound path into prepared-audio evidence production.
 
+A fourth compatible-mode host-integrated test bundle now lives at
+`../apps/callweave-privacy-protect/`. It validates and registers a single
+`callweave.privacy-protect` component in `execution_mode: compatible`,
+through a thin wrapper and a host-side smoke harness. This extends the checked-
+in connector-bound path into privacy gating and safe review-package preparation.
+
 The connector-free policy and transition rules that are not yet packaged as
 WASI artifacts are covered by deterministic JSON fixtures in
 `../fixtures/pure-capabilities/`. These fixtures are the current executable
