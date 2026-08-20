@@ -23,7 +23,7 @@ complete.
 | `unknown-organize` | Embedding clustering + curation | Yes | Embedding/evidence record reads | Compatible app executable |
 | `review-prepare` | Standalone WASM package for privacy-gated advisory package policy | No | Privacy model + optional LMM connector | Pure logic ready; external-boundary reconciliation needed |
 | `knowledge-manage` | Standalone WASM package + human-approved version transition | Yes | Durable state connector | Compatible app executable |
-| `model-improve` | Standalone WASM package for evaluation/release decision gate | No | Training/evaluation runner | Logic ready; app blocked on missing training/release authority |
+| `model-improve` | Standalone WASM package for evaluation/release decision gate | Yes | Training/evaluation runner | Compatible app executable |
 | `daily-create` | Standalone WASM package + canvas-plan facts + visual-parameter package | Yes | Renderer/archive connector | Compatible app executable |
 | `daily-revise` | Immutable revision package | Yes | Artifact state/archive connector | Compatible app executable |
 | `daily-close` | Standalone WASM package + idempotent close calculation | Yes | Scheduler + durable state connector | Compatible app executable |
@@ -55,10 +55,7 @@ complete.
 
 ## Remaining honest gaps
 
-1. `model-improve` depends on
-   host authority that is not yet declared in the checked-in local host-adapter
-   surface.
-2. `review-prepare` remains blocked on the advisory LMM boundary and its final
+1. `review-prepare` remains blocked on the advisory LMM boundary and its final
    host/external execution rules.
 
 ## Local checks

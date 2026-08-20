@@ -143,6 +143,57 @@
       ]
     },
     {
+      "id": "local-model-trainer",
+      "authority": "build approved local training sets and train a local adapter under bounded local compute authority",
+      "inputs": [
+        "training_request",
+        "model_release_policy"
+      ],
+      "outputs": [
+        "trained_candidate_ref",
+        "training_trace_ref"
+      ],
+      "failure_modes": [
+        "insufficient_verified_data",
+        "hardware_incompatible",
+        "training_failed"
+      ]
+    },
+    {
+      "id": "local-model-evaluator",
+      "authority": "evaluate a trained candidate against approved held-out data under bounded local compute authority",
+      "inputs": [
+        "trained_candidate_ref",
+        "model_release_policy"
+      ],
+      "outputs": [
+        "evaluation_ref",
+        "evaluation_trace_ref"
+      ],
+      "failure_modes": [
+        "held_out_data_unavailable",
+        "hardware_incompatible",
+        "evaluation_failed"
+      ]
+    },
+    {
+      "id": "local-model-release-store",
+      "authority": "publish or roll back verified local model releases under append-only local ownership",
+      "inputs": [
+        "release_decision",
+        "idempotency_key"
+      ],
+      "outputs": [
+        "model_release_ref",
+        "release_trace_ref"
+      ],
+      "failure_modes": [
+        "storage_full",
+        "write_interrupted",
+        "idempotency_conflict"
+      ]
+    },
+    {
       "id": "local-state-store",
       "authority": "resolve typed records and atomically append idempotent transitions",
       "inputs": [

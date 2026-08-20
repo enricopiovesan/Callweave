@@ -1,0 +1,5 @@
+{
+  "kind": "compatible_wrapper",
+  "capability_id": "callweave.model-improve",
+  "notes": "Thin wrapper only. Host-owned local training, held-out evaluation, release publication, rollback, and append-only model provenance remain outside the portable contract."
+}

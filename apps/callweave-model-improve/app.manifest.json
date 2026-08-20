@@ -1,0 +1,56 @@
+{
+  "app_id": "callweave.model-improve-test",
+  "version": "0.1.0",
+  "schema_version": "1.0.0",
+  "workspace_defaults": {
+    "workspace_id": "callweave-model-improve-local",
+    "registry_scope": "private"
+  },
+  "components": [
+    {
+      "component_id": "callweave.model-improve-compatible-component",
+      "version": "0.1.0",
+      "digest": "sha256:b4f22266b00053745245211b846977454bf0060c6aa3fac81f93202bfaa6a474",
+      "manifest_path": "components/model-improve/component.manifest.json"
+    }
+  ],
+  "workflows": [
+    {
+      "workflow_id": "callweave.model-improve-test.workflow",
+      "workflow_version": "0.1.0",
+      "path": "workflows/model-improve/workflow.json"
+    }
+  ],
+  "model_dependencies": [],
+  "config_schema": {
+    "type": "object",
+    "required": [
+      "workspace_id"
+    ],
+    "properties": {
+      "workspace_id": {
+        "type": "string"
+      },
+      "mode": {
+        "type": "string",
+        "enum": [
+          "compatible-test"
+        ]
+      }
+    },
+    "additionalProperties": false
+  },
+  "default_config": {
+    "workspace_id": "callweave-model-improve-local",
+    "mode": "compatible-test"
+  },
+  "placement_policy": {
+    "preferred_targets": [
+      "local"
+    ],
+    "allow_fallback": false
+  },
+  "public_surfaces": [
+    "cli"
+  ]
+}
