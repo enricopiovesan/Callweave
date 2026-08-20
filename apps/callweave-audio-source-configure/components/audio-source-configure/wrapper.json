@@ -1,0 +1,5 @@
+{
+  "kind": "compatible_wrapper",
+  "capability_id": "callweave.audio-source-configure",
+  "notes": "Thin wrapper only. Host-owned adapter execution stays outside the portable capability contract."
+}

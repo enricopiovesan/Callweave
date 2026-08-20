@@ -3,10 +3,10 @@
 Native macOS developer test app for the current pre-connector Callweave
 foundation.
 
-It does not attempt microphone capture, scheduled execution, durable connector
-activation, or local-model host binding. Those remain unimplemented in
-Callweave even though the underlying Traverse connector/runtime tickets are now
-closed. The app exists to exercise the local checks that are already real
+It does not execute microphone capture, scheduled execution, durable connector
+activation, or local-model host binding itself. A separate Traverse compatible
+test bundle now exists for the first connector-bound capability path, but this
+native macOS app still exists only to exercise the checks that are already real
 today.
 
 ## Run

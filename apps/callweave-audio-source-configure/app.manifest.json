@@ -1,0 +1,56 @@
+{
+  "app_id": "callweave.audio-source-configure-test",
+  "version": "0.1.0",
+  "schema_version": "1.0.0",
+  "workspace_defaults": {
+    "workspace_id": "callweave-audio-source-local",
+    "registry_scope": "private"
+  },
+  "components": [
+    {
+      "component_id": "callweave.audio-source-configure-compatible-component",
+      "version": "0.1.0",
+      "digest": "sha256:5d3916137269783c3324814180a8272384b29099e02fbe2396737bb61a78a2e6",
+      "manifest_path": "components/audio-source-configure/component.manifest.json"
+    }
+  ],
+  "workflows": [
+    {
+      "workflow_id": "callweave.audio-source-configure-test.workflow",
+      "workflow_version": "0.1.0",
+      "path": "workflows/audio-source-configure/workflow.json"
+    }
+  ],
+  "model_dependencies": [],
+  "config_schema": {
+    "type": "object",
+    "required": [
+      "workspace_id"
+    ],
+    "properties": {
+      "workspace_id": {
+        "type": "string"
+      },
+      "mode": {
+        "type": "string",
+        "enum": [
+          "compatible-test"
+        ]
+      }
+    },
+    "additionalProperties": false
+  },
+  "default_config": {
+    "workspace_id": "callweave-audio-source-local",
+    "mode": "compatible-test"
+  },
+  "placement_policy": {
+    "preferred_targets": [
+      "local"
+    ],
+    "allow_fallback": false
+  },
+  "public_surfaces": [
+    "cli"
+  ]
+}

@@ -70,3 +70,19 @@ This is the first executable Traverse integration path for Callweave. The full
 daily local-first Callweave application contracts under `traverse/` still
 remain draft until the remaining host-integrated and model-integrated
 capabilities have real executable package coverage.
+
+## Traverse compatible test app
+
+A first host-integrated compatible-mode Traverse test app now also lives in
+[`apps/callweave-audio-source-configure`](apps/callweave-audio-source-configure).
+It exercises the registration path for `callweave.audio-source-configure`
+without pretending that real microphone capture is fully implemented.
+
+Generate and verify it with:
+
+```bash
+npm run audio-source-configure:compatible:smoke
+npm run traverse:audio-source:generate
+npm run traverse:audio-source:validate
+npm run traverse:audio-source:register
+```

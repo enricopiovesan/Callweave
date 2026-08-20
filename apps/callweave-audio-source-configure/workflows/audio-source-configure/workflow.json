@@ -1,0 +1,205 @@
+{
+  "kind": "workflow_definition",
+  "schema_version": "1.0.0",
+  "id": "callweave.audio-source-configure-test.workflow",
+  "name": "audio-source-configure-test",
+  "version": "0.1.0",
+  "lifecycle": "active",
+  "owner": {
+    "team": "callweave",
+    "contact": "maintainers@callweave.local"
+  },
+  "summary": "Exercise the compatible audio-source-configure component through the app registration path.",
+  "inputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "request_id",
+        "workspace_id",
+        "location_id",
+        "idempotency_key",
+        "audio_source",
+        "recording_profile"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "workspace_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "location_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "idempotency_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "runtime_context": {
+          "type": "object",
+          "required": [
+            "input_reference_state",
+            "dependency_state",
+            "policy_state"
+          ],
+          "properties": {
+            "input_reference_state": {
+              "type": "string",
+              "enum": [
+                "resolvable",
+                "unresolvable"
+              ]
+            },
+            "dependency_state": {
+              "type": "string",
+              "enum": [
+                "available",
+                "unavailable"
+              ]
+            },
+            "policy_state": {
+              "type": "string",
+              "enum": [
+                "allowed",
+                "denied"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "audio_source": {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "version": {
+              "type": "string"
+            },
+            "metadata": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {}
+            }
+          },
+          "additionalProperties": false
+        },
+        "recording_profile": {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "version": {
+              "type": "string"
+            },
+            "metadata": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {}
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "outputs": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "status",
+        "reason_code",
+        "audio_source_ref",
+        "trace_ref",
+        "warnings"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "completed",
+            "rejected",
+            "deferred"
+          ]
+        },
+        "reason_code": {
+          "type": "string",
+          "enum": [
+            "ok",
+            "invalid_input",
+            "dependency_unavailable",
+            "policy_denied"
+          ]
+        },
+        "audio_source_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "trace_ref": {
+          "type": "string"
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "nodes": [
+    {
+      "node_id": "configure_audio_source",
+      "capability_id": "callweave.audio-source-configure",
+      "capability_version": "0.1.0",
+      "input": {
+        "from_workflow_input": [
+          "request_id",
+          "workspace_id",
+          "location_id",
+          "idempotency_key",
+          "runtime_context",
+          "audio_source",
+          "recording_profile"
+        ]
+      },
+      "output": {
+        "to_workflow_state": [
+          "status",
+          "reason_code",
+          "audio_source_ref",
+          "trace_ref",
+          "warnings"
+        ]
+      }
+    }
+  ],
+  "edges": [],
+  "start_node": "configure_audio_source",
+  "terminal_nodes": [
+    "configure_audio_source"
+  ],
+  "tags": [
+    "callweave",
+    "compatible",
+    "host-adapter",
+    "audio-source-configure"
+  ],
+  "governing_spec": "007-workflow-registry-traversal"
+}

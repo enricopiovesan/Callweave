@@ -1,7 +1,7 @@
 # Callweave Traverse Contracts
 
 This directory is the contract-first UMA/Traverse surface for Callweave. Its
-application contracts remain draft; sixteen reusable, standalone WASI
+application contracts remain draft; seventeen reusable, standalone WASI
 capability packages live in `../capabilities/`, and a real executable Traverse
 foundation app bundle now lives in `../apps/callweave-foundation/`.
 
@@ -55,6 +55,7 @@ deterministic runtime requests:
 - `model.improve`
 - `review.prepare`
 - `unknown.organize`
+- `privacy.gate-evaluate`
 
 They are reusable building blocks, not implementations of the draft
 Callweave application contracts. Their guests have no host API, filesystem,
@@ -66,6 +67,12 @@ the current executable integration boundary for Traverse app manifests,
 component manifests, workflow registration, and workspace registration. The
 broader `traverse/contracts/callweave/*` surface remains draft because several
 application-specific capabilities still lack executable package coverage.
+
+There is now also a first compatible-mode host-integrated test bundle at
+`../apps/callweave-audio-source-configure/`. It validates and registers a
+single `callweave.audio-source-configure` component in `execution_mode:
+compatible`, backed by a thin wrapper and a host-side smoke harness. This is
+the first checked-in path for a connector-bound Callweave capability.
 
 The connector-free policy and transition rules that are not yet packaged as
 WASI artifacts are covered by deterministic JSON fixtures in
