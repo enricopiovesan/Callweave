@@ -65,6 +65,31 @@
         "assets": []
       },
       "happy": false
+    },
+    {
+      "scenario": "As a reviewer, I want a policy-blocked cluster prevented from review preparation so that explicitly denied privacy outcomes cannot be shared externally.",
+      "input_example": {
+        "cluster": {
+          "id": "cluster-9"
+        },
+        "privacy": {
+          "state": "blocked",
+          "sanitized_assets": [
+            "cluster-9-summary.md"
+          ]
+        },
+        "policy": {
+          "version": "review-policy-1"
+        }
+      },
+      "output_example": {
+        "allowed": false,
+        "cluster_id": "cluster-9",
+        "reason": "privacy_not_protected",
+        "policy_version": "review-policy-1",
+        "assets": []
+      },
+      "happy": false
     }
   ],
   "inputs": {
