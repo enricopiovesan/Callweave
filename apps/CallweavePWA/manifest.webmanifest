@@ -1,0 +1,9 @@
+{
+  "name": "Callweave",
+  "short_name": "Callweave",
+  "description": "A local soundscape presentation.",
+  "display": "standalone",
+  "start_url": "./index.html",
+  "background_color": "#f7f4eb",
+  "theme_color": "#193a30"
+}
