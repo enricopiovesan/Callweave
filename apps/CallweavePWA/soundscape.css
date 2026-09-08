@@ -1,0 +1,9 @@
+.listening-canvas img {
+  width: min(520px, 82vw);
+}
+
+@media (max-width: 680px) {
+  .listening-canvas img {
+    width: min(360px, 94vw);
+  }
+}
