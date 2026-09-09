@@ -99,6 +99,7 @@
     "sound-samples:evaluate": "node scripts/evaluate_sound_samples.mjs",
     "sound-samples:calibration-report": "node scripts/report_sound_sample_calibration.mjs",
     "sound-samples:calibration-smoke": "node scripts/calibration_report_smoke.mjs",
+    "audio:negative-controls-smoke": "node scripts/audio_negative_controls_smoke.mjs",
     "audio-sources:import": "node scripts/import_audio_source_records.mjs"
   },
   "dependencies": {
