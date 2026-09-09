@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0.0",
+  "kind": "acoustic_evaluation_samples",
+  "provenance_status": "user_supplied_unverified",
+  "label_policy": "filename_hint_only",
+  "redistribution": "blocked_pending_source_license",
+  "samples": [
+    {
+      "id": "black-bear-001",
+      "path": "black bear.mp3",
+      "candidate_taxon": "Ursus americanus",
+      "common_name": "American black bear",
+      "sha256": "97091806f4ae751067c1fac3e886e071f5de6b3201596819de996323b86c355e",
+      "duration_seconds": 7.76
+    },
+    {
+      "id": "cougar-001",
+      "path": "Cougar Mountain Lion Sounds.mp3",
+      "candidate_taxon": "Puma concolor",
+      "common_name": "Cougar / mountain lion",
+      "sha256": "321279c3b825ef8886999ec0ec70a6e14a5f7fc128a78b5a82edb46ef2812651",
+      "duration_seconds": 485.80
+    },
+    {
+      "id": "elk-001",
+      "path": "elk.mp3",
+      "candidate_taxon": "Cervus canadensis",
+      "common_name": "Elk / wapiti",
+      "sha256": "cbfd81be2f87c01d4b0e0e107af69b30f0a9e865b8d78eb3044150009b2035c8",
+      "duration_seconds": 22.39
+    },
+    {
+      "id": "grizzly-bear-001",
+      "path": "grizly bear.mp3",
+      "candidate_taxon": "Ursus arctos",
+      "common_name": "Grizzly bear",
+      "sha256": "359d0196fd633b06a00bc906c56d0682493385a055ef2c71e7c0697e6937d731",
+      "duration_seconds": 84.56
+    }
+  ]
+}
