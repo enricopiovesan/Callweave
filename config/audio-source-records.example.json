@@ -1,0 +1,17 @@
+{
+  "records": [
+    {
+      "id": "example-xc-elk-001",
+      "source": "xeno-canto",
+      "source_url": "https://www.xeno-canto.org/RECORD-ID",
+      "catalog_id": "RECORD-ID",
+      "taxon": "Cervus canadensis",
+      "common_name": "elk",
+      "recording_location": "Golden, British Columbia",
+      "recording_date": "2026-09-09",
+      "license": "CC-BY-4.0",
+      "attribution": "Recordist name, Xeno-canto",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  ]
+}
