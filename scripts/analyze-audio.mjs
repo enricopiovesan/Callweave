@@ -160,6 +160,15 @@ function summarizeCandidates(windows) {
   }).sort((a, b) => (b.max_raw_logit ?? -Infinity) - (a.max_raw_logit ?? -Infinity));
 }
 
+function summarizeQuality(windows) {
+  return {
+    total_windows: windows.length,
+    active_windows: windows.filter(window => window.activity === 'active').length,
+    quiet_windows: windows.filter(window => window.activity === 'quiet').length,
+    clipped_windows: windows.filter(window => window.clipped).length,
+  };
+}
+
 const birdnet = await loadModel(resolve(root, 'models/birdnet'), 'birdnet.onnx');
 const perch = await loadModel(resolve(root, 'models/perch'), 'perch.onnx');
 const [birdnetSamples, perchSamples] = await Promise.all([decode(48000), decode(32000)]);
@@ -172,8 +181,8 @@ const report = {
   authority: 'model evidence only; not a verified animal observation',
   score_semantics: 'Top raw logits sorted descending. They are ranking evidence only, not calibrated probabilities; this output must not be sent to a policy threshold until a location/model calibration is supplied.',
   models: [
-    { model_id: birdnet.lock.id, license: birdnet.lock.license.spdx, sample_rate_hz: 48000, windows: birdnetWindows, candidate_summary: summarizeCandidates(birdnetWindows) },
-    { model_id: perch.lock.id, license: perch.lock.license.spdx, sample_rate_hz: 32000, windows: perchWindows, candidate_summary: summarizeCandidates(perchWindows) },
+    { model_id: birdnet.lock.id, license: birdnet.lock.license.spdx, sample_rate_hz: 48000, windows: birdnetWindows, quality_summary: summarizeQuality(birdnetWindows), candidate_summary: summarizeCandidates(birdnetWindows) },
+    { model_id: perch.lock.id, license: perch.lock.license.spdx, sample_rate_hz: 32000, windows: perchWindows, quality_summary: summarizeQuality(perchWindows), candidate_summary: summarizeCandidates(perchWindows) },
   ],
   review_package: { status: 'blocked_pending_local_speech_privacy_protection', raw_audio_exported: false },
 };

@@ -35,6 +35,7 @@ policy checks and (where applicable) human confirmation.
 - Record candidate taxonomy/status alongside model evidence.
 - Aggregate candidate evidence across windows with maximum score, mean active
   score, best global rank, and supporting-window count.
+- Summarize quiet, active, and clipped windows per model (implemented).
 
 ### Phase 2 — Active-sound segmentation
 
