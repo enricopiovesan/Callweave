@@ -27,7 +27,9 @@
     "model-improve:compatible:smoke": "node scripts/model-improve-compatible-smoke.mjs",
     "review-prepare:compatible:smoke": "node scripts/review-prepare-compatible-smoke.mjs",
     "traverse:foundation:generate": "node scripts/generate_callweave_foundation_app.mjs",
+    "traverse:foundation:registry-sync": "node scripts/traverse_foundation_registry_sync.mjs",
     "traverse:foundation:validate": "node scripts/traverse_foundation_validate.mjs",
+    "traverse:foundation:activate": "node scripts/traverse_foundation_activate.mjs",
     "traverse:foundation:register": "node scripts/traverse_foundation_register.mjs",
     "traverse:audio-source:generate": "node scripts/generate_callweave_audio_source_app.mjs",
     "traverse:audio-source:validate": "node scripts/traverse_audio_source_validate.mjs",
@@ -92,7 +94,8 @@
     "host-adapters:smoke": "node scripts/host-adapter-smoke.mjs",
     "local-object-store:smoke": "node scripts/local-object-store-smoke.mjs",
     "local-state-store:smoke": "node scripts/local-state-store-smoke.mjs",
-    "daily-close-scheduler:smoke": "node scripts/daily-close-scheduler-smoke.mjs"
+    "daily-close-scheduler:smoke": "node scripts/daily-close-scheduler-smoke.mjs",
+    "sound-samples:validate": "node scripts/validate_sound_samples.mjs"
   },
   "dependencies": {
     "ffmpeg-static": "^5.3.0",
