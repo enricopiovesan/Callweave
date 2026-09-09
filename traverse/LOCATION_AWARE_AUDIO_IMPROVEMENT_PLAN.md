@@ -36,6 +36,8 @@ policy checks and (where applicable) human confirmation.
 - Aggregate candidate evidence across windows with maximum score, mean active
   score, best global rank, and supporting-window count.
 - Summarize quiet, active, and clipped windows per model (implemented).
+- Compare local-candidate evidence across models, including unavailable and
+  disagreement states (implemented).
 
 ### Phase 2 — Active-sound segmentation
 

@@ -174,16 +174,22 @@ const perch = await loadModel(resolve(root, 'models/perch'), 'perch.onnx');
 const [birdnetSamples, perchSamples] = await Promise.all([decode(48000), decode(32000)]);
 const birdnetWindows = await classify(birdnet, birdnetSamples, candidateTaxa);
 const perchWindows = await classify(perch, perchSamples, candidateTaxa);
+const modelEvidence = [
+  { model_id: birdnet.lock.id, license: birdnet.lock.license.spdx, sample_rate_hz: 48000, windows: birdnetWindows, quality_summary: summarizeQuality(birdnetWindows), candidate_summary: summarizeCandidates(birdnetWindows) },
+  { model_id: perch.lock.id, license: perch.lock.license.spdx, sample_rate_hz: 32000, windows: perchWindows, quality_summary: summarizeQuality(perchWindows), candidate_summary: summarizeCandidates(perchWindows) },
+];
+const candidateComparison = candidateTaxa.map(candidate => ({
+  ...candidate,
+  models: modelEvidence.map(model => model.candidate_summary.find(item => item.taxon === candidate.taxon)),
+}));
 const report = {
   schema_version: '1.0.0',
   kind: 'local_acoustic_evidence',
   source: { filename: basename(sourcePath), sha256: audioSha256, raw_audio_included: false },
   authority: 'model evidence only; not a verified animal observation',
   score_semantics: 'Top raw logits sorted descending. They are ranking evidence only, not calibrated probabilities; this output must not be sent to a policy threshold until a location/model calibration is supplied.',
-  models: [
-    { model_id: birdnet.lock.id, license: birdnet.lock.license.spdx, sample_rate_hz: 48000, windows: birdnetWindows, quality_summary: summarizeQuality(birdnetWindows), candidate_summary: summarizeCandidates(birdnetWindows) },
-    { model_id: perch.lock.id, license: perch.lock.license.spdx, sample_rate_hz: 32000, windows: perchWindows, quality_summary: summarizeQuality(perchWindows), candidate_summary: summarizeCandidates(perchWindows) },
-  ],
+  models: modelEvidence,
+  candidate_comparison: candidateComparison,
   review_package: { status: 'blocked_pending_local_speech_privacy_protection', raw_audio_exported: false },
 };
 
