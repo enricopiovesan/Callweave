@@ -38,6 +38,7 @@ policy checks and (where applicable) human confirmation.
 
 - Record deterministic signal RMS and `quiet`/`active` window metadata (first
   slice implemented).
+- Record peak level and clipping flags for every window (implemented).
 - Detect silence, speech, engines, clipping, and low-SNR intervals.
 - Classify active intervals before species ranking.
 - Preserve interval timestamps, detector version, and quality metrics.

@@ -66,6 +66,12 @@ function signalRms(samples) {
   return Math.sqrt(sum / samples.length);
 }
 
+function signalPeak(samples) {
+  let peak = 0;
+  for (const sample of samples) peak = Math.max(peak, Math.abs(sample));
+  return peak;
+}
+
 async function loadModel(directory, filename) {
   const lock = JSON.parse(await readFile(resolve(directory, 'MODEL_LOCK.json'), 'utf8'));
   const modelPath = resolve(directory, filename);
@@ -89,6 +95,7 @@ async function classify(model, samples, candidates) {
     const output = await session.run({ [input]: new ort.Tensor('float32', clip, [batch, sampleCount]) });
     const values = output[scoreOutput].data;
     const rms = signalRms(clip.subarray(0, validSamples));
+    const peak = signalPeak(clip.subarray(0, validSamples));
     const ranked = Array.from(values, (rawLogit, labelIndex) => ({ rawLogit, labelIndex }));
     const top = ranked
       .sort((a, b) => b.rawLogit - a.rawLogit).slice(0, 5)
@@ -106,6 +113,8 @@ async function classify(model, samples, candidates) {
       valid_input_millis: Math.round(validSamples / lock.interface.sample_rate_hz * 1000),
       zero_padded: validSamples < sampleCount,
       signal_rms: Number(rms.toFixed(6)),
+      signal_peak: Number(peak.toFixed(6)),
+      clipped: peak >= 0.999,
       activity: rms < 0.005 ? 'quiet' : 'active',
       top,
       candidate_scores,
