@@ -13,7 +13,10 @@
       "taxon": "Cervus canadensis",
       "common_name": "elk",
       "license": "CC-BY-4.0",
-      "status": "metadata_candidate"
+      "attribution": "Archer Silverman, iNaturalist",
+      "local_path": "sounds samples/public-source/inat-elk-2148936.m4a",
+      "sha256": "7ee9e96c2cb586907d5c0a004d67862115c11b8cc1a8b00b12cd7e912c120e8c",
+      "status": "downloaded_staged"
     },
     {
       "id": "inat-observation-287411149-sound-1509051",
@@ -23,7 +26,10 @@
       "taxon": "Ursus americanus",
       "common_name": "American black bear",
       "license": "CC-BY-4.0",
-      "status": "metadata_candidate"
+      "attribution": "Mary Krieger, iNaturalist",
+      "local_path": "sounds samples/public-source/inat-black-bear-1509051.wav",
+      "sha256": "48184ed13449f26f2a64d12ae2533aaa30bff40032c36ccba3833f40b4a2b2ab",
+      "status": "downloaded_staged"
     },
     {
       "id": "inat-observation-269033720-sound-1364625",
@@ -33,7 +39,10 @@
       "taxon": "Puma concolor",
       "common_name": "cougar",
       "license": "CC-BY-4.0",
-      "status": "metadata_candidate"
+      "attribution": "Colin Croft, iNaturalist",
+      "local_path": "sounds samples/public-source/inat-cougar-1364625.mp3",
+      "sha256": "cbf96fdefdcf3f59592e652bb4201ecb6add65a6cb1daab6ebe68eb0c43f9990",
+      "status": "downloaded_staged"
     }
   ]
 }
