@@ -123,9 +123,48 @@ async function classify(model, samples, candidates) {
   return results;
 }
 
+function summarizeCandidates(windows) {
+  const byTaxon = new Map();
+  for (const window of windows) {
+    for (const candidate of window.candidate_scores) {
+      const current = byTaxon.get(candidate.taxon) ?? {
+        taxon: candidate.taxon,
+        common_name: candidate.common_name,
+        status: candidate.status,
+        available: candidate.available,
+        scores: [],
+        best_rank: null,
+        supporting_windows: 0,
+      };
+      if (candidate.available) {
+        current.scores.push({ raw_logit: candidate.raw_logit, active: window.activity === 'active' });
+        current.best_rank = current.best_rank === null ? candidate.rank : Math.min(current.best_rank, candidate.rank);
+        if (window.activity === 'active') current.supporting_windows += 1;
+      }
+      byTaxon.set(candidate.taxon, current);
+    }
+  }
+  return [...byTaxon.values()].map(candidate => {
+    const activeScores = candidate.scores.filter(score => score.active).map(score => score.raw_logit);
+    const scores = candidate.scores.map(score => score.raw_logit);
+    return {
+      taxon: candidate.taxon,
+      common_name: candidate.common_name,
+      status: candidate.status,
+      available: candidate.available,
+      max_raw_logit: scores.length ? Math.max(...scores) : null,
+      mean_active_raw_logit: activeScores.length ? activeScores.reduce((sum, score) => sum + score, 0) / activeScores.length : null,
+      best_rank: candidate.best_rank,
+      supporting_windows: candidate.supporting_windows,
+    };
+  }).sort((a, b) => (b.max_raw_logit ?? -Infinity) - (a.max_raw_logit ?? -Infinity));
+}
+
 const birdnet = await loadModel(resolve(root, 'models/birdnet'), 'birdnet.onnx');
 const perch = await loadModel(resolve(root, 'models/perch'), 'perch.onnx');
 const [birdnetSamples, perchSamples] = await Promise.all([decode(48000), decode(32000)]);
+const birdnetWindows = await classify(birdnet, birdnetSamples, candidateTaxa);
+const perchWindows = await classify(perch, perchSamples, candidateTaxa);
 const report = {
   schema_version: '1.0.0',
   kind: 'local_acoustic_evidence',
@@ -133,8 +172,8 @@ const report = {
   authority: 'model evidence only; not a verified animal observation',
   score_semantics: 'Top raw logits sorted descending. They are ranking evidence only, not calibrated probabilities; this output must not be sent to a policy threshold until a location/model calibration is supplied.',
   models: [
-    { model_id: birdnet.lock.id, license: birdnet.lock.license.spdx, sample_rate_hz: 48000, windows: await classify(birdnet, birdnetSamples, candidateTaxa) },
-    { model_id: perch.lock.id, license: perch.lock.license.spdx, sample_rate_hz: 32000, windows: await classify(perch, perchSamples, candidateTaxa) },
+    { model_id: birdnet.lock.id, license: birdnet.lock.license.spdx, sample_rate_hz: 48000, windows: birdnetWindows, candidate_summary: summarizeCandidates(birdnetWindows) },
+    { model_id: perch.lock.id, license: perch.lock.license.spdx, sample_rate_hz: 32000, windows: perchWindows, candidate_summary: summarizeCandidates(perchWindows) },
   ],
   review_package: { status: 'blocked_pending_local_speech_privacy_protection', raw_audio_exported: false },
 };

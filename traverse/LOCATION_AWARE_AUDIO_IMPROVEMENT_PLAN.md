@@ -33,6 +33,8 @@ policy checks and (where applicable) human confirmation.
 - Emit scores and ranks for every configured candidate, including candidates
   outside the global top five or absent from a model taxonomy.
 - Record candidate taxonomy/status alongside model evidence.
+- Aggregate candidate evidence across windows with maximum score, mean active
+  score, best global rank, and supporting-window count.
 
 ### Phase 2 — Active-sound segmentation
 
