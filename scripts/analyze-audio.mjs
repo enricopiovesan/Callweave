@@ -59,6 +59,13 @@ function windowed(samples, size) {
   });
 }
 
+function signalRms(samples) {
+  if (!samples.length) return 0;
+  let sum = 0;
+  for (const sample of samples) sum += sample * sample;
+  return Math.sqrt(sum / samples.length);
+}
+
 async function loadModel(directory, filename) {
   const lock = JSON.parse(await readFile(resolve(directory, 'MODEL_LOCK.json'), 'utf8'));
   const modelPath = resolve(directory, filename);
@@ -81,6 +88,7 @@ async function classify(model, samples, candidates) {
   for (const [index, { clip, validSamples }] of windowed(samples, sampleCount).entries()) {
     const output = await session.run({ [input]: new ort.Tensor('float32', clip, [batch, sampleCount]) });
     const values = output[scoreOutput].data;
+    const rms = signalRms(clip.subarray(0, validSamples));
     const ranked = Array.from(values, (rawLogit, labelIndex) => ({ rawLogit, labelIndex }));
     const top = ranked
       .sort((a, b) => b.rawLogit - a.rawLogit).slice(0, 5)
@@ -97,6 +105,8 @@ async function classify(model, samples, candidates) {
       end_millis: Math.round((index * sampleCount + validSamples) / lock.interface.sample_rate_hz * 1000),
       valid_input_millis: Math.round(validSamples / lock.interface.sample_rate_hz * 1000),
       zero_padded: validSamples < sampleCount,
+      signal_rms: Number(rms.toFixed(6)),
+      activity: rms < 0.005 ? 'quiet' : 'active',
       top,
       candidate_scores,
     });
