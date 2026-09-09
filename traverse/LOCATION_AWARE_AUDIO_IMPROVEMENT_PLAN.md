@@ -60,6 +60,10 @@ policy checks and (where applicable) human confirmation.
 - Run `npm run sound-samples:evaluate` to produce reproducible per-model
   candidate score/rank and audio-quality evidence for every committed sample
   (implemented).
+- Run `npm run sound-samples:calibration-report` after evaluation to write a
+  deterministic summary of candidate availability, rank buckets, and model
+  coverage. This report is descriptive only; it deliberately selects no
+  probability threshold.
 - Add confirmed local bird, rain, vehicle, speech, silence, and mixed-noise clips.
 - Record source URL/creator/date/license before redistribution or training use.
 - Keep filename labels as hints until human confirmation is recorded.
@@ -118,3 +122,5 @@ Each analysis should eventually include:
 - Traverse 0.20.0 preparation/validation/registration/activation passes.
 - Phase 2–5 are the next implementation work; Phase 6 requires a separate
   model-artifact decision.
+- A redistributable grizzly reference recording is still missing. Until source
+  terms are verified, the user-confirmed grizzly clip remains evaluation-only.
