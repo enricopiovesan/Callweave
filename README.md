@@ -13,6 +13,13 @@ npm install
 npm run analyze:audio -- path/to/recording.flac output
 ```
 
+For location-aware candidate scoring, pass a profile explicitly:
+
+```bash
+npm run analyze:audio -- path/to/recording.mp3 output \
+  --candidates config/locations/golden-bc.json
+```
+
 The command decodes WAV/FLAC audio locally, resamples it for BirdNET (48 kHz,
 3-second windows) and Perch (32 kHz, 5-second windows), and writes:
 
@@ -25,6 +32,13 @@ scores are uncalibrated ranking evidence, and location/season candidate policy
 must be applied before any governed detection resolution. Raw audio is excluded
 from the review ZIP and external LMM review remains blocked until a local
 speech/privacy protection capability is available.
+
+The committed evaluation corpus can be checked and replayed with:
+
+```bash
+npm run sound-samples:validate
+npm run sound-samples:evaluate
+```
 
 ## Supported scope
 
@@ -50,7 +64,7 @@ the Node and macOS test surfaces.
 
 A real Traverse application bundle now lives in
 [`apps/callweave-foundation`](apps/callweave-foundation). It packages the
-seventeen standalone executable WASM capabilities already present in this repo
+eighteen standalone executable WASM capabilities already present in this repo
 into:
 
 - concrete component manifests
