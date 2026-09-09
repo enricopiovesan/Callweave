@@ -473,7 +473,7 @@ multi-location scaling
 
 1. Which hardware and power/network constraints define the first Golden deployment?
 2. What data sources and licenses are acceptable for generating location candidate sets?
-3. What human-speech/privacy policy applies to master recordings and external LMM packages?
+3. What human-speech/privacy policy applies to master recordings and external LMM packages? **Resolved by D-019.**
 4. What visual language should represent expected, uncertain, unknown, and surprising wildlife?
 5. Which local runtime is preferred for the first prototype: browser PWA only, or PWA plus a local companion service?
 
@@ -500,6 +500,7 @@ multi-location scaling
 | D-017 | Exclude bats and ultrasonic insects from Callweave. | Accepted | Keeps the first product focused on the validated audible path; future ultrasonic work would require a new explicit decision. |
 | D-017 | Use UMA/Traverse-style atomic capability contracts. | Accepted | Keeps static policy and replaceable model capabilities independently testable. |
 | D-018 | Use open-source projects as references/components, not as a project to fork wholesale. | Accepted | Existing projects solve valuable subsets but not the full workflow or product intent. |
+| D-019 | Default to strict privacy export: never include raw audio in external LMM packages; permit sanitized clips only after a versioned privacy evaluation passes, with explicit human override required for any raw-audio export. | Accepted | Protects household speech and bystanders while preserving metadata-only LMM review and auditable escalation. |
 
 ## Appendix A — Capability use-case catalogue
 
