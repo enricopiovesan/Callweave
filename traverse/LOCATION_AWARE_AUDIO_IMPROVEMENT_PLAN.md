@@ -49,6 +49,8 @@ policy checks and (where applicable) human confirmation.
 ### Phase 3 — Golden calibration corpus
 
 - Use the committed samples for elk, black bear, grizzly bear, and cougar.
+- Run `npm run sound-samples:evaluate` to produce reproducible per-model
+  candidate score/rank evidence for every committed sample (implemented).
 - Add confirmed local bird, rain, vehicle, speech, silence, and mixed-noise clips.
 - Record source URL/creator/date/license before redistribution or training use.
 - Keep filename labels as hints until human confirmation is recorded.
