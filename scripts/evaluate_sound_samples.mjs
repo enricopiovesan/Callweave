@@ -16,7 +16,7 @@ for (const sample of manifest.samples) {
   const evidence = JSON.parse(await readFile(join(output, `${sample.path.replace(/\.mp3$/i, '')}.evidence.json`), 'utf8'));
   const models = evidence.models.map(model => {
     const candidate = model.candidate_summary.find(item => item.taxon === sample.candidate_taxon);
-    return { model_id: model.model_id, candidate };
+    return { model_id: model.model_id, quality: model.quality_summary, candidate };
   });
   results.push({ id: sample.id, candidate_taxon: sample.candidate_taxon, models });
 }
