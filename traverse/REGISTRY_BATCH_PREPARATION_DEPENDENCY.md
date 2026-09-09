@@ -18,3 +18,19 @@ This is not additional Registry capability work; it is a Traverse CLI/embedder
 dependency on the newly released `traverse-registry` crate. The project item is
 the remaining implementation handoff; no Registry contract or index change is
 required.
+
+## Current validation evidence
+
+Callweave's pure and business-logic suites pass. Traverse-backed validation
+currently fails with:
+
+```text
+registry_reference_requires_resolution: verified prepared registry asset is missing
+```
+
+The local Traverse checkout still pins `traverse-registry = 0.19.0`, so this is
+the expected pre-upgrade failure rather than a Callweave contract failure.
+
+The implementation handoff is tracked in [Traverse Project 1](https://github.com/orgs/traverse-framework/projects/1?pane=issue&itemId=PVTI_lADOEbiBt84BcZQJzg6K4ZA),
+item **Consume traverse-registry 0.20.0 for manifest-scoped Registry
+preparation**.
