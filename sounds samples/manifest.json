@@ -2,7 +2,8 @@
   "schema_version": "1.0.0",
   "kind": "acoustic_evaluation_samples",
   "provenance_status": "user_supplied_unverified",
-  "label_policy": "filename_hint_only",
+  "label_policy": "human_confirmed_filename_label",
+  "label_confirmed_at": "2026-09-09",
   "redistribution": "blocked_pending_source_license",
   "samples": [
     {

@@ -1,8 +1,8 @@
 # Sound samples
 
 These user-supplied recordings are evaluation fixtures for the local acoustic
-pipeline. They are labelled by the filename only; the labels are not model
-ground truth and must not be used as automatic training labels.
+pipeline. The four filename labels have been human-confirmed for this project;
+they remain evaluation labels, not automatic training labels.
 
 ## Provenance and licensing
 
