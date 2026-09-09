@@ -180,7 +180,10 @@ const modelEvidence = [
 ];
 const candidateComparison = candidateTaxa.map(candidate => ({
   ...candidate,
-  models: modelEvidence.map(model => model.candidate_summary.find(item => item.taxon === candidate.taxon)),
+  models: modelEvidence.map(model => ({
+    model_id: model.model_id,
+    ...model.candidate_summary.find(item => item.taxon === candidate.taxon),
+  })),
 }));
 const report = {
   schema_version: '1.0.0',
@@ -198,7 +201,14 @@ const stem = basename(sourcePath).replace(/\.[^.]+$/, '');
 const jsonPath = resolve(outputDirectory, `${stem}.evidence.json`);
 const mdPath = resolve(outputDirectory, `${stem}.unknown-review.md`);
 await writeFile(jsonPath, `${JSON.stringify(report, null, 2)}\n`);
-await writeFile(mdPath, `# Callweave local acoustic evidence\n\n- Source SHA-256: \`${audioSha256}\`\n- Status: model evidence only; no verified observation.\n- External LMM package: **blocked** pending local speech/privacy protection. Raw audio is intentionally excluded.\n- Evidence JSON: \`${basename(jsonPath)}\`\n`);
+const reviewCandidates = report.candidate_comparison
+  .map(candidate => ({ ...candidate, perch: candidate.models.find(model => model?.model_id === 'perch-v2-multitaxa-int8-arm') }))
+  .filter(candidate => candidate.perch?.available)
+  .sort((a, b) => (b.perch.max_raw_logit ?? -Infinity) - (a.perch.max_raw_logit ?? -Infinity))
+  .slice(0, 10)
+  .map(candidate => `- ${candidate.common_name} (${candidate.taxon}, ${candidate.status}): max raw logit ${candidate.perch.max_raw_logit.toFixed(3)}, best rank ${candidate.perch.best_rank}`)
+  .join('\n');
+await writeFile(mdPath, `# Callweave local acoustic evidence\n\n- Source SHA-256: \`${audioSha256}\`\n- Status: model evidence only; no verified observation.\n- External LMM package: **blocked** pending local speech/privacy protection. Raw audio is intentionally excluded.\n- Evidence JSON: \`${basename(jsonPath)}\`\n\n## Configured local candidates\n\n${reviewCandidates || '- No configured candidate is available in the loaded model taxonomies.'}\n`);
 const zipPath = resolve(outputDirectory, `${stem}.unknown-review.zip`);
 const zip = spawnSync('/usr/bin/zip', ['-j', '-q', zipPath, jsonPath, mdPath]);
 if (zip.status !== 0) throw new Error(`ZIP creation failed: ${zip.stderr}`);

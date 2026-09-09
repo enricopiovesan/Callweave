@@ -38,6 +38,8 @@ policy checks and (where applicable) human confirmation.
 - Summarize quiet, active, and clipped windows per model (implemented).
 - Compare local-candidate evidence across models, including unavailable and
   disagreement states (implemented).
+- Include configured candidate evidence in the metadata-only review Markdown
+  package (implemented).
 
 ### Phase 2 — Active-sound segmentation
 
