@@ -208,7 +208,8 @@ const reviewCandidates = report.candidate_comparison
   .slice(0, 10)
   .map(candidate => `- ${candidate.common_name} (${candidate.taxon}, ${candidate.status}): max raw logit ${candidate.perch.max_raw_logit.toFixed(3)}, best rank ${candidate.perch.best_rank}`)
   .join('\n');
-await writeFile(mdPath, `# Callweave local acoustic evidence\n\n- Source SHA-256: \`${audioSha256}\`\n- Status: model evidence only; no verified observation.\n- External LMM package: **blocked** pending local speech/privacy protection. Raw audio is intentionally excluded.\n- Evidence JSON: \`${basename(jsonPath)}\`\n\n## Configured local candidates\n\n${reviewCandidates || '- No configured candidate is available in the loaded model taxonomies.'}\n`);
+const qualityLines = report.models.map(model => `- ${model.model_id}: ${model.quality_summary.active_windows} active, ${model.quality_summary.quiet_windows} quiet, ${model.quality_summary.clipped_windows} clipped`).join('\n');
+await writeFile(mdPath, `# Callweave local acoustic evidence\n\n- Source SHA-256: \`${audioSha256}\`\n- Status: model evidence only; no verified observation.\n- External LMM package: **blocked** pending local speech/privacy protection. Raw audio is intentionally excluded.\n- Evidence JSON: \`${basename(jsonPath)}\`\n\n## Audio quality\n\n${qualityLines}\n\n## Configured local candidates\n\n${reviewCandidates || '- No configured candidate is available in the loaded model taxonomies.'}\n`);
 const zipPath = resolve(outputDirectory, `${stem}.unknown-review.zip`);
 const zip = spawnSync('/usr/bin/zip', ['-j', '-q', zipPath, jsonPath, mdPath]);
 if (zip.status !== 0) throw new Error(`ZIP creation failed: ${zip.stderr}`);
