@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "id": "golden-bc",
+  "display_name": "Golden, British Columbia",
+  "timezone": "America/Edmonton",
+  "candidates": [
+    { "taxon": "Cervus canadensis", "common_name": "elk", "status": "expected" },
+    { "taxon": "Ursus americanus", "common_name": "American black bear", "status": "possible" },
+    { "taxon": "Ursus arctos", "common_name": "grizzly bear", "status": "possible" },
+    { "taxon": "Puma concolor", "common_name": "cougar", "status": "possible" },
+    { "taxon": "Poecile atricapillus", "common_name": "black-capped chickadee", "status": "expected" },
+    { "taxon": "Poecile gambeli", "common_name": "mountain chickadee", "status": "expected" },
+    { "taxon": "Regulus satrapa", "common_name": "golden-crowned kinglet", "status": "possible" },
+    { "taxon": "Certhia americana", "common_name": "brown creeper", "status": "possible" },
+    { "taxon": "Corvus corax", "common_name": "common raven", "status": "expected" }
+  ]
+}

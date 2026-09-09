@@ -6,9 +6,16 @@ import { spawn, spawnSync } from 'node:child_process';
 import ffmpegPath from 'ffmpeg-static';
 
 const args = process.argv.slice(2);
+let candidateProfilePath;
+const candidateFlag = args.indexOf('--candidates');
+if (candidateFlag !== -1) {
+  candidateProfilePath = args[candidateFlag + 1];
+  args.splice(candidateFlag, 2);
+}
 if (args.includes('--help') || args.includes('-h')) {
   console.log('Usage: npm run analyze:audio -- <audio-file> [output-directory]');
-  console.log('Decodes local WAV/FLAC audio, runs local BirdNET and Perch models, and writes evidence outputs.');
+  console.log('Decodes local audio, runs local BirdNET and Perch models, and writes evidence outputs.');
+  console.log('Optional: --candidates <location-profile.json> reports configured local taxa scores.');
   process.exit(0);
 }
 
@@ -21,6 +28,10 @@ if (!audioPath) {
 const root = resolve('.');
 const sourcePath = resolve(audioPath);
 const outputDirectory = resolve(outputPath);
+const candidateProfile = candidateProfilePath
+  ? JSON.parse(await readFile(resolve(candidateProfilePath), 'utf8'))
+  : null;
+const candidateTaxa = candidateProfile?.candidates ?? [];
 const audioSha256 = createHash('sha256').update(await readFile(sourcePath)).digest('hex');
 
 function decode(sampleRate) {
@@ -61,7 +72,7 @@ async function loadModel(directory, filename) {
   return { lock, labels, session };
 }
 
-async function classify(model, samples) {
+async function classify(model, samples, candidates) {
   const { lock, labels, session } = model;
   const [batch, sampleCount] = lock.interface.input_shape;
   const input = session.inputNames[0];
@@ -70,15 +81,24 @@ async function classify(model, samples) {
   for (const [index, { clip, validSamples }] of windowed(samples, sampleCount).entries()) {
     const output = await session.run({ [input]: new ort.Tensor('float32', clip, [batch, sampleCount]) });
     const values = output[scoreOutput].data;
-    const top = Array.from(values, (rawLogit, labelIndex) => ({ rawLogit, labelIndex }))
+    const ranked = Array.from(values, (rawLogit, labelIndex) => ({ rawLogit, labelIndex }));
+    const top = ranked
       .sort((a, b) => b.rawLogit - a.rawLogit).slice(0, 5)
       .map(({ rawLogit, labelIndex }) => ({ label: labels[labelIndex], raw_logit: rawLogit }));
+    const candidate_scores = candidates.map(candidate => {
+      const labelIndex = labels.findIndex(label => label === candidate.taxon || label.split('_')[0] === candidate.taxon);
+      if (labelIndex < 0) return { ...candidate, available: false, raw_logit: null, rank: null };
+      const rawLogit = values[labelIndex];
+      const rank = 1 + values.reduce((count, value) => count + (value > rawLogit ? 1 : 0), 0);
+      return { ...candidate, available: true, raw_logit: rawLogit, rank };
+    });
     results.push({
       start_millis: index * lock.interface.clip_duration_seconds * 1000,
       end_millis: Math.round((index * sampleCount + validSamples) / lock.interface.sample_rate_hz * 1000),
       valid_input_millis: Math.round(validSamples / lock.interface.sample_rate_hz * 1000),
       zero_padded: validSamples < sampleCount,
       top,
+      candidate_scores,
     });
   }
   return results;
@@ -94,8 +114,8 @@ const report = {
   authority: 'model evidence only; not a verified animal observation',
   score_semantics: 'Top raw logits sorted descending. They are ranking evidence only, not calibrated probabilities; this output must not be sent to a policy threshold until a location/model calibration is supplied.',
   models: [
-    { model_id: birdnet.lock.id, license: birdnet.lock.license.spdx, sample_rate_hz: 48000, windows: await classify(birdnet, birdnetSamples) },
-    { model_id: perch.lock.id, license: perch.lock.license.spdx, sample_rate_hz: 32000, windows: await classify(perch, perchSamples) },
+    { model_id: birdnet.lock.id, license: birdnet.lock.license.spdx, sample_rate_hz: 48000, windows: await classify(birdnet, birdnetSamples, candidateTaxa) },
+    { model_id: perch.lock.id, license: perch.lock.license.spdx, sample_rate_hz: 32000, windows: await classify(perch, perchSamples, candidateTaxa) },
   ],
   review_package: { status: 'blocked_pending_local_speech_privacy_protection', raw_audio_exported: false },
 };
