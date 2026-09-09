@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0.0",
+  "kind": "audio_source_candidates_metadata_only",
+  "queried_at": "2026-09-09",
+  "download_status": "not_downloaded",
+  "policy": "verify attribution, source terms, and downloaded-file checksum before import",
+  "records": [
+    {
+      "id": "inat-observation-397865481-sound-2148936",
+      "source": "iNaturalist",
+      "source_url": "https://www.inaturalist.org/observations/397865481",
+      "media_url": "https://static.inaturalist.org/sounds/2148936.m4a",
+      "taxon": "Cervus canadensis",
+      "common_name": "elk",
+      "license": "CC-BY-4.0",
+      "status": "metadata_candidate"
+    },
+    {
+      "id": "inat-observation-287411149-sound-1509051",
+      "source": "iNaturalist",
+      "source_url": "https://www.inaturalist.org/observations/287411149",
+      "media_url": "https://static.inaturalist.org/sounds/1509051.wav",
+      "taxon": "Ursus americanus",
+      "common_name": "American black bear",
+      "license": "CC-BY-4.0",
+      "status": "metadata_candidate"
+    },
+    {
+      "id": "inat-observation-269033720-sound-1364625",
+      "source": "iNaturalist",
+      "source_url": "https://www.inaturalist.org/observations/269033720",
+      "media_url": "https://static.inaturalist.org/sounds/1364625.mp3",
+      "taxon": "Puma concolor",
+      "common_name": "cougar",
+      "license": "CC-BY-4.0",
+      "status": "metadata_candidate"
+    }
+  ]
+}

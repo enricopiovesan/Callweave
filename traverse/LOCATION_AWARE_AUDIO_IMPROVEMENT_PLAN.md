@@ -54,6 +54,9 @@ policy checks and (where applicable) human confirmation.
 ### Phase 3 — Golden calibration corpus
 
 - Use the committed samples for elk, black bear, grizzly bear, and cougar.
+- Maintain public-source candidates separately from approved imported samples;
+  current iNaturalist CC-BY metadata candidates are recorded in
+  `config/audio-source-candidates.json` without downloading their media.
 - Run `npm run sound-samples:evaluate` to produce reproducible per-model
   candidate score/rank and audio-quality evidence for every committed sample
   (implemented).
