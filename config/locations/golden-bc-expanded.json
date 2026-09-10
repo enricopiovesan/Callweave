@@ -1,0 +1,140 @@
+{
+  "schema_version": "1.0.0",
+  "id": "golden-bc-expanded",
+  "display_name": "Golden, British Columbia (expanded wildlife candidates)",
+  "timezone": "America/Edmonton",
+  "candidates": [
+    {
+      "taxon": "Cervus canadensis",
+      "common_name": "elk",
+      "status": "expected"
+    },
+    {
+      "taxon": "Ursus americanus",
+      "common_name": "American black bear",
+      "status": "expected"
+    },
+    {
+      "taxon": "Ursus arctos",
+      "common_name": "grizzly/brown bear",
+      "status": "expected"
+    },
+    {
+      "taxon": "Puma concolor",
+      "common_name": "cougar",
+      "status": "expected"
+    },
+    {
+      "taxon": "Alces alces",
+      "common_name": "moose",
+      "status": "expected"
+    },
+    {
+      "taxon": "Canis lupus",
+      "common_name": "gray wolf",
+      "status": "expected"
+    },
+    {
+      "taxon": "Canis latrans",
+      "common_name": "coyote",
+      "status": "expected"
+    },
+    {
+      "taxon": "Vulpes vulpes",
+      "common_name": "red fox",
+      "status": "possible"
+    },
+    {
+      "taxon": "Odocoileus hemionus",
+      "common_name": "mule deer",
+      "status": "possible"
+    },
+    {
+      "taxon": "Castor canadensis",
+      "common_name": "North American beaver",
+      "status": "possible"
+    },
+    {
+      "taxon": "Procyon lotor",
+      "common_name": "raccoon",
+      "status": "possible"
+    },
+    {
+      "taxon": "Erethizon dorsatum",
+      "common_name": "North American porcupine",
+      "status": "possible"
+    },
+    {
+      "taxon": "Lasiurus cinereus",
+      "common_name": "hoary bat",
+      "status": "possible"
+    },
+    {
+      "taxon": "Corvus corax",
+      "common_name": "common raven",
+      "status": "expected"
+    },
+    {
+      "taxon": "Corvus brachyrhynchos",
+      "common_name": "American crow",
+      "status": "expected"
+    },
+    {
+      "taxon": "Haliaeetus leucocephalus",
+      "common_name": "bald eagle",
+      "status": "expected"
+    },
+    {
+      "taxon": "Bubo virginianus",
+      "common_name": "great horned owl",
+      "status": "expected"
+    },
+    {
+      "taxon": "Strix varia",
+      "common_name": "barred owl",
+      "status": "possible"
+    },
+    {
+      "taxon": "Poecile atricapillus",
+      "common_name": "black-capped chickadee",
+      "status": "expected"
+    },
+    {
+      "taxon": "Poecile gambeli",
+      "common_name": "mountain chickadee",
+      "status": "expected"
+    },
+    {
+      "taxon": "Sitta canadensis",
+      "common_name": "red-breasted nuthatch",
+      "status": "possible"
+    },
+    {
+      "taxon": "Picoides villosus",
+      "common_name": "hairy woodpecker",
+      "status": "possible"
+    },
+    {
+      "taxon": "Perisoreus canadensis",
+      "common_name": "Canada jay",
+      "status": "possible"
+    },
+    {
+      "taxon": "Buteo jamaicensis",
+      "common_name": "red-tailed hawk",
+      "status": "possible"
+    }
+  ],
+  "negative_controls": [
+    "silence",
+    "steady-tone",
+    "human-speech",
+    "vehicle-engine",
+    "rain",
+    "wind",
+    "chainsaw",
+    "domestic-dog",
+    "mixed-noise"
+  ],
+  "source_plan": "config/test-corpus/golden-expansion.json"
+}
