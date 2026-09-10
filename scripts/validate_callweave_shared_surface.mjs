@@ -5,11 +5,9 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const pwa = JSON.parse(await readFile(path.join(root, 'apps/callweave-pwa-runtime/app.manifest.json'), 'utf8'));
 const surface = JSON.parse(await readFile(path.join(root, 'apps/callweave-shared-surface.json'), 'utf8'));
-const pwaSurface = JSON.parse(await readFile(path.join(root, 'apps/CallweavePWA/shared-surface.json'), 'utf8'));
 
 const fail = (message) => { throw new Error(message); };
 const ids = new Set(surface.capabilities.map((entry) => entry.capability_id));
-if (JSON.stringify(surface) !== JSON.stringify(pwaSurface)) fail('PWA shared-surface asset does not match the published catalogue.');
 if (ids.size !== surface.capabilities.length) fail('Shared surface contains duplicate capability identifiers.');
 for (const entry of surface.capabilities) {
   if (!entry.workflow_id.startsWith('callweave.foundation.')) fail(`Workflow namespace is not canonical: ${entry.workflow_id}`);

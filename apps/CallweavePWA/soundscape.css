@@ -24,39 +24,3 @@
 .runtime-event strong { font-size: .875rem; }.runtime-event span, .runtime-event.is-empty { color: var(--muted); font-size: .75rem; }
 .native-host-note { margin: 1rem 0 1.5rem; padding: 0 0 0 1rem; border-left: 2px solid var(--ochre); }.native-host-note p:last-child { margin: 0; font-size: .875rem; }
 .place-actions { display: flex; flex-wrap: wrap; gap: 1.35rem; }
-.surface-panel { margin-top: 2rem; }
-.surface-intro { max-width: 43rem; color: var(--muted); }
-.surface-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: .85rem; margin-top: 1.5rem; }
-.surface-card { width: 100%; padding: 1.1rem; color: var(--ink); text-align: left; background: #fbfaf5; border: 1px solid var(--line); border-radius: .75rem; cursor: pointer; }
-.surface-card:hover, .surface-card:focus-visible { border-color: var(--ochre); box-shadow: 0 .4rem 1.2rem rgba(31, 57, 46, .08); outline: none; }
-.surface-card .kicker { overflow: hidden; color: var(--ochre); font-size: .65rem; text-overflow: ellipsis; white-space: nowrap; }
-.surface-card h2 { margin: .25rem 0 .55rem; font: 500 1.12rem/1.1 Georgia, serif; letter-spacing: -.03em; }
-.surface-card p { min-height: 4.5rem; margin: 0 0 .8rem; color: var(--muted); font-size: .8rem; line-height: 1.45; }
-.surface-card small { color: var(--ink); font-size: .68rem; text-transform: capitalize; }
-.surface-open { display: block; margin-top: .9rem; color: var(--ochre); font-size: .76rem; font-weight: 700; }
-.surface-loading { color: var(--muted); }
-.workflow-page { max-width: 62rem; }
-.workflow-back { margin-bottom: 2.5rem; }
-.workflow-status { display: flex; flex-wrap: wrap; gap: .6rem; margin: 1.5rem 0; }
-.workflow-status span { padding: .35rem .65rem; color: var(--muted); background: #f4f1e8; border-radius: 999px; font-size: .72rem; text-transform: capitalize; }
-.workflow-readiness { margin: 1rem 0; padding: 1rem 1.15rem; background: #fbfaf5; border: 1px solid var(--line); border-left: 3px solid var(--ochre); border-radius: .5rem; }
-.workflow-readiness strong { display: block; font-size: .82rem; }
-.workflow-readiness p { max-width: 43rem; margin: .45rem 0 .85rem; color: var(--muted); font-size: .82rem; line-height: 1.45; }
-.workflow-live { color: #286341; }.workflow-pending { color: var(--ochre); }
-.machine-loading { margin: .7rem 0; color: var(--muted); font-size: .78rem; }
-.machine-flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .35rem; padding: 0; margin: .9rem 0; list-style: none; }
-.machine-flow li { min-width: 0; padding: .5rem; background: #f0ede4; border-radius: .35rem; }
-.machine-flow strong, .machine-flow span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.machine-flow strong { font-size: .72rem; }.machine-flow span { margin-top: .2rem; color: var(--muted); font-size: .64rem; }
-.workflow-detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .85rem; }
-.workflow-detail-grid article, .use-case-panel { padding: 1.25rem; background: #fbfaf5; border: 1px solid var(--line); border-radius: .75rem; }
-.workflow-fields { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: .8rem; }
-.workflow-fields code { padding: .3rem .45rem; color: var(--ink); background: #f0ede4; border-radius: .25rem; font-size: .72rem; }
-.use-case-panel { margin-top: .85rem; }
-.use-case-panel h2 { margin: .25rem 0 1rem; font: 500 1.35rem/1.1 Georgia, serif; }
-.use-case-panel ol { display: grid; gap: .8rem; padding: 0; margin: 0; list-style: none; }
-.use-case-panel li { display: grid; grid-template-columns: 1.5rem 1fr; gap: .5rem; color: var(--muted); font-size: .88rem; line-height: 1.45; }
-.use-case-panel li span { color: var(--ochre); font-weight: 700; }
-.workflow-boundary { max-width: 46rem; margin: 1.4rem 0 0; color: var(--muted); font-size: .8rem; line-height: 1.5; }
-@media (max-width: 680px) { .workflow-detail-grid { grid-template-columns: 1fr; } }
-@media (max-width: 680px) { .machine-flow { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

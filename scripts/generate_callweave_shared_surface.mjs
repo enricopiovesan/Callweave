@@ -7,7 +7,6 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'
 const foundationDir = path.join(repoRoot, 'apps', 'callweave-foundation');
 const outputJson = path.join(repoRoot, 'apps', 'callweave-shared-surface.json');
 const outputMarkdown = path.join(repoRoot, 'apps', 'CALLWEAVE_SHARED_SURFACE.md');
-const pwaOutputJson = path.join(repoRoot, 'apps', 'CallweavePWA', 'shared-surface.json');
 const registryIndexPath = path.join(
   repoRoot,
   '.traverse',
@@ -127,14 +126,12 @@ const expectedMarkdown = markdown(surface);
 if (process.argv.includes('--check')) {
   const actualJson = await readFile(outputJson, 'utf8');
   const actualMarkdown = await readFile(outputMarkdown, 'utf8');
-  const actualPwaJson = await readFile(pwaOutputJson, 'utf8');
-  if (actualJson !== expectedJson || actualMarkdown !== expectedMarkdown || actualPwaJson !== expectedJson) {
+  if (actualJson !== expectedJson || actualMarkdown !== expectedMarkdown) {
     throw new Error('Shared surface catalogue is stale. Run npm run traverse:shared-surface:generate.');
   }
   console.log(`Shared surface catalogue is current (${surface.capabilities.length} capability/workflow pairs).`);
 } else {
   await writeFile(outputJson, expectedJson);
   await writeFile(outputMarkdown, expectedMarkdown);
-  await writeFile(pwaOutputJson, expectedJson);
   console.log(`Generated shared surface catalogue (${surface.capabilities.length} capability/workflow pairs).`);
 }
