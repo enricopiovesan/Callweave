@@ -28,7 +28,10 @@ The command decodes WAV/FLAC audio locally, resamples it for BirdNET (48 kHz,
 - `<recording>.unknown-review.zip`: those two safe-to-share metadata files.
 
 The analyzer never treats a model result as a verified animal observation. Its
-scores are uncalibrated ranking evidence, and location/season candidate policy
+JSON includes `classification.status: "unknown"` and
+`reason: "uncalibrated_model_ranking"` until a versioned calibration policy and
+human confirmation are supplied. Its scores are uncalibrated ranking evidence,
+and location/season candidate policy
 must be applied before any governed detection resolution. Raw audio is excluded
 from the review ZIP and external LMM review remains blocked until a local
 speech/privacy protection capability is available.
