@@ -26,6 +26,7 @@ function icon(name) {
     archive: '<path d="M4 6h16v14H4zM7 3h10v3M8 10h8M8 14h5"/>',
     review: '<path d="M4 13c3-5 5-5 8 0s5 5 8 0M4 17c3-5 5-5 8 0s5 5 8 0M4 9c3-5 5-5 8 0s5 5 8 0"/>',
     place: '<path d="M12 21s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12Z"/><circle cx="12" cy="9" r="2"/>',
+    listen: '<path d="M5 12h2M9 8v8M13 5v14M17 8v8M21 12h-2"/>',
     close: '<path d="m7 7 10 10M17 7 7 17"/>',
   };
   return `<svg viewBox="0 0 24 24" aria-hidden="true">${paths[name]}</svg>`;
@@ -36,12 +37,16 @@ function navItem(key, label) {
   return `<button class="nav-item ${isCurrent ? 'is-active' : ''}" data-route="${key}" aria-label="${label}" aria-current="${isCurrent ? 'page' : 'false'}">${icon(key)}<span>${label}</span></button>`;
 }
 
+function listeningNavItem() {
+  return `<button class="mobile-listen" type="button" data-action="start-listening" aria-label="Start listening">${icon('listen')}<span>Listen</span></button>`;
+}
+
 function shell(content) {
   return `<div class="app-shell">
     <header class="mobile-head"><div class="wordmark"><i></i>Callweave</div><button class="place-button" data-route="place">Golden, BC</button></header>
     <aside class="rail"><div class="wordmark"><i></i><b>Callweave</b></div><nav>${navItem('today','Today')}${navItem('archive','Archive')}${navItem('review','Review')}<div class="rail-spacer"></div>${navItem('place','Place')}</nav></aside>
     <main class="main">${content}</main>
-    <nav class="mobile-nav">${navItem('today','Today')}${navItem('archive','Archive')}${navItem('review','Review')}${navItem('place','Place')}</nav>
+    <nav class="mobile-nav">${navItem('today','Today')}${navItem('archive','Archive')}${listeningNavItem()}${navItem('review','Review')}${navItem('place','Place')}</nav>
   </div>`;
 }
 
