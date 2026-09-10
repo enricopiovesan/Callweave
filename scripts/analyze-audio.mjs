@@ -191,6 +191,7 @@ const report = {
   source: { filename: basename(sourcePath), sha256: audioSha256, raw_audio_included: false },
   authority: 'model evidence only; not a verified animal observation',
   score_semantics: 'Top raw logits sorted descending. They are ranking evidence only, not calibrated probabilities; this output must not be sent to a policy threshold until a location/model calibration is supplied.',
+  classification: { status: 'unknown', reason: 'uncalibrated_model_ranking', requires_human_confirmation: true },
   models: modelEvidence,
   candidate_comparison: candidateComparison,
   review_package: { status: 'blocked_pending_local_speech_privacy_protection', raw_audio_exported: false },
@@ -206,7 +207,7 @@ const reviewCandidates = report.candidate_comparison
   .filter(candidate => candidate.perch?.available)
   .sort((a, b) => (b.perch.max_raw_logit ?? -Infinity) - (a.perch.max_raw_logit ?? -Infinity))
   .slice(0, 10)
-  .map(candidate => `- ${candidate.common_name} (${candidate.taxon}, ${candidate.status}): max raw logit ${candidate.perch.max_raw_logit.toFixed(3)}, best rank ${candidate.perch.best_rank}`)
+  .map(candidate => `- ${candidate.common_name} (${candidate.taxon}, ${candidate.status}): model candidate only; max raw logit ${candidate.perch.max_raw_logit.toFixed(3)}, best rank ${candidate.perch.best_rank}`)
   .join('\n');
 const qualityLines = report.models.map(model => `- ${model.model_id}: ${model.quality_summary.active_windows} active, ${model.quality_summary.quiet_windows} quiet, ${model.quality_summary.clipped_windows} clipped`).join('\n');
 await writeFile(mdPath, `# Callweave local acoustic evidence\n\n- Source SHA-256: \`${audioSha256}\`\n- Status: model evidence only; no verified observation.\n- External LMM package: **blocked** pending local speech/privacy protection. Raw audio is intentionally excluded.\n- Evidence JSON: \`${basename(jsonPath)}\`\n\n## Audio quality\n\n${qualityLines}\n\n## Configured local candidates\n\n${reviewCandidates || '- No configured candidate is available in the loaded model taxonomies.'}\n`);
