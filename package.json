@@ -103,6 +103,7 @@
     "test-corpus:validate": "node scripts/validate_test_corpus_plan.mjs",
     "test-corpus:source-queue": "node scripts/generate_audio_source_queue.mjs",
     "locations:generate-expanded": "node scripts/generate_expanded_location_profile.mjs",
+    "audio-sources:evaluate": "node scripts/evaluate_public_source_samples.mjs",
     "audio-sources:import": "node scripts/import_audio_source_records.mjs"
   },
   "dependencies": {
