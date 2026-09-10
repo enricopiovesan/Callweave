@@ -20,6 +20,7 @@
 .runtime-button { border: 1px solid var(--ink); border-radius: 999px; background: var(--ink); color: #fff; padding: .65rem 1rem; font-size: .875rem; font-weight: 700; }
 .runtime-button:disabled { opacity: .45; cursor: not-allowed; }
 .listening-cta { margin-top: 1rem; }
+.listening-feedback { max-width: 20rem; margin: .8rem 0 0; color: var(--muted); font-size: .82rem; text-align: center; }
 .runtime-events { padding: 0; margin: 1.4rem 0 0; list-style: none; border-top: 1px solid var(--line); }
 .runtime-event { padding: .75rem 0; border-bottom: 1px solid var(--line); display: grid; gap: .125rem; }
 .runtime-event strong { font-size: .875rem; }.runtime-event span, .runtime-event.is-empty { color: var(--muted); font-size: .75rem; }

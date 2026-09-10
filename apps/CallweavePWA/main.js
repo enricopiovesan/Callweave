@@ -53,7 +53,7 @@ function shell(content) {
 function today() {
   const v = views.today;
   return shell(`<section class="page today-page"><header class="page-title"><div><p class="kicker">${v.label}</p><h1>${v.title}</h1><p class="place-copy">${v.subtitle} <span>· private place</span></p></div><p class="coverage">${v.facts.join(' · ')}</p></header>
-    <article class="listening-canvas"><img src="./assets/listening-soundscape.png" alt="Engraved frog, fox, moth, and wren gathered around shared sound waves"><div class="waveform" aria-label="Sound activity pattern" role="img">${bars(42)}</div><p>${v.status}</p><button class="runtime-button listening-cta" type="button" data-action="start-listening">Start listening</button></article>
+    <article class="listening-canvas"><img src="./assets/listening-soundscape.png" alt="Engraved frog, fox, moth, and wren gathered around shared sound waves"><div class="waveform" aria-label="Sound activity pattern" role="img">${bars(42)}</div><p>${v.status}</p><button class="runtime-button listening-cta" type="button" data-action="start-listening">Start listening</button><p id="listening-status" class="listening-feedback" aria-live="polite" hidden></p></article>
     <section class="quiet-row"><button class="text-link" data-open="day">View today’s record <span>→</span></button><button class="text-link" data-route="review">2 unknown sound groups <span>→</span></button></section>
   </section>`);
 }
@@ -146,22 +146,23 @@ async function requestInstallation() {
 }
 
 async function startListeningFromUserAction() {
-  if (route !== 'place') {
-    route = 'place';
-    render();
-    await Promise.all([refreshRuntimeStatus(), refreshNativeHostStatus()]);
-  }
   requestListeningStart();
 }
 
 async function requestListeningStart() {
-  const target = document.querySelector('#runtime-status');
-  const button = document.querySelector('#capture-plan');
+  const target = document.querySelector('#runtime-status') ?? document.querySelector('#listening-status');
+  const button = document.querySelector('#capture-plan') ?? document.querySelector('[data-action="start-listening"]');
   const retry = document.querySelector('#runtime-retry');
   const config = runtimeConfigFromHost();
-  if (!target || !button || !config) return;
+  if (!target || !button) return;
+  if (!config) {
+    target.hidden = false;
+    target.textContent = 'Listening is not connected on this device yet.';
+    return;
+  }
+  target.hidden = false;
   button.disabled = true;
-  retry.hidden = true;
+  if (retry) retry.hidden = true;
   target.textContent = 'Preparing listening…';
   try {
     const payload = await captureRequestPayload(nativeHostFromBridge());
@@ -177,7 +178,7 @@ async function requestListeningStart() {
     if (view.executionId) subscribeToRuntime(config, view.executionId);
   } catch (error) {
     target.textContent = 'Listening could not start. Please try again.';
-    retry.hidden = false;
+    if (retry) retry.hidden = false;
   } finally {
     button.disabled = false;
   }
