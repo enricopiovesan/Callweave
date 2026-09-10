@@ -34,6 +34,8 @@
     "traverse:shared-surface:generate": "node scripts/generate_callweave_shared_surface.mjs",
     "traverse:shared-surface:validate": "node scripts/validate_callweave_shared_surface.mjs",
     "traverse:pwa-runtime:setup": "node scripts/traverse_pwa_runtime_setup.mjs",
+    "traverse:pwa-runtime:view": "node scripts/generate_callweave_pwa_state_machine_view.mjs",
+    "traverse:pwa-runtime:view:validate": "node scripts/generate_callweave_pwa_state_machine_view.mjs --check",
     "traverse:audio-source:generate": "node scripts/generate_callweave_audio_source_app.mjs",
     "traverse:audio-source:validate": "node scripts/traverse_audio_source_validate.mjs",
     "traverse:audio-source:register": "node scripts/traverse_audio_source_register.mjs",

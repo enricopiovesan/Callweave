@@ -43,6 +43,11 @@
 .workflow-readiness strong { display: block; font-size: .82rem; }
 .workflow-readiness p { max-width: 43rem; margin: .45rem 0 .85rem; color: var(--muted); font-size: .82rem; line-height: 1.45; }
 .workflow-live { color: #286341; }.workflow-pending { color: var(--ochre); }
+.machine-loading { margin: .7rem 0; color: var(--muted); font-size: .78rem; }
+.machine-flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .35rem; padding: 0; margin: .9rem 0; list-style: none; }
+.machine-flow li { min-width: 0; padding: .5rem; background: #f0ede4; border-radius: .35rem; }
+.machine-flow strong, .machine-flow span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.machine-flow strong { font-size: .72rem; }.machine-flow span { margin-top: .2rem; color: var(--muted); font-size: .64rem; }
 .workflow-detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .85rem; }
 .workflow-detail-grid article, .use-case-panel { padding: 1.25rem; background: #fbfaf5; border: 1px solid var(--line); border-radius: .75rem; }
 .workflow-fields { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: .8rem; }
@@ -54,3 +59,4 @@
 .use-case-panel li span { color: var(--ochre); font-weight: 700; }
 .workflow-boundary { max-width: 46rem; margin: 1.4rem 0 0; color: var(--muted); font-size: .8rem; line-height: 1.5; }
 @media (max-width: 680px) { .workflow-detail-grid { grid-template-columns: 1fr; } }
+@media (max-width: 680px) { .machine-flow { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

@@ -22,6 +22,7 @@ let nativeHostUnsubscribe = null;
 let installPrompt = null;
 let sharedSurface = null;
 let activeWorkflow = null;
+let runtimeMachine = null;
 
 function icon(name) {
   const paths = {
@@ -90,7 +91,7 @@ function workflow() {
   const inputs = entry.input_fields.map(field => `<code>${escapeHtml(field)}</code>`).join('') || '<span>None declared</span>';
   const outputs = entry.output_fields.map(field => `<code>${escapeHtml(field)}</code>`).join('') || '<span>None declared</span>';
   const runtimeState = isLiveInPwa
-    ? '<strong class="workflow-live">Connected to PWA state machine</strong><p>The PWA can send <code>request_capture</code> to Traverse. The runtime owns the transition from <code>idle</code> to <code>planning</code> and then to a terminal state.</p><button class="runtime-button" type="button" data-route="place">Open capture control</button>'
+    ? `<strong class="workflow-live">Connected to PWA state machine</strong><p>The PWA can send <code>request_capture</code> to Traverse. The runtime owns the transition from <code>idle</code> to <code>planning</code> and then to a terminal state.</p>${stateMachineView()}<button class="runtime-button" type="button" data-route="place">Open capture control</button>`
     : '<strong class="workflow-pending">Shared contract · not yet exposed by PWA</strong><p>This workflow has no browser command route yet. It will be enabled only after its native-host inputs and Traverse app declaration are ready.</p>';
   return shell(`<section class="page workflow-page"><button class="text-link workflow-back" type="button" data-route="surface">← All workflows</button><header class="page-title"><div><p class="kicker">${escapeHtml(entry.workflow_id)} · v${escapeHtml(entry.workflow_version)}</p><h1>${escapeHtml(entry.capability_id)}</h1><p class="place-copy">${escapeHtml(entry.registry.summary || entry.workflow_summary)}</p></div></header><section class="workflow-status"><span>Registry: ${escapeHtml(entry.registry.source.replaceAll('_', ' '))}</span><span>Targets: ${entry.registry.permitted_targets.map(escapeHtml).join(', ') || 'not declared'}</span></section><section class="workflow-readiness">${runtimeState}</section><section class="workflow-detail-grid"><article><p class="kicker">Workflow input</p><div class="workflow-fields">${inputs}</div></article><article><p class="kicker">Workflow output</p><div class="workflow-fields">${outputs}</div></article></section><section class="use-case-panel"><p class="kicker">User stories</p><h2>What this workflow makes possible</h2><ol>${useCases}</ol></section><p class="workflow-boundary">This screen is a contract view. Enabling this workflow later means sending its declared Traverse command and rendering its returned state—never duplicating its capability in the interface.</p></section>`);
 }
@@ -111,6 +112,7 @@ function render() {
   app.innerHTML = ({ today, archive, review, place, surface, workflow })[route]();
   if (route === 'place') { refreshRuntimeStatus(); refreshNativeHostStatus(); syncInstallButton(); }
   if (route === 'surface') loadSharedSurface();
+  if (route === 'workflow' && activeWorkflow === 'core.create-audio-capture-request-plan') loadRuntimeMachine();
 }
 document.addEventListener('click', event => {
   const routeButton = event.target.closest('[data-route]');
@@ -249,4 +251,26 @@ async function loadSharedSurface() {
     sharedSurface = { capabilities: [] };
   }
   if (route === 'surface') render();
+}
+
+function stateMachineView() {
+  if (!runtimeMachine) return '<p class="machine-loading">Loading Traverse state machine…</p>';
+  return `<ol class="machine-flow">${runtimeMachine.states.map(state => {
+    const transitions = state.transitions.map(transition => `${transition.on} → ${transition.to}`).join(' · ');
+    return `<li><strong>${escapeHtml(state.id)}</strong><span>${escapeHtml(transitions || 'terminal')}</span></li>`;
+  }).join('')}</ol>`;
+}
+
+async function loadRuntimeMachine() {
+  if (runtimeMachine) return;
+  try {
+    const response = await fetch('./runtime-state-machine.json', { cache: 'no-cache' });
+    if (!response.ok) throw new Error('machine_unavailable');
+    const candidate = await response.json();
+    if (!Array.isArray(candidate.states)) throw new Error('machine_invalid');
+    runtimeMachine = candidate;
+  } catch {
+    runtimeMachine = { states: [] };
+  }
+  if (route === 'workflow' && activeWorkflow === 'core.create-audio-capture-request-plan') render();
 }
