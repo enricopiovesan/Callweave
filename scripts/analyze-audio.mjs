@@ -141,11 +141,13 @@ function summarizeCandidates(windows) {
         scores: [],
         best_rank: null,
         supporting_windows: 0,
+        non_background_supporting_windows: 0,
       };
       if (candidate.available) {
         current.scores.push({ raw_logit: candidate.raw_logit, active: window.activity === 'active' });
         current.best_rank = current.best_rank === null ? candidate.rank : Math.min(current.best_rank, candidate.rank);
         if (window.activity === 'active') current.supporting_windows += 1;
+        if (window.activity === 'active' && !window.background_dominant) current.non_background_supporting_windows += 1;
       }
       byTaxon.set(candidate.taxon, current);
     }
@@ -162,6 +164,7 @@ function summarizeCandidates(windows) {
       mean_active_raw_logit: activeScores.length ? activeScores.reduce((sum, score) => sum + score, 0) / activeScores.length : null,
       best_rank: candidate.best_rank,
       supporting_windows: candidate.supporting_windows,
+      non_background_supporting_windows: candidate.non_background_supporting_windows,
     };
   }).sort((a, b) => (b.max_raw_logit ?? -Infinity) - (a.max_raw_logit ?? -Infinity));
 }
@@ -214,7 +217,7 @@ const reviewCandidates = report.candidate_comparison
   .filter(candidate => candidate.perch?.available)
   .sort((a, b) => (b.perch.max_raw_logit ?? -Infinity) - (a.perch.max_raw_logit ?? -Infinity))
   .slice(0, 10)
-  .map(candidate => `- ${candidate.common_name} (${candidate.taxon}, ${candidate.status}): model candidate only; max raw logit ${candidate.perch.max_raw_logit.toFixed(3)}, best rank ${candidate.perch.best_rank}`)
+  .map(candidate => `- ${candidate.common_name} (${candidate.taxon}, ${candidate.status}): model candidate only; max raw logit ${candidate.perch.max_raw_logit.toFixed(3)}, best rank ${candidate.perch.best_rank}, non-background support ${candidate.perch.non_background_supporting_windows}`)
   .join('\n');
 const qualityLines = report.models.map(model => `- ${model.model_id}: ${model.quality_summary.active_windows} active, ${model.quality_summary.quiet_windows} quiet, ${model.quality_summary.clipped_windows} clipped`).join('\n');
 await writeFile(mdPath, `# Callweave local acoustic evidence\n\n- Source SHA-256: \`${audioSha256}\`\n- Status: model evidence only; no verified observation.\n- External LMM package: **blocked** pending local speech/privacy protection. Raw audio is intentionally excluded.\n- Evidence JSON: \`${basename(jsonPath)}\`\n\n## Audio quality\n\n${qualityLines}\n\n## Configured local candidates\n\n${reviewCandidates || '- No configured candidate is available in the loaded model taxonomies.'}\n`);
