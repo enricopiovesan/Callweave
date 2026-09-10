@@ -38,7 +38,7 @@ function navItem(key, label) {
 }
 
 function listeningNavItem() {
-  return `<button class="mobile-listen" type="button" data-action="start-listening" aria-label="Start listening">${icon('listen')}<span>Listen</span></button>`;
+  return `<button id="mobile-start-listening" class="mobile-listen" type="button" data-action="start-listening" aria-label="Start listening" disabled>${icon('listen')}<span>Listen</span></button>`;
 }
 
 function shell(content) {
@@ -53,7 +53,7 @@ function shell(content) {
 function today() {
   const v = views.today;
   return shell(`<section class="page today-page"><header class="page-title"><div><p class="kicker">${v.label}</p><h1>${v.title}</h1><p class="place-copy">${v.subtitle} <span>· private place</span></p></div><p class="coverage">${v.facts.join(' · ')}</p></header>
-    <article class="listening-canvas"><img src="./assets/listening-soundscape.png" alt="Engraved frog, fox, moth, and wren gathered around shared sound waves"><div class="waveform" aria-label="Sound activity pattern" role="img">${bars(42)}</div><p>${v.status}</p><button class="runtime-button listening-cta" type="button" data-action="start-listening">Start listening</button><p id="listening-status" class="listening-feedback" aria-live="polite" hidden></p></article>
+    <article class="listening-canvas"><img src="./assets/listening-soundscape.png" alt="Engraved frog, fox, moth, and wren gathered around shared sound waves"><div class="waveform" aria-label="Sound activity pattern" role="img">${bars(42)}</div><p>${v.status}</p><button id="home-start-listening" class="runtime-button listening-cta" type="button" data-action="start-listening" disabled>Start listening</button><p id="listening-status" class="listening-feedback" aria-live="polite" hidden></p></article>
     <section class="quiet-row"><button class="text-link" data-open="day">View today’s record <span>→</span></button><button class="text-link" data-route="review">2 unknown sound groups <span>→</span></button></section>
   </section>`);
 }
@@ -84,6 +84,7 @@ function modal(title) {
 
 function render() {
   app.innerHTML = ({ today, archive, review, place })[route]();
+  if (route === 'today') refreshHomeListeningAvailability();
   if (route === 'place') { refreshRuntimeStatus(); refreshNativeHostStatus(); syncInstallButton(); }
 }
 document.addEventListener('click', event => {
@@ -117,6 +118,22 @@ async function refreshRuntimeStatus() {
     document.querySelector('#capture-plan').disabled = health.status !== 'connected';
   } catch {
     target.textContent = 'Listening is not available right now.';
+  }
+}
+
+async function refreshHomeListeningAvailability() {
+  const buttons = [document.querySelector('#home-start-listening'), document.querySelector('#mobile-start-listening')].filter(Boolean);
+  const config = runtimeConfigFromHost();
+  if (!config) return;
+  try {
+    const [health, availability] = await Promise.all([
+      new TraverseRuntimeClient(config).health(),
+      recordingAvailability(nativeHostFromBridge()),
+    ]);
+    const available = health.status === 'connected' && availability.available;
+    for (const button of buttons) button.disabled = !available;
+  } catch {
+    for (const button of buttons) button.disabled = true;
   }
 }
 
