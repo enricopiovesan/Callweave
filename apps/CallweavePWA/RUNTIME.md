@@ -22,6 +22,8 @@ globalThis.CallweaveRuntimeConfig = {
 `runtime-client.js` then uses the public Traverse surfaces only:
 
 - `GET /healthz` to expose connection status;
+- `POST /v1/workspaces/{workspace}/apps/{app}/commands` to submit one
+  runtime-declared application command;
 - `wss://.../v1/workspaces/{workspace}/apps/{app}/events` for a governed
   browser subscription once a request or execution ID exists.
 
@@ -31,7 +33,9 @@ token, or invent a fallback runtime.
 
 ## Part 2: state machine
 
-Part 2 may introduce state-machine commands only after the mixed
-local/Registry app activation path is available in Traverse. The UI will send
-declared commands and render the runtime's ordered event messages; it will not
-choose or apply transitions.
+The client now has a transport-only `dispatchCommand()` method. It is not wired
+to a recording button yet: Callweave does not currently have an activated
+recording state machine or a native capture host binding. Once both exist, the
+UI may send only the state machine's declared commands and render its ordered
+runtime events; it will not choose or apply transitions, invent optimistic
+state, or handle microphone capture itself.

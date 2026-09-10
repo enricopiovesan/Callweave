@@ -45,6 +45,37 @@ export class TraverseRuntimeClient {
   }
 
   /**
+   * Sends one declared application command to Traverse. The runtime validates
+   * the command, resolves the current session state, chooses any transition,
+   * and returns the accepted session/execution references. This transport does
+   * not interpret payloads or apply an optimistic UI state.
+   */
+  async dispatchCommand({ command, payload = {}, sessionId } = {}) {
+    if (typeof command !== 'string' || !command.trim()) {
+      throw new Error('Traverse application command requires a non-empty command');
+    }
+    if (typeof this.#fetch !== 'function') throw new Error('fetch is unavailable');
+
+    const response = await this.#fetch(this.commandsUrl(), {
+      method: 'POST',
+      headers: { ...this.#headers(), 'Content-Type': 'application/json' },
+      credentials: 'omit',
+      body: JSON.stringify({
+        command,
+        payload,
+        ...(sessionId ? { session_id: sessionId } : {}),
+      }),
+    });
+    const result = await response.json().catch(() => null);
+    if (!response.ok) {
+      const error = new Error(result?.error?.message ?? `Traverse command failed with HTTP ${response.status}`);
+      error.code = result?.error?.code ?? `http_${response.status}`;
+      throw error;
+    }
+    return Object.freeze(result);
+  }
+
+  /**
    * Opens the governed browser-subscription transport for one request or
    * execution. Message ordering and meaning remain owned by Traverse.
    */
@@ -72,6 +103,10 @@ export class TraverseRuntimeClient {
     url.pathname = `/v1/workspaces/${encodeURIComponent(this.#config.workspaceId)}/apps/${encodeURIComponent(this.#config.appId)}/events`;
     url.search = '';
     return url.toString();
+  }
+
+  commandsUrl() {
+    return `${this.#config.baseUrl}/v1/workspaces/${encodeURIComponent(this.#config.workspaceId)}/apps/${encodeURIComponent(this.#config.appId)}/commands`;
   }
 
   #headers() {

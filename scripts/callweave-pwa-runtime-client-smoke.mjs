@@ -19,6 +19,25 @@ assert.equal(
   'wss://runtime.example.test/v1/workspaces/callweave-local/apps/callweave-foundation/events',
 );
 
+const commands = [];
+const commandClient = new TraverseRuntimeClient({
+  baseUrl: 'https://runtime.example.test/', workspaceId: 'callweave-local', appId: 'callweave-foundation',
+}, {
+  fetchImpl: async (url, options) => {
+    commands.push({ url, options });
+    return { ok: true, json: async () => ({ status: 'accepted', session_id: 'sess-00000001', state: 'starting', execution_id: 'exec-00000001' }) };
+  },
+});
+const accepted = await commandClient.dispatchCommand({
+  command: 'start_listening', payload: { source_ref: 'source:local' }, sessionId: 'sess-00000001',
+});
+assert.equal(accepted.status, 'accepted');
+assert.equal(commands[0].url, 'https://runtime.example.test/v1/workspaces/callweave-local/apps/callweave-foundation/commands');
+assert.equal(commands[0].options.method, 'POST');
+assert.deepEqual(JSON.parse(commands[0].options.body), {
+  command: 'start_listening', payload: { source_ref: 'source:local' }, session_id: 'sess-00000001',
+});
+
 const unavailableClient = new TraverseRuntimeClient({
   baseUrl: 'http://127.0.0.1:8787', workspaceId: 'local', appId: 'callweave',
 }, { fetchImpl: async () => { throw new Error('offline'); } });
