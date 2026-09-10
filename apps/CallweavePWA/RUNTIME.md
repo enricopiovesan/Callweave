@@ -41,6 +41,14 @@ bounded capture plan. It is not wired to a recording button because microphone
 capture still requires a native host binding; the UI will not invent optimistic
 state or handle microphone capture itself.
 
+`runtime-events.js` is deliberately a formatting adapter: it renders fields
+from an already-ordered event or command response but never derives a state or
+chooses a transition. The Place screen exposes connection, request, retry, and
+event-timeline views through that adapter.
+
+The native host boundary and its background-recording responsibilities are in
+[`HOST_RECORDING_CONTRACT.md`](./HOST_RECORDING_CONTRACT.md).
+
 ## Local verification
 
 `npm run traverse:pwa-runtime:setup` syncs, prepares, activates, and registers

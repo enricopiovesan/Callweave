@@ -1,4 +1,5 @@
 import { TraverseRuntimeClient, runtimeConfigFromHost } from './runtime-client.js';
+import { commandResultView, runtimeEventView } from './runtime-events.js';
 
 const app = document.querySelector('#app');
 
@@ -14,6 +15,7 @@ const views = {
 };
 let route = 'today';
 let selected = null;
+let runtimeSubscription = null;
 
 function icon(name) {
   const paths = {
@@ -60,7 +62,7 @@ function review() {
 }
 
 function place() {
-  return shell(`<section class="page"><header class="page-title"><div><p class="kicker">Location</p><h1>Golden, BC</h1><p class="place-copy">This place is private.</p></div></header><section class="place-panel"><p>Listening is local to this place. Exact coordinates, recordings, and privacy controls belong to the connected host—not this presentation layer.</p><p id="runtime-status" class="runtime-status" aria-live="polite">Checking runtime…</p><button class="text-link" data-open="settings">Open place settings <span>→</span></button></section></section>`);
+  return shell(`<section class="page"><header class="page-title"><div><p class="kicker">Location</p><h1>Golden, BC</h1><p class="place-copy">This place is private.</p></div></header><section class="place-panel"><p>Listening is local to this place. Exact coordinates, recordings, and privacy controls belong to the connected host—not this presentation layer.</p><section class="runtime-panel" aria-labelledby="runtime-heading"><div><p class="kicker">Traverse</p><h2 id="runtime-heading">Runtime connection</h2></div><p id="runtime-status" class="runtime-status" aria-live="polite">Checking runtime…</p><div class="runtime-actions"><button id="capture-plan" class="runtime-button" type="button" disabled>Request capture plan</button><button id="runtime-retry" class="text-link" type="button" hidden>Try again <span>→</span></button></div><ol id="runtime-events" class="runtime-events" aria-live="polite"><li class="runtime-event is-empty">No runtime events yet.</li></ol></section><button class="text-link" data-open="settings">Open place settings <span>→</span></button></section></section>`);
 }
 
 function bars(count) { return Array.from({ length: count }, (_, i) => `<i style="--h:${12 + Math.round(Math.abs(Math.sin(i * 1.72)) * 37)}%"></i>`).join(''); }
@@ -77,7 +79,8 @@ function render() {
 }
 document.addEventListener('click', event => {
   const routeButton = event.target.closest('[data-route]');
-  if (routeButton) { route = routeButton.dataset.route; render(); return; }
+  if (routeButton) { runtimeSubscription?.close(); runtimeSubscription = null; route = routeButton.dataset.route; render(); return; }
+  if (event.target.closest('#capture-plan') || event.target.closest('#runtime-retry')) { requestCapturePlan(); return; }
   const openButton = event.target.closest('[data-open]');
   if (openButton) { modal(openButton.dataset.open); return; }
   if (event.target.closest('[data-close]')) { document.querySelector('.modal-backdrop')?.remove(); document.body.classList.remove('has-modal'); selected = null; }
@@ -98,7 +101,57 @@ async function refreshRuntimeStatus() {
     target.textContent = health.status === 'connected'
       ? `Traverse runtime connected · ${health.workspaceId}`
       : 'Traverse runtime unavailable';
+    document.querySelector('#capture-plan').disabled = health.status !== 'connected';
   } catch {
     target.textContent = 'Traverse runtime configuration is invalid';
   }
+}
+
+async function requestCapturePlan() {
+  const target = document.querySelector('#runtime-status');
+  const button = document.querySelector('#capture-plan');
+  const retry = document.querySelector('#runtime-retry');
+  const config = runtimeConfigFromHost();
+  if (!target || !button || !config) return;
+  button.disabled = true;
+  retry.hidden = true;
+  target.textContent = 'Sending request to Traverse…';
+  try {
+    const result = await new TraverseRuntimeClient(config).dispatchCommand({ command: 'request_capture' });
+    const view = commandResultView(result);
+    target.textContent = view.state;
+    appendRuntimeEvent({ type: 'command_accepted', state: view.state, detail: view.executionId ? `Execution ${view.executionId}` : '' });
+    if (view.executionId) subscribeToRuntime(config, view.executionId);
+  } catch (error) {
+    target.textContent = `Runtime request unavailable · ${error.code ?? 'unknown_error'}`;
+    retry.hidden = false;
+  } finally {
+    button.disabled = false;
+  }
+}
+
+function subscribeToRuntime(config, executionId) {
+  runtimeSubscription?.close();
+  const client = new TraverseRuntimeClient(config);
+  runtimeSubscription = client.subscribe({
+    executionId,
+    onMessage: appendRuntimeEvent,
+    onError: () => appendRuntimeEvent({ type: 'connection_error', state: 'Event connection interrupted' }),
+    onClose: ({ reason }) => reason && appendRuntimeEvent({ type: 'connection_closed', state: 'Event connection closed', detail: reason }),
+  });
+}
+
+function appendRuntimeEvent(event) {
+  const list = document.querySelector('#runtime-events');
+  if (!list) return;
+  list.querySelector('.is-empty')?.remove();
+  const view = runtimeEventView(event);
+  const item = document.createElement('li');
+  item.className = 'runtime-event';
+  const title = document.createElement('strong');
+  title.textContent = view.state;
+  const meta = document.createElement('span');
+  meta.textContent = [view.sequence, view.type, view.detail].filter(Boolean).join(' · ');
+  item.append(title, meta);
+  list.prepend(item);
 }

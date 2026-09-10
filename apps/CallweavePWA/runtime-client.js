@@ -79,7 +79,7 @@ export class TraverseRuntimeClient {
    * Opens the governed browser-subscription transport for one request or
    * execution. Message ordering and meaning remain owned by Traverse.
    */
-  subscribe({ requestId, executionId, onMessage, onClose }) {
+  subscribe({ requestId, executionId, onMessage, onClose, onError }) {
     if ((requestId && executionId) || (!requestId && !executionId)) {
       throw new Error('Provide exactly one of requestId or executionId');
     }
@@ -93,6 +93,7 @@ export class TraverseRuntimeClient {
       }));
     });
     socket.addEventListener('message', event => onMessage?.(safeJson(event.data)));
+    socket.addEventListener('error', () => onError?.());
     socket.addEventListener('close', event => onClose?.({ code: event.code, reason: event.reason }));
     return socket;
   }

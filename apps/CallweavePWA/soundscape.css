@@ -13,3 +13,12 @@
   font-size: 0.875rem;
   margin: 1.5rem 0;
 }
+
+.runtime-panel { margin: 1.75rem 0; padding: 1.45rem; color: var(--ink); background: #fbfaf5; border: 1px solid var(--line); border-radius: .75rem; }
+.runtime-panel h2 { font: 500 1.55rem/1 Georgia, serif; letter-spacing: -.04em; margin: 0; }
+.runtime-actions { display: flex; align-items: center; gap: 1.25rem; }
+.runtime-button { border: 1px solid var(--ink); border-radius: 999px; background: var(--ink); color: #fff; padding: .65rem 1rem; font-size: .875rem; font-weight: 700; }
+.runtime-button:disabled { opacity: .45; cursor: not-allowed; }
+.runtime-events { padding: 0; margin: 1.4rem 0 0; list-style: none; border-top: 1px solid var(--line); }
+.runtime-event { padding: .75rem 0; border-bottom: 1px solid var(--line); display: grid; gap: .125rem; }
+.runtime-event strong { font-size: .875rem; }.runtime-event span, .runtime-event.is-empty { color: var(--muted); font-size: .75rem; }
