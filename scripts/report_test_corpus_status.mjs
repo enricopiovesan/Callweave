@@ -18,4 +18,10 @@ const taxa = plan.taxa.map((entry) => ({
 }));
 const totalTarget = taxa.reduce((sum, row) => sum + row.target, 0);
 const totalPresent = taxa.reduce((sum, row) => sum + row.present, 0);
-console.log(JSON.stringify({ schema_version: '1.0.0', kind: 'audio_test_corpus_status', location_profile: plan.location_profile, target_recordings: totalTarget, present_recordings: totalPresent, completion_ratio: totalPresent / totalTarget, redistributable_public_files: sources.records.filter((item) => item.status === 'downloaded_staged').length, user_evaluation_files: manifest.samples.length, taxa }, null, 2));
+const class_summary = [...new Set(taxa.map((row) => row.class))].sort().map((class_name) => {
+  const rows = taxa.filter((row) => row.class === class_name);
+  const target = rows.reduce((sum, row) => sum + row.target, 0);
+  const present = rows.reduce((sum, row) => sum + row.present, 0);
+  return { class: class_name, taxa: rows.length, target_recordings: target, present_recordings: present, completion_ratio: present / target };
+});
+console.log(JSON.stringify({ schema_version: '1.0.0', kind: 'audio_test_corpus_status', location_profile: plan.location_profile, target_recordings: totalTarget, present_recordings: totalPresent, completion_ratio: totalPresent / totalTarget, redistributable_public_files: sources.records.filter((item) => item.status === 'downloaded_staged').length, user_evaluation_files: manifest.samples.length, class_summary, taxa }, null, 2));
