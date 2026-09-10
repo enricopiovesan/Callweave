@@ -13,12 +13,14 @@ const views = {
   archive: { title: 'Archive', label: 'Daily canvases', subtitle: 'A quiet record of this place' },
   review: { title: 'Review', label: 'Needs a closer listen', subtitle: 'Evidence stays evidence until a person reviews it.' },
   place: { title: 'Place', label: 'Golden, BC', subtitle: 'Private location profile' },
+  surface: { title: 'Workflows', label: 'Shared Traverse surface', subtitle: 'The same governed capabilities are available to every Callweave interface.' },
 };
 let route = 'today';
 let selected = null;
 let runtimeSubscription = null;
 let nativeHostUnsubscribe = null;
 let installPrompt = null;
+let sharedSurface = null;
 
 function icon(name) {
   const paths = {
@@ -26,6 +28,7 @@ function icon(name) {
     archive: '<path d="M4 6h16v14H4zM7 3h10v3M8 10h8M8 14h5"/>',
     review: '<path d="M4 13c3-5 5-5 8 0s5 5 8 0M4 17c3-5 5-5 8 0s5 5 8 0M4 9c3-5 5-5 8 0s5 5 8 0"/>',
     place: '<path d="M12 21s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12Z"/><circle cx="12" cy="9" r="2"/>',
+    surface: '<path d="M4 6h16M4 12h16M4 18h16"/><circle cx="7" cy="6" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="17" cy="18" r="1"/>',
     close: '<path d="m7 7 10 10M17 7 7 17"/>',
   };
   return `<svg viewBox="0 0 24 24" aria-hidden="true">${paths[name]}</svg>`;
@@ -38,9 +41,9 @@ function navItem(key, label) {
 function shell(content) {
   return `<div class="app-shell">
     <header class="mobile-head"><div class="wordmark"><i></i>Callweave</div><button class="place-button" data-route="place">Golden, BC</button></header>
-    <aside class="rail"><div class="wordmark"><i></i><b>Callweave</b></div><nav>${navItem('today','Today')}${navItem('archive','Archive')}${navItem('review','Review')}<div class="rail-spacer"></div>${navItem('place','Place')}</nav></aside>
+    <aside class="rail"><div class="wordmark"><i></i><b>Callweave</b></div><nav>${navItem('today','Today')}${navItem('archive','Archive')}${navItem('review','Review')}${navItem('surface','Workflows')}<div class="rail-spacer"></div>${navItem('place','Place')}</nav></aside>
     <main class="main">${content}</main>
-    <nav class="mobile-nav">${navItem('today','Today')}${navItem('archive','Archive')}${navItem('review','Review')}${navItem('place','Place')}</nav>
+    <nav class="mobile-nav">${navItem('today','Today')}${navItem('archive','Archive')}${navItem('review','Review')}${navItem('surface','Workflows')}${navItem('place','Place')}</nav>
   </div>`;
 }
 
@@ -68,6 +71,19 @@ function place() {
   return shell(`<section class="page"><header class="page-title"><div><p class="kicker">Location</p><h1>Golden, BC</h1><p class="place-copy">This place is private.</p></div></header><section class="place-panel"><p>Listening is local to this place. Exact coordinates, recordings, and privacy controls belong to the connected host—not this presentation layer.</p><section class="runtime-panel" aria-labelledby="runtime-heading"><div><p class="kicker">Traverse</p><h2 id="runtime-heading">Runtime connection</h2></div><p id="runtime-status" class="runtime-status" aria-live="polite">Checking runtime…</p><div class="runtime-actions"><button id="capture-plan" class="runtime-button" type="button" disabled>Request capture plan</button><button id="runtime-retry" class="text-link" type="button" hidden>Try again <span>→</span></button></div><ol id="runtime-events" class="runtime-events" aria-live="polite"><li class="runtime-event is-empty">No runtime events yet.</li></ol></section><section class="native-host-note" aria-live="polite"><p class="kicker">Recording host</p><p id="native-host-status">Checking native recording host…</p></section><div class="place-actions"><button id="install-app" class="text-link" type="button" hidden>Install Callweave <span>→</span></button><button class="text-link" data-open="settings">Open place settings <span>→</span></button></div></section></section>`);
 }
 
+function surface() {
+  const v = views.surface;
+  const entries = sharedSurface?.capabilities;
+  const cards = entries
+    ? entries.map(entry => `<article class="surface-card"><p class="kicker">${escapeHtml(entry.workflow_id)}</p><h2>${escapeHtml(entry.capability_id)}</h2><p>${escapeHtml(entry.registry.summary || entry.workflow_summary)}</p><small>${entry.registry.use_cases.length} documented use case${entry.registry.use_cases.length === 1 ? '' : 's'} · ${escapeHtml(entry.registry.source.replaceAll('_', ' '))}</small></article>`).join('')
+    : '<p class="surface-loading">Loading the shared Traverse catalogue…</p>';
+  return shell(`<section class="page"><header class="page-title"><div><p class="kicker">Traverse</p><h1>${v.title}</h1><p class="place-copy">${v.subtitle}</p></div></header><section class="surface-panel" aria-live="polite"><p class="surface-intro">This is a read-only catalogue. The interface sends declared commands to Traverse and renders returned state; it never runs these capabilities itself.</p><div class="surface-grid">${cards}</div></section></section>`);
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char]);
+}
+
 function bars(count) { return Array.from({ length: count }, (_, i) => `<i style="--h:${12 + Math.round(Math.abs(Math.sin(i * 1.72)) * 37)}%"></i>`).join(''); }
 
 function modal(title) {
@@ -77,8 +93,9 @@ function modal(title) {
 }
 
 function render() {
-  app.innerHTML = ({ today, archive, review, place })[route]();
+  app.innerHTML = ({ today, archive, review, place, surface })[route]();
   if (route === 'place') { refreshRuntimeStatus(); refreshNativeHostStatus(); syncInstallButton(); }
+  if (route === 'surface') loadSharedSurface();
 }
 document.addEventListener('click', event => {
   const routeButton = event.target.closest('[data-route]');
@@ -201,4 +218,18 @@ function appendRuntimeEvent(event) {
   meta.textContent = [view.sequence, view.type, view.detail].filter(Boolean).join(' · ');
   item.append(title, meta);
   list.prepend(item);
+}
+
+async function loadSharedSurface() {
+  if (sharedSurface) return;
+  try {
+    const response = await fetch('./shared-surface.json', { cache: 'no-cache' });
+    if (!response.ok) throw new Error('catalogue_unavailable');
+    const candidate = await response.json();
+    if (!Array.isArray(candidate.capabilities)) throw new Error('catalogue_invalid');
+    sharedSurface = candidate;
+  } catch {
+    sharedSurface = { capabilities: [] };
+  }
+  if (route === 'surface') render();
 }
