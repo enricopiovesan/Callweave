@@ -1,6 +1,6 @@
 import { TraverseRuntimeClient, runtimeConfigFromHost } from './runtime-client.js';
 import { commandResultView, runtimeEventView } from './runtime-events.js';
-import { captureRequestPayload, nativeHostFromBridge, recordingAvailability, subscribeRecordingEvents } from './native-host.js';
+import { captureRequestPayload, nativeHostFromBridge, recordingAvailability, subscribeRecordingEvents, subscribeRuntimeEvents } from './native-host.js';
 
 const app = document.querySelector('#app');
 
@@ -169,6 +169,16 @@ async function requestCapturePlan() {
 
 function subscribeToRuntime(config, executionId) {
   runtimeSubscription?.close();
+  const nativeSubscription = subscribeRuntimeEvents(
+    nativeHostFromBridge(),
+    { executionId },
+    appendRuntimeEvent,
+    () => appendRuntimeEvent({ type: 'connection_error', state: 'Event connection interrupted' }),
+  );
+  if (nativeSubscription) {
+    runtimeSubscription = { close: nativeSubscription };
+    return;
+  }
   const client = new TraverseRuntimeClient(config);
   runtimeSubscription = client.subscribe({
     executionId,

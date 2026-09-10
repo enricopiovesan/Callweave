@@ -30,6 +30,12 @@ interface CallweaveNativeHost {
   // Opaque, host-authored input for Traverse's request_capture command.
   getCaptureRequestPayload(): Promise<Record<string, unknown>>;
   subscribeRecordingEvents(listener: (event: unknown) => void): () => void;
+  // Optional authenticated Runtime subscription for a browser shell.
+  subscribeRuntimeEvents(
+    selector: { executionId: string } | { requestId: string },
+    listener: (event: unknown) => void,
+    onError?: () => void,
+  ): () => void;
 }
 ```
 
@@ -38,6 +44,12 @@ events only. It has no `startRecording()` operation because the host must act
 on the runtime-approved plan, not on an ungoverned web-page command. The PWA
 passes the opaque payload through without adding IDs, source profiles, or a
 duration.
+
+When the Runtime requires bearer authentication, the host should also expose
+`subscribeRuntimeEvents`. Browser WebSockets cannot attach an `Authorization`
+header during their handshake; this keeps host credentials and authenticated
+event transport outside the page. The direct browser WebSocket path remains
+available for local development where the Runtime explicitly allows it.
 
 ## Background behavior
 
