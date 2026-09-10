@@ -58,9 +58,10 @@ surface can reveal only the routes appropriate to its users, but every route
 must dispatch its declared Traverse command and render the returned state. It
 must not reimplement a capability, transition, or policy in JavaScript.
 
-Run `npm run traverse:shared-surface:validate` to confirm that every canonical
-capability has exactly one Foundation workflow and that this PWA's capture
-state invokes the same canonical capture-plan capability.
+Run `npm run traverse:shared-surface:validate` to validate the published
+catalogue and that this PWA's capture state invokes its canonical capture-plan
+capability. When the Foundation source changes, regenerate the snapshot with
+`npm run traverse:shared-surface:generate` in that same workspace.
 
 ## Local verification
 
