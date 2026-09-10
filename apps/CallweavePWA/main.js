@@ -1,3 +1,5 @@
+import { TraverseRuntimeClient, runtimeConfigFromHost } from './runtime-client.js';
+
 const app = document.querySelector('#app');
 
 // Presentation fixture only. A host adapter should replace this with read-only view models.
@@ -58,7 +60,7 @@ function review() {
 }
 
 function place() {
-  return shell(`<section class="page"><header class="page-title"><div><p class="kicker">Location</p><h1>Golden, BC</h1><p class="place-copy">This place is private.</p></div></header><section class="place-panel"><p>Listening is local to this place. Exact coordinates, recordings, and privacy controls belong to the connected host—not this presentation layer.</p><button class="text-link" data-open="settings">Open place settings <span>→</span></button></section></section>`);
+  return shell(`<section class="page"><header class="page-title"><div><p class="kicker">Location</p><h1>Golden, BC</h1><p class="place-copy">This place is private.</p></div></header><section class="place-panel"><p>Listening is local to this place. Exact coordinates, recordings, and privacy controls belong to the connected host—not this presentation layer.</p><p id="runtime-status" class="runtime-status" aria-live="polite">Checking runtime…</p><button class="text-link" data-open="settings">Open place settings <span>→</span></button></section></section>`);
 }
 
 function bars(count) { return Array.from({ length: count }, (_, i) => `<i style="--h:${12 + Math.round(Math.abs(Math.sin(i * 1.72)) * 37)}%"></i>`).join(''); }
@@ -69,7 +71,10 @@ function modal(title) {
   document.body.insertAdjacentHTML('beforeend', `<div class="modal-backdrop" data-close><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><button class="icon-close" data-close aria-label="Close">${icon('close')}</button><p class="kicker">Presentation detail</p><h2 id="modal-title">${title}</h2><p>This screen can show evidence supplied by the host. It does not make an identification, validate a result, or change any record.</p><button class="text-link" data-close>Close <span>→</span></button></section></div>`);
 }
 
-function render() { app.innerHTML = ({ today, archive, review, place })[route](); }
+function render() {
+  app.innerHTML = ({ today, archive, review, place })[route]();
+  if (route === 'place') refreshRuntimeStatus();
+}
 document.addEventListener('click', event => {
   const routeButton = event.target.closest('[data-route]');
   if (routeButton) { route = routeButton.dataset.route; render(); return; }
@@ -79,3 +84,21 @@ document.addEventListener('click', event => {
 });
 render();
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('./service-worker.js');
+
+async function refreshRuntimeStatus() {
+  const target = document.querySelector('#runtime-status');
+  const config = runtimeConfigFromHost();
+  if (!target) return;
+  if (!config) {
+    target.textContent = 'Runtime not connected';
+    return;
+  }
+  try {
+    const health = await new TraverseRuntimeClient(config).health();
+    target.textContent = health.status === 'connected'
+      ? `Traverse runtime connected · ${health.workspaceId}`
+      : 'Traverse runtime unavailable';
+  } catch {
+    target.textContent = 'Traverse runtime configuration is invalid';
+  }
+}

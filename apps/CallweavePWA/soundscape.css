@@ -7,3 +7,9 @@
     width: min(360px, 94vw);
   }
 }
+
+.runtime-status {
+  color: var(--muted);
+  font-size: 0.875rem;
+  margin: 1.5rem 0;
+}
