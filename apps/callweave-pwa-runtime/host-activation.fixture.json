@@ -1,0 +1,21 @@
+{
+  "connectors": [],
+  "artifacts": [
+    {
+      "contract_reference": "core.create-audio-capture-request-plan@1.0.0",
+      "placement_target": "local",
+      "config_refs": [],
+      "candidates": [
+        {
+          "package_id": "core.create-audio-capture-request-plan",
+          "package_version": "1.0.0",
+          "digest": "sha256:10fcd7c6e53d0f16cf396b2601864c85436d686e79dee4ae8ffec50b083a6baf",
+          "abi": "wasi-preview1",
+          "lifecycle": "active",
+          "placement": ["local"],
+          "execution_constraints": "verified Registry artifact activation evidence"
+        }
+      ]
+    }
+  ]
+}

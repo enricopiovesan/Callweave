@@ -1,0 +1,72 @@
+{
+  "app_id": "callweave.pwa",
+  "version": "0.1.2",
+  "schema_version": "1.0.0",
+  "workspace_defaults": {
+    "workspace_id": "callweave-pwa-live-local",
+    "registry_scope": "public"
+  },
+  "components": [
+    {
+      "component_id": "callweave.pwa.core.create-audio-capture-request-plan-component",
+      "version": "1.0.0",
+      "digest": "sha256:10fcd7c6e53d0f16cf396b2601864c85436d686e79dee4ae8ffec50b083a6baf",
+      "manifest_path": "components/create-audio-capture-request-plan/component.manifest.json"
+    }
+  ],
+  "workflows": [],
+  "connector_bindings": [],
+  "model_dependencies": [],
+  "config_schema": {
+    "type": "object",
+    "required": ["workspace_id"],
+    "properties": {
+      "workspace_id": { "type": "string" }
+    },
+    "additionalProperties": false
+  },
+  "default_config": {
+    "workspace_id": "callweave-pwa-live-local"
+  },
+  "placement_policy": {
+    "preferred_targets": ["local"],
+    "allow_fallback": false
+  },
+  "state_machine": {
+    "initial_state": "idle",
+    "states": [
+      {
+        "id": "idle",
+        "transitions": [{ "on": "request_capture", "to": "planning" }]
+      },
+      {
+        "id": "planning",
+        "invoke": {
+          "capability_id": "core.create-audio-capture-request-plan",
+          "input_from": "command.payload"
+        },
+        "transitions": [
+          {
+            "on": "capability_succeeded",
+            "condition": { "field": "output.result_class", "op": "eq", "value": "planned" },
+            "to": "capture_planned"
+          },
+          { "on": "capability_succeeded", "to": "request_rejected" },
+          { "on": "capability_failed", "to": "request_rejected" }
+        ]
+      },
+      {
+        "id": "capture_planned",
+        "transitions": [{ "on": "reset", "to": "idle" }]
+      },
+      {
+        "id": "request_rejected",
+        "transitions": [
+          { "on": "retry", "to": "planning", "with_last_payload": true },
+          { "on": "reset", "to": "idle" }
+        ]
+      }
+    ]
+  },
+  "public_surfaces": ["browser"]
+}
