@@ -39,6 +39,10 @@
 .workflow-back { margin-bottom: 2.5rem; }
 .workflow-status { display: flex; flex-wrap: wrap; gap: .6rem; margin: 1.5rem 0; }
 .workflow-status span { padding: .35rem .65rem; color: var(--muted); background: #f4f1e8; border-radius: 999px; font-size: .72rem; text-transform: capitalize; }
+.workflow-readiness { margin: 1rem 0; padding: 1rem 1.15rem; background: #fbfaf5; border: 1px solid var(--line); border-left: 3px solid var(--ochre); border-radius: .5rem; }
+.workflow-readiness strong { display: block; font-size: .82rem; }
+.workflow-readiness p { max-width: 43rem; margin: .45rem 0 .85rem; color: var(--muted); font-size: .82rem; line-height: 1.45; }
+.workflow-live { color: #286341; }.workflow-pending { color: var(--ochre); }
 .workflow-detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .85rem; }
 .workflow-detail-grid article, .use-case-panel { padding: 1.25rem; background: #fbfaf5; border: 1px solid var(--line); border-radius: .75rem; }
 .workflow-fields { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: .8rem; }
