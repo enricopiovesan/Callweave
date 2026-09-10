@@ -21,6 +21,7 @@ let runtimeSubscription = null;
 let nativeHostUnsubscribe = null;
 let installPrompt = null;
 let sharedSurface = null;
+let activeWorkflow = null;
 
 function icon(name) {
   const paths = {
@@ -35,7 +36,8 @@ function icon(name) {
 }
 
 function navItem(key, label) {
-  return `<button class="nav-item ${route === key ? 'is-active' : ''}" data-route="${key}" aria-label="${label}" aria-current="${route === key ? 'page' : 'false'}">${icon(key)}<span>${label}</span></button>`;
+  const isCurrent = route === key || (key === 'surface' && route === 'workflow');
+  return `<button class="nav-item ${isCurrent ? 'is-active' : ''}" data-route="${key}" aria-label="${label}" aria-current="${isCurrent ? 'page' : 'false'}">${icon(key)}<span>${label}</span></button>`;
 }
 
 function shell(content) {
@@ -75,9 +77,18 @@ function surface() {
   const v = views.surface;
   const entries = sharedSurface?.capabilities;
   const cards = entries
-    ? entries.map(entry => `<article class="surface-card"><p class="kicker">${escapeHtml(entry.workflow_id)}</p><h2>${escapeHtml(entry.capability_id)}</h2><p>${escapeHtml(entry.registry.summary || entry.workflow_summary)}</p><small>${entry.registry.use_cases.length} documented use case${entry.registry.use_cases.length === 1 ? '' : 's'} · ${escapeHtml(entry.registry.source.replaceAll('_', ' '))}</small></article>`).join('')
+    ? entries.map((entry, index) => `<button class="surface-card" type="button" data-workflow="${escapeHtml(entry.capability_id)}"><p class="kicker">${String(index + 1).padStart(2, '0')} · ${escapeHtml(entry.workflow_id)}</p><h2>${escapeHtml(entry.capability_id)}</h2><p>${escapeHtml(entry.registry.summary || entry.workflow_summary)}</p><small>${entry.registry.use_cases.length} documented use case${entry.registry.use_cases.length === 1 ? '' : 's'} · ${escapeHtml(entry.registry.source.replaceAll('_', ' '))}</small><span class="surface-open">Open workflow →</span></button>`).join('')
     : '<p class="surface-loading">Loading the shared Traverse catalogue…</p>';
   return shell(`<section class="page"><header class="page-title"><div><p class="kicker">Traverse</p><h1>${v.title}</h1><p class="place-copy">${v.subtitle}</p></div></header><section class="surface-panel" aria-live="polite"><p class="surface-intro">This is a read-only catalogue. The interface sends declared commands to Traverse and renders returned state; it never runs these capabilities itself.</p><div class="surface-grid">${cards}</div></section></section>`);
+}
+
+function workflow() {
+  const entry = sharedSurface?.capabilities?.find(candidate => candidate.capability_id === activeWorkflow);
+  if (!entry) return shell(`<section class="page workflow-page"><button class="text-link" type="button" data-route="surface">← All workflows</button><p class="surface-loading">Loading workflow detail…</p></section>`);
+  const useCases = entry.registry.use_cases.map((item, index) => `<li><span>${index + 1}</span>${escapeHtml(item.scenario)}</li>`).join('');
+  const inputs = entry.input_fields.map(field => `<code>${escapeHtml(field)}</code>`).join('') || '<span>None declared</span>';
+  const outputs = entry.output_fields.map(field => `<code>${escapeHtml(field)}</code>`).join('') || '<span>None declared</span>';
+  return shell(`<section class="page workflow-page"><button class="text-link workflow-back" type="button" data-route="surface">← All workflows</button><header class="page-title"><div><p class="kicker">${escapeHtml(entry.workflow_id)} · v${escapeHtml(entry.workflow_version)}</p><h1>${escapeHtml(entry.capability_id)}</h1><p class="place-copy">${escapeHtml(entry.registry.summary || entry.workflow_summary)}</p></div></header><section class="workflow-status"><span>Registry: ${escapeHtml(entry.registry.source.replaceAll('_', ' '))}</span><span>Targets: ${entry.registry.permitted_targets.map(escapeHtml).join(', ') || 'not declared'}</span></section><section class="workflow-detail-grid"><article><p class="kicker">Workflow input</p><div class="workflow-fields">${inputs}</div></article><article><p class="kicker">Workflow output</p><div class="workflow-fields">${outputs}</div></article></section><section class="use-case-panel"><p class="kicker">User stories</p><h2>What this workflow makes possible</h2><ol>${useCases}</ol></section><p class="workflow-boundary">This screen is a contract view. Enabling this workflow later means sending its declared Traverse command and rendering its returned state—never duplicating its capability in the interface.</p></section>`);
 }
 
 function escapeHtml(value) {
@@ -93,7 +104,7 @@ function modal(title) {
 }
 
 function render() {
-  app.innerHTML = ({ today, archive, review, place, surface })[route]();
+  app.innerHTML = ({ today, archive, review, place, surface, workflow })[route]();
   if (route === 'place') { refreshRuntimeStatus(); refreshNativeHostStatus(); syncInstallButton(); }
   if (route === 'surface') loadSharedSurface();
 }
@@ -102,6 +113,8 @@ document.addEventListener('click', event => {
   if (routeButton) { runtimeSubscription?.close(); runtimeSubscription = null; nativeHostUnsubscribe?.(); nativeHostUnsubscribe = null; route = routeButton.dataset.route; render(); return; }
   if (event.target.closest('#capture-plan') || event.target.closest('#runtime-retry')) { requestCapturePlan(); return; }
   if (event.target.closest('#install-app')) { requestInstallation(); return; }
+  const workflowButton = event.target.closest('[data-workflow]');
+  if (workflowButton) { activeWorkflow = workflowButton.dataset.workflow; route = 'workflow'; render(); return; }
   const openButton = event.target.closest('[data-open]');
   if (openButton) { modal(openButton.dataset.open); return; }
   if (event.target.closest('[data-close]')) { document.querySelector('.modal-backdrop')?.remove(); document.body.classList.remove('has-modal'); selected = null; }
