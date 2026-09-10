@@ -6,7 +6,9 @@ const root = new URL('..', import.meta.url).pathname;
 const sampleRoot = join(root, 'sounds samples');
 const outputRoot = join(root, 'output', 'sample-evaluation');
 const manifest = JSON.parse(await readFile(join(sampleRoot, 'manifest.json'), 'utf8'));
-const profile = join(root, 'config', 'locations', 'golden-bc.json');
+const profileArg = process.argv.indexOf('--profile');
+const profile = profileArg >= 0 ? process.argv[profileArg + 1] : join(root, 'config', 'locations', 'golden-bc.json');
+if (!profile || profile.startsWith('--')) throw new Error('--profile requires a location profile path');
 
 const results = [];
 for (const sample of manifest.samples) {

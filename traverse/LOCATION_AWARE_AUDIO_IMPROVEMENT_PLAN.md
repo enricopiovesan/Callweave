@@ -60,6 +60,8 @@ policy checks and (where applicable) human confirmation.
 - Run `npm run sound-samples:evaluate` to produce reproducible per-model
   candidate score/rank and audio-quality evidence for every committed sample
   (implemented).
+- The evaluator accepts `--profile <location-profile.json>` so the same sample
+  set can be compared across locations without changing capability code.
 - Run `npm run sound-samples:calibration-report` after evaluation to write a
   deterministic summary of candidate availability, rank buckets, and model
   coverage. This report is descriptive only; it deliberately selects no
