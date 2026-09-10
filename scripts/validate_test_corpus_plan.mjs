@@ -1,0 +1,11 @@
+import { readFile } from 'node:fs/promises';
+const root = new URL('..', import.meta.url).pathname;
+const plan = JSON.parse(await readFile(`${root}/config/test-corpus/golden-expansion.json`, 'utf8'));
+if (plan.kind !== 'location_audio_test_corpus_plan') throw new Error('invalid corpus kind');
+if (plan.taxa.length < 20) throw new Error('corpus must contain at least 20 taxa/control classes');
+if (plan.policy.minimum_recordings_per_taxon < 3) throw new Error('minimum replication is too low');
+if (plan.policy.never_download_without_verified_license !== true) throw new Error('license gate is disabled');
+if (plan.negative_controls.length < plan.policy.required_negative_controls) throw new Error('negative-control set is incomplete');
+const taxa = new Set(plan.taxa.map((entry) => entry.taxon));
+if (taxa.size !== plan.taxa.length) throw new Error('duplicate taxon identifiers');
+console.log(`test_corpus_plan=valid taxa=${plan.taxa.length} negative_controls=${plan.negative_controls.length}`);
