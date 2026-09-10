@@ -22,6 +22,8 @@ for (const sample of manifest.samples) {
       best_rank: rank,
       max_raw_logit: candidate?.max_raw_logit ?? null,
       supporting_windows: candidate?.supporting_windows ?? 0,
+      non_background_supporting_windows: candidate?.non_background_supporting_windows ?? 0,
+      background_dominant_only: Boolean(candidate?.supporting_windows) && (candidate?.non_background_supporting_windows ?? 0) === 0,
       top_candidate_match: rank === 1,
       rank_bucket: rank == null ? 'unavailable' : rank <= 5 ? 'top_5' : rank <= 50 ? '6_50' : rank <= 500 ? '51_500' : 'over_500',
       quality: model.quality_summary,
