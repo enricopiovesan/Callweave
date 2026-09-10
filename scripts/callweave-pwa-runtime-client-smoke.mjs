@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { TraverseRuntimeClient } from '../apps/CallweavePWA/runtime-client.js';
 import { commandResultView, runtimeEventView } from '../apps/CallweavePWA/runtime-events.js';
-import { nativeHostFromBridge, recordingAvailability, subscribeRecordingEvents } from '../apps/CallweavePWA/native-host.js';
+import { captureRequestPayload, nativeHostFromBridge, recordingAvailability, subscribeRecordingEvents } from '../apps/CallweavePWA/native-host.js';
 
 const client = new TraverseRuntimeClient({
   baseUrl: 'https://runtime.example.test/',
@@ -68,10 +68,13 @@ assert.deepEqual(commandResultView({ state: 'planning', session_id: 'sess-1', ex
 const hostEvents = [];
 const bridge = {
   getRecordingAvailability: async () => ({ available: true }),
+  getCaptureRequestPayload: async () => ({ request_id: 'host-request-1', source_profile_ref: 'profile:host', duration_seconds: 900 }),
   subscribeRecordingEvents: listener => { listener({ type: 'capture_stopped', state: 'Capture stopped' }); return () => hostEvents.push('unsubscribed'); },
 };
 assert.equal(nativeHostFromBridge({ CallweaveNativeHost: bridge }), bridge);
 assert.deepEqual(await recordingAvailability(bridge), { available: true, reason: null });
+assert.deepEqual(await captureRequestPayload(bridge), { request_id: 'host-request-1', source_profile_ref: 'profile:host', duration_seconds: 900 });
+assert.equal(await captureRequestPayload(null), null);
 subscribeRecordingEvents(bridge, event => hostEvents.push(event.type))();
 assert.deepEqual(hostEvents, ['capture_stopped', 'unsubscribed']);
 assert.deepEqual(await recordingAvailability(null), { available: false, reason: 'not_installed' });

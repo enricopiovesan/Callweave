@@ -25,3 +25,17 @@ export function subscribeRecordingEvents(bridge, listener) {
   const unsubscribe = bridge.subscribeRecordingEvents(listener);
   return typeof unsubscribe === 'function' ? unsubscribe : () => {};
 }
+
+/**
+ * Returns opaque, host-authored input for Traverse's `request_capture` command.
+ * The web app does not create IDs, choose a source profile, or set duration.
+ */
+export async function captureRequestPayload(bridge) {
+  if (!bridge || typeof bridge.getCaptureRequestPayload !== 'function') return null;
+  try {
+    const payload = await bridge.getCaptureRequestPayload();
+    return payload && typeof payload === 'object' && !Array.isArray(payload) ? payload : null;
+  } catch {
+    return null;
+  }
+}

@@ -27,13 +27,17 @@ interface CallweaveNativeHost {
     available: boolean;
     reason?: 'not_installed' | 'permission_required' | 'background_unsupported';
   }>;
+  // Opaque, host-authored input for Traverse's request_capture command.
+  getCaptureRequestPayload(): Promise<Record<string, unknown>>;
   subscribeRecordingEvents(listener: (event: unknown) => void): () => void;
 }
 ```
 
-The bridge exposes availability and host-authored events only. It has no
-`startRecording()` operation because the host must act on the runtime-approved
-plan, not on an ungoverned web-page command.
+The bridge exposes availability, opaque host-authored command input, and host
+events only. It has no `startRecording()` operation because the host must act
+on the runtime-approved plan, not on an ungoverned web-page command. The PWA
+passes the opaque payload through without adding IDs, source profiles, or a
+duration.
 
 ## Background behavior
 

@@ -1,6 +1,6 @@
 import { TraverseRuntimeClient, runtimeConfigFromHost } from './runtime-client.js';
 import { commandResultView, runtimeEventView } from './runtime-events.js';
-import { nativeHostFromBridge, recordingAvailability, subscribeRecordingEvents } from './native-host.js';
+import { captureRequestPayload, nativeHostFromBridge, recordingAvailability, subscribeRecordingEvents } from './native-host.js';
 
 const app = document.querySelector('#app');
 
@@ -146,9 +146,15 @@ async function requestCapturePlan() {
   if (!target || !button || !config) return;
   button.disabled = true;
   retry.hidden = true;
-  target.textContent = 'Sending request to Traverse…';
+  target.textContent = 'Reading capture input from native host…';
   try {
-    const result = await new TraverseRuntimeClient(config).dispatchCommand({ command: 'request_capture' });
+    const payload = await captureRequestPayload(nativeHostFromBridge());
+    if (!payload) {
+      target.textContent = 'A native recording host must provide capture input.';
+      return;
+    }
+    target.textContent = 'Sending request to Traverse…';
+    const result = await new TraverseRuntimeClient(config).dispatchCommand({ command: 'request_capture', payload });
     const view = commandResultView(result);
     target.textContent = view.state;
     appendRuntimeEvent({ type: 'command_accepted', state: view.state, detail: view.executionId ? `Execution ${view.executionId}` : '' });
