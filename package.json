@@ -101,6 +101,7 @@
     "sound-samples:calibration-smoke": "node scripts/calibration_report_smoke.mjs",
     "audio:negative-controls-smoke": "node scripts/audio_negative_controls_smoke.mjs",
     "test-corpus:validate": "node scripts/validate_test_corpus_plan.mjs",
+    "test-corpus:source-queue": "node scripts/generate_audio_source_queue.mjs",
     "audio-sources:import": "node scripts/import_audio_source_records.mjs"
   },
   "dependencies": {

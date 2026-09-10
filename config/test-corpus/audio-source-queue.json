@@ -1,0 +1,979 @@
+{
+  "schema_version": "1.0.0",
+  "kind": "audio_source_acquisition_queue",
+  "generated_at": "2026-09-10T00:55:15.498Z",
+  "location_profile": "golden-bc",
+  "policy": {
+    "minimum_recordings_per_taxon": 3,
+    "required_negative_controls": 9,
+    "redistributable_licenses": [
+      "CC0-1.0",
+      "CC-BY-4.0"
+    ],
+    "evaluation_only_licenses": [
+      "CC-BY-NC-4.0",
+      "unknown"
+    ],
+    "never_download_without_verified_license": true,
+    "do_not_use_for_training_without_separate_artifact_decision": true
+  },
+  "records": [
+    {
+      "taxon": "Cervus canadensis",
+      "common_name": "elk",
+      "class": "mammal",
+      "priority": "confirmed",
+      "target_recordings": 3,
+      "accepted_licenses": [
+        "CC0-1.0",
+        "CC-BY-4.0"
+      ],
+      "evaluation_only_licenses": [
+        "CC-BY-NC-4.0",
+        "unknown"
+      ],
+      "sources": [
+        {
+          "name": "iNaturalist",
+          "query_url": "https://www.inaturalist.org/observations?taxon_name=Cervus%20canadensis&sounds=true&sound_license=cc0,cc-by",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Xeno-canto",
+          "query_url": "https://xeno-canto.org/explore?query=Cervus%20canadensis",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Macaulay Library",
+          "query_url": "https://search.macaulaylibrary.org/catalog?mediaType=audio&otherAnimalsOnly=true&searchField=species&value=Cervus%20canadensis",
+          "media_license_must_be_verified": true
+        }
+      ],
+      "status": "queued_metadata_only"
+    },
+    {
+      "taxon": "Ursus americanus",
+      "common_name": "American black bear",
+      "class": "mammal",
+      "priority": "confirmed",
+      "target_recordings": 3,
+      "accepted_licenses": [
+        "CC0-1.0",
+        "CC-BY-4.0"
+      ],
+      "evaluation_only_licenses": [
+        "CC-BY-NC-4.0",
+        "unknown"
+      ],
+      "sources": [
+        {
+          "name": "iNaturalist",
+          "query_url": "https://www.inaturalist.org/observations?taxon_name=Ursus%20americanus&sounds=true&sound_license=cc0,cc-by",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Xeno-canto",
+          "query_url": "https://xeno-canto.org/explore?query=Ursus%20americanus",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Macaulay Library",
+          "query_url": "https://search.macaulaylibrary.org/catalog?mediaType=audio&otherAnimalsOnly=true&searchField=species&value=Ursus%20americanus",
+          "media_license_must_be_verified": true
+        }
+      ],
+      "status": "queued_metadata_only"
+    },
+    {
+      "taxon": "Ursus arctos",
+      "common_name": "grizzly/brown bear",
+      "class": "mammal",
+      "priority": "confirmed",
+      "target_recordings": 3,
+      "accepted_licenses": [
+        "CC0-1.0",
+        "CC-BY-4.0"
+      ],
+      "evaluation_only_licenses": [
+        "CC-BY-NC-4.0",
+        "unknown"
+      ],
+      "sources": [
+        {
+          "name": "iNaturalist",
+          "query_url": "https://www.inaturalist.org/observations?taxon_name=Ursus%20arctos&sounds=true&sound_license=cc0,cc-by",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Xeno-canto",
+          "query_url": "https://xeno-canto.org/explore?query=Ursus%20arctos",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Macaulay Library",
+          "query_url": "https://search.macaulaylibrary.org/catalog?mediaType=audio&otherAnimalsOnly=true&searchField=species&value=Ursus%20arctos",
+          "media_license_must_be_verified": true
+        }
+      ],
+      "status": "queued_metadata_only"
+    },
+    {
+      "taxon": "Puma concolor",
+      "common_name": "cougar",
+      "class": "mammal",
+      "priority": "confirmed",
+      "target_recordings": 3,
+      "accepted_licenses": [
+        "CC0-1.0",
+        "CC-BY-4.0"
+      ],
+      "evaluation_only_licenses": [
+        "CC-BY-NC-4.0",
+        "unknown"
+      ],
+      "sources": [
+        {
+          "name": "iNaturalist",
+          "query_url": "https://www.inaturalist.org/observations?taxon_name=Puma%20concolor&sounds=true&sound_license=cc0,cc-by",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Xeno-canto",
+          "query_url": "https://xeno-canto.org/explore?query=Puma%20concolor",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Macaulay Library",
+          "query_url": "https://search.macaulaylibrary.org/catalog?mediaType=audio&otherAnimalsOnly=true&searchField=species&value=Puma%20concolor",
+          "media_license_must_be_verified": true
+        }
+      ],
+      "status": "queued_metadata_only"
+    },
+    {
+      "taxon": "Alces alces",
+      "common_name": "moose",
+      "class": "mammal",
+      "priority": "high",
+      "target_recordings": 3,
+      "accepted_licenses": [
+        "CC0-1.0",
+        "CC-BY-4.0"
+      ],
+      "evaluation_only_licenses": [
+        "CC-BY-NC-4.0",
+        "unknown"
+      ],
+      "sources": [
+        {
+          "name": "iNaturalist",
+          "query_url": "https://www.inaturalist.org/observations?taxon_name=Alces%20alces&sounds=true&sound_license=cc0,cc-by",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Xeno-canto",
+          "query_url": "https://xeno-canto.org/explore?query=Alces%20alces",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Macaulay Library",
+          "query_url": "https://search.macaulaylibrary.org/catalog?mediaType=audio&otherAnimalsOnly=true&searchField=species&value=Alces%20alces",
+          "media_license_must_be_verified": true
+        }
+      ],
+      "status": "queued_metadata_only"
+    },
+    {
+      "taxon": "Canis lupus",
+      "common_name": "gray wolf",
+      "class": "mammal",
+      "priority": "high",
+      "target_recordings": 3,
+      "accepted_licenses": [
+        "CC0-1.0",
+        "CC-BY-4.0"
+      ],
+      "evaluation_only_licenses": [
+        "CC-BY-NC-4.0",
+        "unknown"
+      ],
+      "sources": [
+        {
+          "name": "iNaturalist",
+          "query_url": "https://www.inaturalist.org/observations?taxon_name=Canis%20lupus&sounds=true&sound_license=cc0,cc-by",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Xeno-canto",
+          "query_url": "https://xeno-canto.org/explore?query=Canis%20lupus",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Macaulay Library",
+          "query_url": "https://search.macaulaylibrary.org/catalog?mediaType=audio&otherAnimalsOnly=true&searchField=species&value=Canis%20lupus",
+          "media_license_must_be_verified": true
+        }
+      ],
+      "status": "queued_metadata_only"
+    },
+    {
+      "taxon": "Canis latrans",
+      "common_name": "coyote",
+      "class": "mammal",
+      "priority": "high",
+      "target_recordings": 3,
+      "accepted_licenses": [
+        "CC0-1.0",
+        "CC-BY-4.0"
+      ],
+      "evaluation_only_licenses": [
+        "CC-BY-NC-4.0",
+        "unknown"
+      ],
+      "sources": [
+        {
+          "name": "iNaturalist",
+          "query_url": "https://www.inaturalist.org/observations?taxon_name=Canis%20latrans&sounds=true&sound_license=cc0,cc-by",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Xeno-canto",
+          "query_url": "https://xeno-canto.org/explore?query=Canis%20latrans",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Macaulay Library",
+          "query_url": "https://search.macaulaylibrary.org/catalog?mediaType=audio&otherAnimalsOnly=true&searchField=species&value=Canis%20latrans",
+          "media_license_must_be_verified": true
+        }
+      ],
+      "status": "queued_metadata_only"
+    },
+    {
+      "taxon": "Vulpes vulpes",
+      "common_name": "red fox",
+      "class": "mammal",
+      "priority": "medium",
+      "target_recordings": 3,
+      "accepted_licenses": [
+        "CC0-1.0",
+        "CC-BY-4.0"
+      ],
+      "evaluation_only_licenses": [
+        "CC-BY-NC-4.0",
+        "unknown"
+      ],
+      "sources": [
+        {
+          "name": "iNaturalist",
+          "query_url": "https://www.inaturalist.org/observations?taxon_name=Vulpes%20vulpes&sounds=true&sound_license=cc0,cc-by",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Xeno-canto",
+          "query_url": "https://xeno-canto.org/explore?query=Vulpes%20vulpes",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Macaulay Library",
+          "query_url": "https://search.macaulaylibrary.org/catalog?mediaType=audio&otherAnimalsOnly=true&searchField=species&value=Vulpes%20vulpes",
+          "media_license_must_be_verified": true
+        }
+      ],
+      "status": "queued_metadata_only"
+    },
+    {
+      "taxon": "Odocoileus hemionus",
+      "common_name": "mule deer",
+      "class": "mammal",
+      "priority": "medium",
+      "target_recordings": 3,
+      "accepted_licenses": [
+        "CC0-1.0",
+        "CC-BY-4.0"
+      ],
+      "evaluation_only_licenses": [
+        "CC-BY-NC-4.0",
+        "unknown"
+      ],
+      "sources": [
+        {
+          "name": "iNaturalist",
+          "query_url": "https://www.inaturalist.org/observations?taxon_name=Odocoileus%20hemionus&sounds=true&sound_license=cc0,cc-by",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Xeno-canto",
+          "query_url": "https://xeno-canto.org/explore?query=Odocoileus%20hemionus",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Macaulay Library",
+          "query_url": "https://search.macaulaylibrary.org/catalog?mediaType=audio&otherAnimalsOnly=true&searchField=species&value=Odocoileus%20hemionus",
+          "media_license_must_be_verified": true
+        }
+      ],
+      "status": "queued_metadata_only"
+    },
+    {
+      "taxon": "Castor canadensis",
+      "common_name": "North American beaver",
+      "class": "mammal",
+      "priority": "medium",
+      "target_recordings": 3,
+      "accepted_licenses": [
+        "CC0-1.0",
+        "CC-BY-4.0"
+      ],
+      "evaluation_only_licenses": [
+        "CC-BY-NC-4.0",
+        "unknown"
+      ],
+      "sources": [
+        {
+          "name": "iNaturalist",
+          "query_url": "https://www.inaturalist.org/observations?taxon_name=Castor%20canadensis&sounds=true&sound_license=cc0,cc-by",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Xeno-canto",
+          "query_url": "https://xeno-canto.org/explore?query=Castor%20canadensis",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Macaulay Library",
+          "query_url": "https://search.macaulaylibrary.org/catalog?mediaType=audio&otherAnimalsOnly=true&searchField=species&value=Castor%20canadensis",
+          "media_license_must_be_verified": true
+        }
+      ],
+      "status": "queued_metadata_only"
+    },
+    {
+      "taxon": "Procyon lotor",
+      "common_name": "raccoon",
+      "class": "mammal",
+      "priority": "medium",
+      "target_recordings": 3,
+      "accepted_licenses": [
+        "CC0-1.0",
+        "CC-BY-4.0"
+      ],
+      "evaluation_only_licenses": [
+        "CC-BY-NC-4.0",
+        "unknown"
+      ],
+      "sources": [
+        {
+          "name": "iNaturalist",
+          "query_url": "https://www.inaturalist.org/observations?taxon_name=Procyon%20lotor&sounds=true&sound_license=cc0,cc-by",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Xeno-canto",
+          "query_url": "https://xeno-canto.org/explore?query=Procyon%20lotor",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Macaulay Library",
+          "query_url": "https://search.macaulaylibrary.org/catalog?mediaType=audio&otherAnimalsOnly=true&searchField=species&value=Procyon%20lotor",
+          "media_license_must_be_verified": true
+        }
+      ],
+      "status": "queued_metadata_only"
+    },
+    {
+      "taxon": "Erethizon dorsatum",
+      "common_name": "North American porcupine",
+      "class": "mammal",
+      "priority": "medium",
+      "target_recordings": 3,
+      "accepted_licenses": [
+        "CC0-1.0",
+        "CC-BY-4.0"
+      ],
+      "evaluation_only_licenses": [
+        "CC-BY-NC-4.0",
+        "unknown"
+      ],
+      "sources": [
+        {
+          "name": "iNaturalist",
+          "query_url": "https://www.inaturalist.org/observations?taxon_name=Erethizon%20dorsatum&sounds=true&sound_license=cc0,cc-by",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Xeno-canto",
+          "query_url": "https://xeno-canto.org/explore?query=Erethizon%20dorsatum",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Macaulay Library",
+          "query_url": "https://search.macaulaylibrary.org/catalog?mediaType=audio&otherAnimalsOnly=true&searchField=species&value=Erethizon%20dorsatum",
+          "media_license_must_be_verified": true
+        }
+      ],
+      "status": "queued_metadata_only"
+    },
+    {
+      "taxon": "Lasiurus cinereus",
+      "common_name": "hoary bat",
+      "class": "mammal",
+      "priority": "medium",
+      "target_recordings": 3,
+      "accepted_licenses": [
+        "CC0-1.0",
+        "CC-BY-4.0"
+      ],
+      "evaluation_only_licenses": [
+        "CC-BY-NC-4.0",
+        "unknown"
+      ],
+      "sources": [
+        {
+          "name": "iNaturalist",
+          "query_url": "https://www.inaturalist.org/observations?taxon_name=Lasiurus%20cinereus&sounds=true&sound_license=cc0,cc-by",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Xeno-canto",
+          "query_url": "https://xeno-canto.org/explore?query=Lasiurus%20cinereus",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Macaulay Library",
+          "query_url": "https://search.macaulaylibrary.org/catalog?mediaType=audio&otherAnimalsOnly=true&searchField=species&value=Lasiurus%20cinereus",
+          "media_license_must_be_verified": true
+        }
+      ],
+      "status": "queued_metadata_only"
+    },
+    {
+      "taxon": "Corvus corax",
+      "common_name": "common raven",
+      "class": "bird",
+      "priority": "high",
+      "target_recordings": 3,
+      "accepted_licenses": [
+        "CC0-1.0",
+        "CC-BY-4.0"
+      ],
+      "evaluation_only_licenses": [
+        "CC-BY-NC-4.0",
+        "unknown"
+      ],
+      "sources": [
+        {
+          "name": "iNaturalist",
+          "query_url": "https://www.inaturalist.org/observations?taxon_name=Corvus%20corax&sounds=true&sound_license=cc0,cc-by",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Xeno-canto",
+          "query_url": "https://xeno-canto.org/explore?query=Corvus%20corax",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Macaulay Library",
+          "query_url": "https://search.macaulaylibrary.org/catalog?mediaType=audio&otherAnimalsOnly=true&searchField=species&value=Corvus%20corax",
+          "media_license_must_be_verified": true
+        }
+      ],
+      "status": "queued_metadata_only"
+    },
+    {
+      "taxon": "Corvus brachyrhynchos",
+      "common_name": "American crow",
+      "class": "bird",
+      "priority": "high",
+      "target_recordings": 3,
+      "accepted_licenses": [
+        "CC0-1.0",
+        "CC-BY-4.0"
+      ],
+      "evaluation_only_licenses": [
+        "CC-BY-NC-4.0",
+        "unknown"
+      ],
+      "sources": [
+        {
+          "name": "iNaturalist",
+          "query_url": "https://www.inaturalist.org/observations?taxon_name=Corvus%20brachyrhynchos&sounds=true&sound_license=cc0,cc-by",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Xeno-canto",
+          "query_url": "https://xeno-canto.org/explore?query=Corvus%20brachyrhynchos",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Macaulay Library",
+          "query_url": "https://search.macaulaylibrary.org/catalog?mediaType=audio&otherAnimalsOnly=true&searchField=species&value=Corvus%20brachyrhynchos",
+          "media_license_must_be_verified": true
+        }
+      ],
+      "status": "queued_metadata_only"
+    },
+    {
+      "taxon": "Haliaeetus leucocephalus",
+      "common_name": "bald eagle",
+      "class": "bird",
+      "priority": "high",
+      "target_recordings": 3,
+      "accepted_licenses": [
+        "CC0-1.0",
+        "CC-BY-4.0"
+      ],
+      "evaluation_only_licenses": [
+        "CC-BY-NC-4.0",
+        "unknown"
+      ],
+      "sources": [
+        {
+          "name": "iNaturalist",
+          "query_url": "https://www.inaturalist.org/observations?taxon_name=Haliaeetus%20leucocephalus&sounds=true&sound_license=cc0,cc-by",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Xeno-canto",
+          "query_url": "https://xeno-canto.org/explore?query=Haliaeetus%20leucocephalus",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Macaulay Library",
+          "query_url": "https://search.macaulaylibrary.org/catalog?mediaType=audio&otherAnimalsOnly=true&searchField=species&value=Haliaeetus%20leucocephalus",
+          "media_license_must_be_verified": true
+        }
+      ],
+      "status": "queued_metadata_only"
+    },
+    {
+      "taxon": "Bubo virginianus",
+      "common_name": "great horned owl",
+      "class": "bird",
+      "priority": "confirmed",
+      "target_recordings": 3,
+      "accepted_licenses": [
+        "CC0-1.0",
+        "CC-BY-4.0"
+      ],
+      "evaluation_only_licenses": [
+        "CC-BY-NC-4.0",
+        "unknown"
+      ],
+      "sources": [
+        {
+          "name": "iNaturalist",
+          "query_url": "https://www.inaturalist.org/observations?taxon_name=Bubo%20virginianus&sounds=true&sound_license=cc0,cc-by",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Xeno-canto",
+          "query_url": "https://xeno-canto.org/explore?query=Bubo%20virginianus",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Macaulay Library",
+          "query_url": "https://search.macaulaylibrary.org/catalog?mediaType=audio&otherAnimalsOnly=true&searchField=species&value=Bubo%20virginianus",
+          "media_license_must_be_verified": true
+        }
+      ],
+      "status": "queued_metadata_only"
+    },
+    {
+      "taxon": "Strix varia",
+      "common_name": "barred owl",
+      "class": "bird",
+      "priority": "medium",
+      "target_recordings": 3,
+      "accepted_licenses": [
+        "CC0-1.0",
+        "CC-BY-4.0"
+      ],
+      "evaluation_only_licenses": [
+        "CC-BY-NC-4.0",
+        "unknown"
+      ],
+      "sources": [
+        {
+          "name": "iNaturalist",
+          "query_url": "https://www.inaturalist.org/observations?taxon_name=Strix%20varia&sounds=true&sound_license=cc0,cc-by",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Xeno-canto",
+          "query_url": "https://xeno-canto.org/explore?query=Strix%20varia",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Macaulay Library",
+          "query_url": "https://search.macaulaylibrary.org/catalog?mediaType=audio&otherAnimalsOnly=true&searchField=species&value=Strix%20varia",
+          "media_license_must_be_verified": true
+        }
+      ],
+      "status": "queued_metadata_only"
+    },
+    {
+      "taxon": "Poecile atricapillus",
+      "common_name": "black-capped chickadee",
+      "class": "bird",
+      "priority": "high",
+      "target_recordings": 3,
+      "accepted_licenses": [
+        "CC0-1.0",
+        "CC-BY-4.0"
+      ],
+      "evaluation_only_licenses": [
+        "CC-BY-NC-4.0",
+        "unknown"
+      ],
+      "sources": [
+        {
+          "name": "iNaturalist",
+          "query_url": "https://www.inaturalist.org/observations?taxon_name=Poecile%20atricapillus&sounds=true&sound_license=cc0,cc-by",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Xeno-canto",
+          "query_url": "https://xeno-canto.org/explore?query=Poecile%20atricapillus",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Macaulay Library",
+          "query_url": "https://search.macaulaylibrary.org/catalog?mediaType=audio&otherAnimalsOnly=true&searchField=species&value=Poecile%20atricapillus",
+          "media_license_must_be_verified": true
+        }
+      ],
+      "status": "queued_metadata_only"
+    },
+    {
+      "taxon": "Poecile gambeli",
+      "common_name": "mountain chickadee",
+      "class": "bird",
+      "priority": "high",
+      "target_recordings": 3,
+      "accepted_licenses": [
+        "CC0-1.0",
+        "CC-BY-4.0"
+      ],
+      "evaluation_only_licenses": [
+        "CC-BY-NC-4.0",
+        "unknown"
+      ],
+      "sources": [
+        {
+          "name": "iNaturalist",
+          "query_url": "https://www.inaturalist.org/observations?taxon_name=Poecile%20gambeli&sounds=true&sound_license=cc0,cc-by",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Xeno-canto",
+          "query_url": "https://xeno-canto.org/explore?query=Poecile%20gambeli",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Macaulay Library",
+          "query_url": "https://search.macaulaylibrary.org/catalog?mediaType=audio&otherAnimalsOnly=true&searchField=species&value=Poecile%20gambeli",
+          "media_license_must_be_verified": true
+        }
+      ],
+      "status": "queued_metadata_only"
+    },
+    {
+      "taxon": "Sitta canadensis",
+      "common_name": "red-breasted nuthatch",
+      "class": "bird",
+      "priority": "medium",
+      "target_recordings": 3,
+      "accepted_licenses": [
+        "CC0-1.0",
+        "CC-BY-4.0"
+      ],
+      "evaluation_only_licenses": [
+        "CC-BY-NC-4.0",
+        "unknown"
+      ],
+      "sources": [
+        {
+          "name": "iNaturalist",
+          "query_url": "https://www.inaturalist.org/observations?taxon_name=Sitta%20canadensis&sounds=true&sound_license=cc0,cc-by",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Xeno-canto",
+          "query_url": "https://xeno-canto.org/explore?query=Sitta%20canadensis",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Macaulay Library",
+          "query_url": "https://search.macaulaylibrary.org/catalog?mediaType=audio&otherAnimalsOnly=true&searchField=species&value=Sitta%20canadensis",
+          "media_license_must_be_verified": true
+        }
+      ],
+      "status": "queued_metadata_only"
+    },
+    {
+      "taxon": "Picoides villosus",
+      "common_name": "hairy woodpecker",
+      "class": "bird",
+      "priority": "medium",
+      "target_recordings": 3,
+      "accepted_licenses": [
+        "CC0-1.0",
+        "CC-BY-4.0"
+      ],
+      "evaluation_only_licenses": [
+        "CC-BY-NC-4.0",
+        "unknown"
+      ],
+      "sources": [
+        {
+          "name": "iNaturalist",
+          "query_url": "https://www.inaturalist.org/observations?taxon_name=Picoides%20villosus&sounds=true&sound_license=cc0,cc-by",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Xeno-canto",
+          "query_url": "https://xeno-canto.org/explore?query=Picoides%20villosus",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Macaulay Library",
+          "query_url": "https://search.macaulaylibrary.org/catalog?mediaType=audio&otherAnimalsOnly=true&searchField=species&value=Picoides%20villosus",
+          "media_license_must_be_verified": true
+        }
+      ],
+      "status": "queued_metadata_only"
+    },
+    {
+      "taxon": "Perisoreus canadensis",
+      "common_name": "Canada jay",
+      "class": "bird",
+      "priority": "medium",
+      "target_recordings": 3,
+      "accepted_licenses": [
+        "CC0-1.0",
+        "CC-BY-4.0"
+      ],
+      "evaluation_only_licenses": [
+        "CC-BY-NC-4.0",
+        "unknown"
+      ],
+      "sources": [
+        {
+          "name": "iNaturalist",
+          "query_url": "https://www.inaturalist.org/observations?taxon_name=Perisoreus%20canadensis&sounds=true&sound_license=cc0,cc-by",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Xeno-canto",
+          "query_url": "https://xeno-canto.org/explore?query=Perisoreus%20canadensis",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Macaulay Library",
+          "query_url": "https://search.macaulaylibrary.org/catalog?mediaType=audio&otherAnimalsOnly=true&searchField=species&value=Perisoreus%20canadensis",
+          "media_license_must_be_verified": true
+        }
+      ],
+      "status": "queued_metadata_only"
+    },
+    {
+      "taxon": "Buteo jamaicensis",
+      "common_name": "red-tailed hawk",
+      "class": "bird",
+      "priority": "medium",
+      "target_recordings": 3,
+      "accepted_licenses": [
+        "CC0-1.0",
+        "CC-BY-4.0"
+      ],
+      "evaluation_only_licenses": [
+        "CC-BY-NC-4.0",
+        "unknown"
+      ],
+      "sources": [
+        {
+          "name": "iNaturalist",
+          "query_url": "https://www.inaturalist.org/observations?taxon_name=Buteo%20jamaicensis&sounds=true&sound_license=cc0,cc-by",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Xeno-canto",
+          "query_url": "https://xeno-canto.org/explore?query=Buteo%20jamaicensis",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Macaulay Library",
+          "query_url": "https://search.macaulaylibrary.org/catalog?mediaType=audio&otherAnimalsOnly=true&searchField=species&value=Buteo%20jamaicensis",
+          "media_license_must_be_verified": true
+        }
+      ],
+      "status": "queued_metadata_only"
+    },
+    {
+      "taxon": "Canis familiaris",
+      "common_name": "domestic dog",
+      "class": "control",
+      "priority": "high",
+      "target_recordings": 3,
+      "accepted_licenses": [
+        "CC0-1.0",
+        "CC-BY-4.0"
+      ],
+      "evaluation_only_licenses": [
+        "CC-BY-NC-4.0",
+        "unknown"
+      ],
+      "sources": [
+        {
+          "name": "iNaturalist",
+          "query_url": "https://www.inaturalist.org/observations?taxon_name=Canis%20familiaris&sounds=true&sound_license=cc0,cc-by",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Xeno-canto",
+          "query_url": "https://xeno-canto.org/explore?query=Canis%20familiaris",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Macaulay Library",
+          "query_url": "https://search.macaulaylibrary.org/catalog?mediaType=audio&otherAnimalsOnly=true&searchField=species&value=Canis%20familiaris",
+          "media_license_must_be_verified": true
+        }
+      ],
+      "status": "queued_metadata_only"
+    },
+    {
+      "taxon": "Bos taurus",
+      "common_name": "domestic cattle",
+      "class": "control",
+      "priority": "medium",
+      "target_recordings": 3,
+      "accepted_licenses": [
+        "CC0-1.0",
+        "CC-BY-4.0"
+      ],
+      "evaluation_only_licenses": [
+        "CC-BY-NC-4.0",
+        "unknown"
+      ],
+      "sources": [
+        {
+          "name": "iNaturalist",
+          "query_url": "https://www.inaturalist.org/observations?taxon_name=Bos%20taurus&sounds=true&sound_license=cc0,cc-by",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Xeno-canto",
+          "query_url": "https://xeno-canto.org/explore?query=Bos%20taurus",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Macaulay Library",
+          "query_url": "https://search.macaulaylibrary.org/catalog?mediaType=audio&otherAnimalsOnly=true&searchField=species&value=Bos%20taurus",
+          "media_license_must_be_verified": true
+        }
+      ],
+      "status": "queued_metadata_only"
+    },
+    {
+      "taxon": "Homo sapiens",
+      "common_name": "human speech",
+      "class": "control",
+      "priority": "high",
+      "target_recordings": 3,
+      "accepted_licenses": [
+        "CC0-1.0",
+        "CC-BY-4.0"
+      ],
+      "evaluation_only_licenses": [
+        "CC-BY-NC-4.0",
+        "unknown"
+      ],
+      "sources": [
+        {
+          "name": "iNaturalist",
+          "query_url": "https://www.inaturalist.org/observations?taxon_name=Homo%20sapiens&sounds=true&sound_license=cc0,cc-by",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Xeno-canto",
+          "query_url": "https://xeno-canto.org/explore?query=Homo%20sapiens",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Macaulay Library",
+          "query_url": "https://search.macaulaylibrary.org/catalog?mediaType=audio&otherAnimalsOnly=true&searchField=species&value=Homo%20sapiens",
+          "media_license_must_be_verified": true
+        }
+      ],
+      "status": "queued_metadata_only"
+    },
+    {
+      "taxon": "vehicle.engine",
+      "common_name": "vehicle/engine",
+      "class": "control",
+      "priority": "high",
+      "target_recordings": 3,
+      "accepted_licenses": [
+        "CC0-1.0",
+        "CC-BY-4.0"
+      ],
+      "evaluation_only_licenses": [
+        "CC-BY-NC-4.0",
+        "unknown"
+      ],
+      "sources": [
+        {
+          "name": "iNaturalist",
+          "query_url": "https://www.inaturalist.org/observations?taxon_name=vehicle.engine&sounds=true&sound_license=cc0,cc-by",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Xeno-canto",
+          "query_url": "https://xeno-canto.org/explore?query=vehicle.engine",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Macaulay Library",
+          "query_url": "https://search.macaulaylibrary.org/catalog?mediaType=audio&otherAnimalsOnly=true&searchField=species&value=vehicle.engine",
+          "media_license_must_be_verified": true
+        }
+      ],
+      "status": "queued_metadata_only"
+    },
+    {
+      "taxon": "weather.rain",
+      "common_name": "rain and wind",
+      "class": "control",
+      "priority": "high",
+      "target_recordings": 3,
+      "accepted_licenses": [
+        "CC0-1.0",
+        "CC-BY-4.0"
+      ],
+      "evaluation_only_licenses": [
+        "CC-BY-NC-4.0",
+        "unknown"
+      ],
+      "sources": [
+        {
+          "name": "iNaturalist",
+          "query_url": "https://www.inaturalist.org/observations?taxon_name=weather.rain&sounds=true&sound_license=cc0,cc-by",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Xeno-canto",
+          "query_url": "https://xeno-canto.org/explore?query=weather.rain",
+          "media_license_must_be_verified": true
+        },
+        {
+          "name": "Macaulay Library",
+          "query_url": "https://search.macaulaylibrary.org/catalog?mediaType=audio&otherAnimalsOnly=true&searchField=species&value=weather.rain",
+          "media_license_must_be_verified": true
+        }
+      ],
+      "status": "queued_metadata_only"
+    }
+  ]
+}
