@@ -5,10 +5,17 @@
  */
 export function runtimeEventView(event) {
   const value = event && typeof event === 'object' ? event : {};
-  const type = text(value.type, 'runtime_event');
-  const state = text(value.state ?? value.current_state ?? value.data?.state, 'Awaiting runtime update');
-  const sequence = Number.isFinite(value.sequence) ? `#${value.sequence}` : null;
-  const detail = text(value.message ?? value.detail ?? value.data?.message, '');
+  // Traverse browser subscriptions carry their ordered message under `message`.
+  const message = value.message && typeof value.message === 'object' ? value.message : value;
+  const stateEvent = message.state_event && typeof message.state_event === 'object' ? message.state_event : {};
+  const result = message.result && typeof message.result === 'object' ? message.result : {};
+  const type = text(message.kind ?? value.type ?? value.signal, 'runtime_event');
+  const state = text(
+    stateEvent.state ?? message.status ?? result.status ?? message.state ?? value.state ?? value.current_state ?? value.data?.state,
+    'Awaiting runtime update',
+  );
+  const sequence = Number.isFinite(message.sequence) ? `#${message.sequence}` : null;
+  const detail = text(message.message ?? value.detail ?? value.data?.message, '');
   return Object.freeze({ type, state, sequence, detail, receivedAt: new Date().toISOString() });
 }
 

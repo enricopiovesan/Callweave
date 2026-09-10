@@ -63,6 +63,10 @@ sockets[0].emit('open');
 assert.deepEqual(JSON.parse(sockets[0].sent), { type: 'subscribe', mode: 'browser_subscription', execution_id: 'exec-00000001' });
 sockets[0].emit('message', { data: JSON.stringify({ type: 'state_changed', state: 'capture_planned', sequence: 4 }) });
 assert.equal(runtimeEventView(events[0]).state, 'capture_planned');
+const subscriptionView = runtimeEventView({ type: 'browser_subscription', message: { kind: 'browser_runtime_subscription_state', sequence: 2, state_event: { state: 'executing' } } });
+assert.deepEqual({ type: subscriptionView.type, state: subscriptionView.state, sequence: subscriptionView.sequence, detail: subscriptionView.detail }, {
+  type: 'browser_runtime_subscription_state', state: 'executing', sequence: '#2', detail: '',
+});
 assert.deepEqual(commandResultView({ state: 'planning', session_id: 'sess-1', execution_id: 'exec-1' }), { state: 'planning', sessionId: 'sess-1', executionId: 'exec-1' });
 
 const hostEvents = [];
