@@ -6,12 +6,16 @@
 export function runtimeEventView(event) {
   const value = event && typeof event === 'object' ? event : {};
   // Traverse browser subscriptions carry their ordered message under `message`.
-  const message = value.message && typeof value.message === 'object' ? value.message : value;
+  const envelope = value.message && typeof value.message === 'object' ? value.message : value;
+  // Rust's externally tagged subscription enum is serialized as
+  // `{ Lifecycle: {...} }`, `{ StreamTerminal: {...} }`, etc.
+  const message = envelope.kind ? envelope : Object.values(envelope).find(candidate => candidate && typeof candidate === 'object') ?? envelope;
   const stateEvent = message.state_event && typeof message.state_event === 'object' ? message.state_event : {};
   const result = message.result && typeof message.result === 'object' ? message.result : {};
+  const trace = message.trace && typeof message.trace === 'object' ? message.trace : {};
   const type = text(message.kind ?? value.type ?? value.signal, 'runtime_event');
   const state = text(
-    stateEvent.state ?? message.status ?? result.status ?? message.state ?? value.state ?? value.current_state ?? value.data?.state,
+    stateEvent.state ?? message.status ?? result.status ?? trace.terminal_outcome?.runtime_status ?? trace.execution?.status ?? message.state ?? value.state ?? value.current_state ?? value.data?.state,
     'Awaiting runtime update',
   );
   const sequence = Number.isFinite(message.sequence) ? `#${message.sequence}` : null;

@@ -67,6 +67,10 @@ const subscriptionView = runtimeEventView({ type: 'browser_subscription', messag
 assert.deepEqual({ type: subscriptionView.type, state: subscriptionView.state, sequence: subscriptionView.sequence, detail: subscriptionView.detail }, {
   type: 'browser_runtime_subscription_state', state: 'executing', sequence: '#2', detail: '',
 });
+const liveEnvelopeView = runtimeEventView({ type: 'browser_subscription', message: { Lifecycle: { kind: 'browser_runtime_subscription_lifecycle', sequence: 0, status: 'subscription_established' } } });
+assert.deepEqual({ type: liveEnvelopeView.type, state: liveEnvelopeView.state, sequence: liveEnvelopeView.sequence }, {
+  type: 'browser_runtime_subscription_lifecycle', state: 'subscription_established', sequence: '#0',
+});
 assert.deepEqual(commandResultView({ state: 'planning', session_id: 'sess-1', execution_id: 'exec-1' }), { state: 'planning', sessionId: 'sess-1', executionId: 'exec-1' });
 
 const hostEvents = [];
