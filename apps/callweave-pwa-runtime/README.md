@@ -10,3 +10,17 @@ The state machine is runtime-owned:
 
 Clients submit `request_capture` with the capability's declared payload and
 render the returned state/events. They do not choose transitions.
+
+## Host setup
+
+From the repository root, run:
+
+```bash
+npm run traverse:pwa-runtime:setup
+```
+
+This explicitly syncs the public Registry, prepares the exact reference,
+activates it against the checked-in development fixture, and registers the app
+in its declared local workspace. Re-running verifies the existing registration
+matches the manifest; a changed manifest requires a version bump. It does not
+start capture hardware.
