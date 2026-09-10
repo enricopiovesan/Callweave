@@ -18,6 +18,7 @@ let route = 'today';
 let selected = null;
 let runtimeSubscription = null;
 let nativeHostUnsubscribe = null;
+let installPrompt = null;
 
 function icon(name) {
   const paths = {
@@ -64,7 +65,7 @@ function review() {
 }
 
 function place() {
-  return shell(`<section class="page"><header class="page-title"><div><p class="kicker">Location</p><h1>Golden, BC</h1><p class="place-copy">This place is private.</p></div></header><section class="place-panel"><p>Listening is local to this place. Exact coordinates, recordings, and privacy controls belong to the connected host—not this presentation layer.</p><section class="runtime-panel" aria-labelledby="runtime-heading"><div><p class="kicker">Traverse</p><h2 id="runtime-heading">Runtime connection</h2></div><p id="runtime-status" class="runtime-status" aria-live="polite">Checking runtime…</p><div class="runtime-actions"><button id="capture-plan" class="runtime-button" type="button" disabled>Request capture plan</button><button id="runtime-retry" class="text-link" type="button" hidden>Try again <span>→</span></button></div><ol id="runtime-events" class="runtime-events" aria-live="polite"><li class="runtime-event is-empty">No runtime events yet.</li></ol></section><section class="native-host-note" aria-live="polite"><p class="kicker">Recording host</p><p id="native-host-status">Checking native recording host…</p></section><button class="text-link" data-open="settings">Open place settings <span>→</span></button></section></section>`);
+  return shell(`<section class="page"><header class="page-title"><div><p class="kicker">Location</p><h1>Golden, BC</h1><p class="place-copy">This place is private.</p></div></header><section class="place-panel"><p>Listening is local to this place. Exact coordinates, recordings, and privacy controls belong to the connected host—not this presentation layer.</p><section class="runtime-panel" aria-labelledby="runtime-heading"><div><p class="kicker">Traverse</p><h2 id="runtime-heading">Runtime connection</h2></div><p id="runtime-status" class="runtime-status" aria-live="polite">Checking runtime…</p><div class="runtime-actions"><button id="capture-plan" class="runtime-button" type="button" disabled>Request capture plan</button><button id="runtime-retry" class="text-link" type="button" hidden>Try again <span>→</span></button></div><ol id="runtime-events" class="runtime-events" aria-live="polite"><li class="runtime-event is-empty">No runtime events yet.</li></ol></section><section class="native-host-note" aria-live="polite"><p class="kicker">Recording host</p><p id="native-host-status">Checking native recording host…</p></section><div class="place-actions"><button id="install-app" class="text-link" type="button" hidden>Install Callweave <span>→</span></button><button class="text-link" data-open="settings">Open place settings <span>→</span></button></div></section></section>`);
 }
 
 function bars(count) { return Array.from({ length: count }, (_, i) => `<i style="--h:${12 + Math.round(Math.abs(Math.sin(i * 1.72)) * 37)}%"></i>`).join(''); }
@@ -77,18 +78,21 @@ function modal(title) {
 
 function render() {
   app.innerHTML = ({ today, archive, review, place })[route]();
-  if (route === 'place') { refreshRuntimeStatus(); refreshNativeHostStatus(); }
+  if (route === 'place') { refreshRuntimeStatus(); refreshNativeHostStatus(); syncInstallButton(); }
 }
 document.addEventListener('click', event => {
   const routeButton = event.target.closest('[data-route]');
   if (routeButton) { runtimeSubscription?.close(); runtimeSubscription = null; nativeHostUnsubscribe?.(); nativeHostUnsubscribe = null; route = routeButton.dataset.route; render(); return; }
   if (event.target.closest('#capture-plan') || event.target.closest('#runtime-retry')) { requestCapturePlan(); return; }
+  if (event.target.closest('#install-app')) { requestInstallation(); return; }
   const openButton = event.target.closest('[data-open]');
   if (openButton) { modal(openButton.dataset.open); return; }
   if (event.target.closest('[data-close]')) { document.querySelector('.modal-backdrop')?.remove(); document.body.classList.remove('has-modal'); selected = null; }
 });
 render();
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('./service-worker.js');
+window.addEventListener('beforeinstallprompt', event => { event.preventDefault(); installPrompt = event; syncInstallButton(); });
+window.addEventListener('appinstalled', () => { installPrompt = null; syncInstallButton(); });
 
 async function refreshRuntimeStatus() {
   const target = document.querySelector('#runtime-status');
@@ -119,6 +123,19 @@ async function refreshNativeHostStatus() {
     : `Native recording host unavailable${availability.reason ? ` · ${availability.reason.replaceAll('_', ' ')}` : ''}.`;
   nativeHostUnsubscribe?.();
   nativeHostUnsubscribe = subscribeRecordingEvents(bridge, event => appendRuntimeEvent(event));
+}
+
+function syncInstallButton() {
+  const button = document.querySelector('#install-app');
+  if (button) button.hidden = !installPrompt;
+}
+
+async function requestInstallation() {
+  if (!installPrompt) return;
+  const prompt = installPrompt;
+  installPrompt = null;
+  syncInstallButton();
+  await prompt.prompt();
 }
 
 async function requestCapturePlan() {

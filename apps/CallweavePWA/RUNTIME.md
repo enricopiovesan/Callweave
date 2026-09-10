@@ -55,7 +55,8 @@ The native host boundary and its background-recording responsibilities are in
 this app in its local workspace. The manifest is valid when loaded with that
 workspace's Registry resolver.
 
-At present, `traverse-cli serve` reloads registered app manifests without that
-resolver, so a Registry-backed app is omitted from its HTTP command router.
-This is a Traverse server limitation, not a PWA fallback: the PWA transport
-continues to surface the runtime response and does not simulate a state change.
+Current Traverse releases hydrate registered application state machines from
+the persisted workspace index. A Registry-backed Callweave app is therefore
+available through the HTTP command router after setup. The PWA renders the
+accepted command response and eventual runtime events without simulating a
+state change.
