@@ -13,6 +13,17 @@
       "expected_status": "unknown",
       "purpose": "realistic_long_form_pipeline_and_background_noise_regression",
       "redistribution": "user_supplied_evaluation_only"
+    },
+    {
+      "id": "golden-virtual-hike-canadian-forest-001",
+      "path": "sounds samples/Hike-through-Canadian-Forest.mp3",
+      "duration_seconds": 11032.37,
+      "sha256": "946482df55ca846e3da66852971a4f2df9c69f0e0255dcf8d6775e7a7d9372b3",
+      "fixture_class": "environmental_negative_control",
+      "background": ["forest", "streams", "rivers", "lakes", "ambient_nature"],
+      "expected_status": "unknown",
+      "purpose": "realistic_multi_hour_pipeline_and_continuous_background_regression",
+      "redistribution": "user_supplied_evaluation_only"
     }
   ]
 }
