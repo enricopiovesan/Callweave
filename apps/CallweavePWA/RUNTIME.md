@@ -60,3 +60,9 @@ the persisted workspace index. A Registry-backed Callweave app is therefore
 available through the HTTP command router after setup. The PWA renders the
 accepted command response and eventual runtime events without simulating a
 state change.
+
+With Registry index `v295` and the updated Traverse runtime, a host-supplied
+valid capture request completes the `core.create-audio-capture-request-plan`
+capability and transitions the app session from `planning` to
+`capture_planned`. This remains planning only; a native host decides whether
+and how to perform a later recording operation.
