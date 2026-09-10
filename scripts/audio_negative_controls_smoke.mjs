@@ -32,6 +32,9 @@ for (const [name, samples] of [['silence', silence], ['steady-tone', tone]]) {
   const run = spawnSync(process.execPath, [join(root, 'scripts', 'analyze-audio.mjs'), input, output, '--candidates', profile], { encoding: 'utf8' });
   if (run.status !== 0) throw new Error(`${name}: analyzer failed\n${run.stderr}`);
   const evidence = JSON.parse(await readFile(join(output, `${name}.evidence.json`), 'utf8'));
+  if (evidence.classification?.status !== 'unknown' || evidence.classification?.requires_human_confirmation !== true) {
+    throw new Error(`${name}: uncalibrated evidence must remain unknown`);
+  }
   if (!evidence.models.every((model) => model.quality_summary)) throw new Error(`${name}: missing quality summary`);
   if (name === 'silence' && !evidence.models.every((model) => model.quality_summary.quiet_windows > 0)) {
     throw new Error('silence: expected quiet windows');
