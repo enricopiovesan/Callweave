@@ -8,7 +8,7 @@ const profileArg = process.argv.indexOf('--profile');
 const profile = profileArg >= 0 ? process.argv[profileArg + 1] : join(root, 'config', 'locations', 'golden-bc-expanded.json');
 if (!profile || profile.startsWith('--')) throw new Error('--profile requires a location profile path');
 const rate = 16_000;
-const seconds = 2;
+const seconds = 12;
 
 function wav(samples) {
   const data = Buffer.alloc(samples.length * 2);
@@ -38,6 +38,9 @@ for (const [name, samples] of [['silence', silence], ['steady-tone', tone]]) {
   if (!evidence.models.every((model) => model.quality_summary)) throw new Error(`${name}: missing quality summary`);
   if (name === 'silence' && !evidence.models.every((model) => model.quality_summary.quiet_windows > 0)) {
     throw new Error('silence: expected quiet windows');
+  }
+  if (name === 'steady-tone' && !evidence.models.every((model) => model.quality_summary.background_dominant_windows > 0)) {
+    throw new Error('steady-tone: expected background-dominant windows');
   }
 }
 console.log('audio_negative_controls_smoke=passed controls=silence,steady-tone');

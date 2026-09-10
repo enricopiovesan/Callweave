@@ -120,7 +120,13 @@ async function classify(model, samples, candidates) {
       candidate_scores,
     });
   }
-  return results;
+  return results.map((window, index) => {
+    const neighborhood = results.slice(Math.max(0, index - 2), Math.min(results.length, index + 3)).filter(item => item.activity === 'active');
+    const mean = neighborhood.length ? neighborhood.reduce((sum, item) => sum + item.signal_rms, 0) / neighborhood.length : 0;
+    const variance = neighborhood.length ? neighborhood.reduce((sum, item) => sum + (item.signal_rms - mean) ** 2, 0) / neighborhood.length : 0;
+    const coefficientOfVariation = mean > 0 ? Math.sqrt(variance) / mean : 0;
+    return { ...window, background_dominant: window.activity === 'active' && neighborhood.length >= 2 && coefficientOfVariation < 0.15, background_variation: Number(coefficientOfVariation.toFixed(6)) };
+  });
 }
 
 function summarizeCandidates(windows) {
@@ -166,6 +172,7 @@ function summarizeQuality(windows) {
     active_windows: windows.filter(window => window.activity === 'active').length,
     quiet_windows: windows.filter(window => window.activity === 'quiet').length,
     clipped_windows: windows.filter(window => window.clipped).length,
+    background_dominant_windows: windows.filter(window => window.background_dominant).length,
   };
 }
 

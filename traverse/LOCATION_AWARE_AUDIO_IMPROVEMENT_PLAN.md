@@ -47,6 +47,8 @@ policy checks and (where applicable) human confirmation.
   slice implemented).
 - Record peak level and clipping flags for every window (implemented).
 - Detect silence, speech, engines, clipping, and low-SNR intervals.
+- Flag sustained low-variation active windows as `background_dominant` evidence
+  (heuristic only; it does not delete windows or identify a sound source).
 - Classify active intervals before species ranking.
 - Preserve interval timestamps, detector version, and quality metrics.
 - Never discard raw windows from audit evidence; mark them as excluded by policy.
