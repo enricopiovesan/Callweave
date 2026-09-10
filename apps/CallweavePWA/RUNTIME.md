@@ -49,6 +49,19 @@ event-timeline views through that adapter.
 The native host boundary and its background-recording responsibilities are in
 [`HOST_RECORDING_CONTRACT.md`](./HOST_RECORDING_CONTRACT.md).
 
+## Shared application surface
+
+The complete, UI-independent Callweave capability and workflow inventory is
+generated from the Foundation manifest in
+[`../CALLWEAVE_SHARED_SURFACE.md`](../CALLWEAVE_SHARED_SURFACE.md). A product
+surface can reveal only the routes appropriate to its users, but every route
+must dispatch its declared Traverse command and render the returned state. It
+must not reimplement a capability, transition, or policy in JavaScript.
+
+Run `npm run traverse:shared-surface:validate` to confirm that every canonical
+capability has exactly one Foundation workflow and that this PWA's capture
+state invokes the same canonical capture-plan capability.
+
 ## Local verification
 
 `npm run traverse:pwa-runtime:setup` syncs, prepares, activates, and registers

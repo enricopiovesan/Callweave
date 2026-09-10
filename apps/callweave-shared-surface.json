@@ -1,0 +1,1297 @@
+{
+  "schema_version": "1.0.0",
+  "source_app": {
+    "app_id": "callweave.foundation",
+    "version": "2.0.9",
+    "manifest": "apps/callweave-foundation/app.manifest.json"
+  },
+  "policy": {
+    "statement": "Every Callweave interface delegates domain work to this Traverse capability/workflow surface. Interfaces may expose a subset of routes, but may not duplicate business logic.",
+    "presentation_boundary": "A UI sends commands, renders state and results, and delegates device-specific work to its native host."
+  },
+  "capabilities": [
+    {
+      "capability_id": "approval.decision-apply",
+      "capability_version": "1.0.0",
+      "component_id": "callweave.foundation.approval.decision-apply-component",
+      "workflow_id": "callweave.foundation.approval.decision-apply",
+      "workflow_version": "1.0.0",
+      "workflow_summary": "Exercise the standalone approval.decision-apply capability as a one-node Traverse workflow.",
+      "input_fields": [
+        "proposal",
+        "approval",
+        "policy"
+      ],
+      "output_fields": [
+        "applied",
+        "proposal_id",
+        "approved_by",
+        "reason",
+        "policy_version"
+      ],
+      "registry": {
+        "source": "public_registry",
+        "version": "1.0.0",
+        "summary": "Apply a human decision to a proposal without performing version successor logic.",
+        "use_cases": [
+          {
+            "scenario": "As an approval consumer, I want an approve decision to return an applied result so that a separate successor-assignment step can proceed."
+          },
+          {
+            "scenario": "As an approval consumer, I want a deny decision to remain non-applied so that advisory suggestions cannot mutate durable state without approval."
+          }
+        ],
+        "permitted_targets": [
+          "local",
+          "browser",
+          "edge",
+          "device"
+        ]
+      }
+    },
+    {
+      "capability_id": "artifact.recording-finalize",
+      "capability_version": "1.0.0",
+      "component_id": "callweave.foundation.artifact.recording-finalize-component",
+      "workflow_id": "callweave.foundation.artifact.recording-finalize",
+      "workflow_version": "1.0.0",
+      "workflow_summary": "Exercise the standalone artifact.recording-finalize capability as a one-node Traverse workflow.",
+      "input_fields": [
+        "content_ref",
+        "media_type",
+        "retention_class",
+        "idempotency_key"
+      ],
+      "output_fields": [
+        "asset_ref",
+        "content_digest",
+        "size",
+        "result_class"
+      ],
+      "registry": {
+        "source": "local_contract_pending_registry_sync",
+        "version": "1.0.0",
+        "summary": "Finalize captured recording bytes as an immutable artifact through a declared object-store connector.",
+        "use_cases": [
+          {
+            "scenario": "As an artifact operator, I want captured audio finalized once as an immutable asset so that later processing refers to verified content.",
+            "input_example": {
+              "content_ref": "capture-buffer:segment-17",
+              "media_type": "audio/wav",
+              "retention_class": "standard",
+              "idempotency_key": "finalize-segment-17"
+            },
+            "output_example": {
+              "asset_ref": "asset:sha256:segment-17",
+              "content_digest": "sha256:segment-17",
+              "size": 128,
+              "result_class": "created"
+            },
+            "happy": true,
+            "persona_ref": "artifact-operator"
+          },
+          {
+            "scenario": "As an artifact operator, I want an idempotent replay reported so that a retry does not duplicate a recording artifact.",
+            "input_example": {
+              "content_ref": "capture-buffer:segment-17",
+              "media_type": "audio/wav",
+              "retention_class": "standard",
+              "idempotency_key": "finalize-segment-17"
+            },
+            "output_example": {
+              "asset_ref": "asset:sha256:segment-17",
+              "content_digest": "sha256:segment-17",
+              "size": 128,
+              "result_class": "replayed"
+            },
+            "happy": true,
+            "persona_ref": "artifact-operator"
+          },
+          {
+            "scenario": "As an artifact operator, I want unavailable storage represented without a path, credential, or provider detail so that host internals stay private.",
+            "input_example": {
+              "content_ref": "capture-buffer:segment-17",
+              "media_type": "audio/wav",
+              "retention_class": "standard",
+              "idempotency_key": "finalize-unavailable"
+            },
+            "output_example": {
+              "asset_ref": "",
+              "content_digest": "",
+              "size": 0,
+              "result_class": "connector_unavailable"
+            },
+            "happy": false,
+            "persona_ref": "artifact-operator"
+          }
+        ],
+        "permitted_targets": [
+          "local",
+          "device",
+          "edge",
+          "cloud"
+        ]
+      }
+    },
+    {
+      "capability_id": "classification.outcome-resolve",
+      "capability_version": "1.0.0",
+      "component_id": "callweave.foundation.classification.outcome-resolve-component",
+      "workflow_id": "callweave.foundation.classification.outcome-resolve",
+      "workflow_version": "1.0.0",
+      "workflow_summary": "Exercise the standalone classification.outcome-resolve capability as a one-node Traverse workflow.",
+      "input_fields": [
+        "evidence",
+        "candidate",
+        "policy"
+      ],
+      "output_fields": [
+        "evidence_id",
+        "state",
+        "reason",
+        "policy_version"
+      ],
+      "registry": {
+        "source": "public_registry",
+        "version": "1.0.0",
+        "summary": "Resolve supplied scored evidence into one governed classification outcome.",
+        "use_cases": [
+          {
+            "scenario": "As a classification consumer, I want expected scored evidence above policy threshold marked provisional so that downstream review can consider it."
+          },
+          {
+            "scenario": "As a classification consumer, I want rare scored evidence above policy threshold quarantined as surprising so that unusual high-confidence cases are reviewed instead of silently promoted."
+          },
+          {
+            "scenario": "As a classification consumer, I want unscored evidence kept unknown so that raw candidate claims never become governed outcomes."
+          },
+          {
+            "scenario": "As a classification consumer, I want incompatible evidence rejected so that impossible claims cannot enter downstream review."
+          },
+          {
+            "scenario": "As a classification consumer, I want absent candidates kept unknown so that out-of-scope labels are not promoted into governed outcomes."
+          }
+        ],
+        "permitted_targets": [
+          "local",
+          "browser",
+          "edge",
+          "device"
+        ]
+      }
+    },
+    {
+      "capability_id": "classifier.release-gate-evaluate",
+      "capability_version": "1.0.0",
+      "component_id": "callweave.foundation.classifier.release-gate-evaluate-component",
+      "workflow_id": "callweave.foundation.classifier.release-gate-evaluate",
+      "workflow_version": "1.0.0",
+      "workflow_summary": "Exercise the standalone classifier.release-gate-evaluate capability as a one-node Traverse workflow.",
+      "input_fields": [
+        "cases",
+        "policy"
+      ],
+      "output_fields": [
+        "policy_version",
+        "total_cases",
+        "positive_cases",
+        "false_negatives",
+        "false_negative_millis",
+        "decision",
+        "reason"
+      ],
+      "registry": {
+        "source": "public_registry",
+        "version": "1.0.0",
+        "summary": "Evaluate a classifier release gate from labeled outcomes.",
+        "use_cases": [
+          {
+            "scenario": "As a classifier steward, I want a candidate with sufficient labeled positive-case coverage and zero false negatives approved so that a separate host can rely on that policy gate."
+          },
+          {
+            "scenario": "As a classifier steward, I want a candidate with missed positive cases rejected so that unsafe classifier behavior cannot be promoted."
+          },
+          {
+            "scenario": "As a classifier steward, I want insufficient positive-case coverage rejected so that approval cannot be claimed from weak evaluation data."
+          }
+        ],
+        "permitted_targets": [
+          "local",
+          "browser",
+          "edge",
+          "device"
+        ]
+      }
+    },
+    {
+      "capability_id": "cluster.curate",
+      "capability_version": "1.0.0",
+      "component_id": "callweave.foundation.cluster.curate-component",
+      "workflow_id": "callweave.foundation.cluster.curate",
+      "workflow_version": "1.0.0",
+      "workflow_summary": "Exercise the standalone cluster.curate capability as a one-node Traverse workflow.",
+      "input_fields": [
+        "cluster",
+        "curation_policy"
+      ],
+      "output_fields": [
+        "cluster_id",
+        "member_count",
+        "representative_ref",
+        "curation_state",
+        "policy_version"
+      ],
+      "registry": {
+        "source": "public_registry",
+        "version": "1.0.0",
+        "summary": "Curate a supplied cluster deterministically.",
+        "use_cases": [
+          {
+            "scenario": "As a cluster reviewer, I want a proposed cluster preserved with its supplied representative so that downstream systems can consume a stable curated grouping."
+          }
+        ],
+        "permitted_targets": [
+          "local"
+        ]
+      }
+    },
+    {
+      "capability_id": "coverage.completeness-assess",
+      "capability_version": "1.0.0",
+      "component_id": "callweave.foundation.coverage.completeness-assess-component",
+      "workflow_id": "callweave.foundation.coverage.completeness-assess",
+      "workflow_version": "1.0.0",
+      "workflow_summary": "Exercise the standalone coverage.completeness-assess capability as a one-node Traverse workflow.",
+      "input_fields": [
+        "coverage_facts",
+        "coverage_policy"
+      ],
+      "output_fields": [
+        "coverage_state",
+        "coverage_millis",
+        "reason_code",
+        "policy_version"
+      ],
+      "registry": {
+        "source": "public_registry",
+        "version": "1.0.0",
+        "summary": "Assess the completeness of supplied coverage facts.",
+        "use_cases": [
+          {
+            "scenario": "As a coverage consumer, I want fully captured and processed healthy coverage marked complete so that I can trust the completeness boundary."
+          },
+          {
+            "scenario": "As a coverage consumer, I want incomplete but healthy coverage marked partial so that reduced completeness is not confused with full availability."
+          },
+          {
+            "scenario": "As a coverage consumer, I want an unhealthy source marked unavailable so that source failure is not interpreted as complete coverage."
+          },
+          {
+            "scenario": "As a coverage consumer, I want an invalid expected duration marked unavailable so that completeness is never invented from an empty scope."
+          }
+        ],
+        "permitted_targets": [
+          "local",
+          "browser",
+          "edge",
+          "device"
+        ]
+      }
+    },
+    {
+      "capability_id": "embedding.cluster-organize",
+      "capability_version": "1.0.0",
+      "component_id": "callweave.foundation.embedding.cluster-organize-component",
+      "workflow_id": "callweave.foundation.embedding.cluster-organize",
+      "workflow_version": "1.0.0",
+      "workflow_summary": "Exercise the standalone embedding.cluster-organize capability as a one-node Traverse workflow.",
+      "input_fields": [
+        "items",
+        "policy"
+      ],
+      "output_fields": [],
+      "registry": {
+        "source": "public_registry",
+        "version": "1.0.0",
+        "summary": "Cluster supplied embeddings into stable local groups.",
+        "use_cases": [
+          {
+            "scenario": "As a cluster reviewer, I want similar embedded items grouped together so that I can inspect one local cluster instead of isolated items."
+          }
+        ],
+        "permitted_targets": [
+          "local",
+          "browser",
+          "edge",
+          "device"
+        ]
+      }
+    },
+    {
+      "capability_id": "location.initialize",
+      "capability_version": "1.0.0",
+      "component_id": "callweave.foundation.location.initialize-component",
+      "workflow_id": "callweave.foundation.location.initialize",
+      "workflow_version": "1.0.0",
+      "workflow_summary": "Exercise the standalone location.initialize capability as a one-node Traverse workflow.",
+      "input_fields": [
+        "location",
+        "sources",
+        "policy"
+      ],
+      "output_fields": [
+        "location_id",
+        "policy_version",
+        "candidates"
+      ],
+      "registry": {
+        "source": "public_registry",
+        "version": "1.0.0",
+        "summary": "Normalize supplied occurrence facts into a deterministic location candidate set.",
+        "use_cases": [
+          {
+            "scenario": "As a location owner, I want supplied occurrence facts normalized into a stable candidate set so that downstream detection policy starts from deterministic inputs."
+          },
+          {
+            "scenario": "As a location owner, I want malformed occurrence facts rejected so that a candidate set is never synthesized from incomplete records."
+          }
+        ],
+        "permitted_targets": [
+          "local",
+          "browser",
+          "edge",
+          "device"
+        ]
+      }
+    },
+    {
+      "capability_id": "model.improve",
+      "capability_version": "1.0.0",
+      "component_id": "callweave.foundation.model.improve-component",
+      "workflow_id": "callweave.foundation.model.improve",
+      "workflow_version": "1.0.0",
+      "workflow_summary": "Exercise the standalone model.improve capability as a one-node Traverse workflow.",
+      "input_fields": [
+        "candidate",
+        "evaluation",
+        "policy",
+        "activeModelId"
+      ],
+      "output_fields": [
+        "decision",
+        "reason",
+        "active_model_id",
+        "previous_model_id",
+        "release_id"
+      ],
+      "registry": {
+        "source": "public_registry",
+        "version": "1.0.0",
+        "summary": "Evaluate a verified model candidate against deterministic release thresholds.",
+        "use_cases": [
+          {
+            "scenario": "As a system administrator, I want a verified candidate that passes held-out precision and recall thresholds approved so that a local release can be activated separately."
+          },
+          {
+            "scenario": "As a system administrator, I want an unverified artifact rejected before evaluation thresholds matter so that unchecked model files cannot be promoted."
+          },
+          {
+            "scenario": "As a system administrator, I want a verified candidate below recall threshold rejected so that weak evaluations do not silently replace a known-good model."
+          },
+          {
+            "scenario": "As a system administrator, I want an explicitly rejected candidate blocked from release so that previously failed artifacts cannot be republished through the release gate."
+          }
+        ],
+        "permitted_targets": [
+          "local",
+          "browser",
+          "edge",
+          "device"
+        ]
+      }
+    },
+    {
+      "capability_id": "operations.recover",
+      "capability_version": "1.0.0",
+      "component_id": "callweave.foundation.operations.recover-component",
+      "workflow_id": "callweave.foundation.operations.recover",
+      "workflow_version": "1.0.0",
+      "workflow_summary": "Exercise the standalone operations.recover capability as a one-node Traverse workflow.",
+      "input_fields": [
+        "expectedIds",
+        "completedIds",
+        "policy"
+      ],
+      "output_fields": [
+        "policy_version",
+        "replay_ids",
+        "action"
+      ],
+      "registry": {
+        "source": "public_registry",
+        "version": "1.0.0",
+        "summary": "Plan which idempotent operations still need replay.",
+        "use_cases": [
+          {
+            "scenario": "As an operator, I want only missing idempotent operations replayed so that restart recovery does not duplicate successful work."
+          },
+          {
+            "scenario": "As an operator, I want a no-op recovery result when all expected work has already completed so that replay stays bounded and deterministic."
+          }
+        ],
+        "permitted_targets": [
+          "local",
+          "browser",
+          "edge",
+          "device"
+        ]
+      }
+    },
+    {
+      "capability_id": "period.finalize",
+      "capability_version": "1.0.0",
+      "component_id": "callweave.foundation.period.finalize-component",
+      "workflow_id": "callweave.foundation.period.finalize",
+      "workflow_version": "1.0.0",
+      "workflow_summary": "Exercise the standalone period.finalize capability as a one-node Traverse workflow.",
+      "input_fields": [
+        "scope_id",
+        "period_key",
+        "coverage_state",
+        "included_reference_ids",
+        "pending_reference_ids",
+        "watermark",
+        "policy"
+      ],
+      "output_fields": [
+        "idempotency_key",
+        "scope_id",
+        "period_key",
+        "coverage_state",
+        "included_reference_ids",
+        "pending_reference_ids",
+        "policy_version"
+      ],
+      "registry": {
+        "source": "public_registry",
+        "version": "1.0.0",
+        "summary": "Create a deterministic finalized period record from supplied scope facts.",
+        "use_cases": [
+          {
+            "scenario": "As a period operator, I want one deterministic finalized record for a bounded period so that downstream work executes exactly once per scope, period, and watermark key."
+          },
+          {
+            "scenario": "As a period operator, I want empty included and pending references normalized consistently so that an empty period is still finalized deterministically."
+          }
+        ],
+        "permitted_targets": [
+          "local",
+          "browser",
+          "edge",
+          "device"
+        ]
+      }
+    },
+    {
+      "capability_id": "record.transition-apply",
+      "capability_version": "1.0.0",
+      "component_id": "callweave.foundation.record.transition-apply-component",
+      "workflow_id": "callweave.foundation.record.transition-apply",
+      "workflow_version": "1.0.0",
+      "workflow_summary": "Exercise the standalone record.transition-apply capability as a one-node Traverse workflow.",
+      "input_fields": [
+        "record_refs",
+        "transition",
+        "expected_version",
+        "idempotency_key"
+      ],
+      "output_fields": [
+        "result_ref",
+        "version",
+        "replay",
+        "result_class"
+      ],
+      "registry": {
+        "source": "local_contract_pending_registry_sync",
+        "version": "1.0.0",
+        "summary": "Apply an idempotent transition to a versioned record through a declared state-store connector.",
+        "use_cases": [
+          {
+            "scenario": "As a record operator, I want an accepted transition appended exactly once so that a retry does not create a second history entry.",
+            "input_example": {
+              "record_refs": [
+                "record:example-17"
+              ],
+              "transition": {
+                "to": "accepted"
+              },
+              "expected_version": 4,
+              "idempotency_key": "transition-example-17-v4"
+            },
+            "output_example": {
+              "result_ref": "state:example-transition-18",
+              "version": 5,
+              "replay": false,
+              "result_class": "appended"
+            },
+            "happy": true,
+            "persona_ref": "record-operator"
+          },
+          {
+            "scenario": "As a record operator, I want an idempotent replay reported without another state change so that recovery is safe.",
+            "input_example": {
+              "record_refs": [
+                "record:example-17"
+              ],
+              "transition": {
+                "to": "accepted"
+              },
+              "expected_version": 4,
+              "idempotency_key": "transition-example-17-v4"
+            },
+            "output_example": {
+              "result_ref": "state:example-transition-18",
+              "version": 5,
+              "replay": true,
+              "result_class": "replayed"
+            },
+            "happy": true,
+            "persona_ref": "record-operator"
+          },
+          {
+            "scenario": "As a record operator, I want an unavailable connector represented by a stable non-secret result so that host details are never exposed.",
+            "input_example": {
+              "record_refs": [
+                "record:example-17"
+              ],
+              "transition": {
+                "to": "accepted"
+              },
+              "idempotency_key": "transition-unavailable"
+            },
+            "output_example": {
+              "result_ref": "",
+              "version": 0,
+              "replay": false,
+              "result_class": "connector_unavailable"
+            },
+            "happy": false,
+            "persona_ref": "record-operator"
+          }
+        ],
+        "permitted_targets": [
+          "local",
+          "device",
+          "edge",
+          "cloud"
+        ]
+      }
+    },
+    {
+      "capability_id": "retention.eligibility-classify",
+      "capability_version": "1.0.0",
+      "component_id": "callweave.foundation.retention.eligibility-classify-component",
+      "workflow_id": "callweave.foundation.retention.eligibility-classify",
+      "workflow_version": "1.0.0",
+      "workflow_summary": "Exercise the standalone retention.eligibility-classify capability as a one-node Traverse workflow.",
+      "input_fields": [
+        "asset",
+        "retention_policy"
+      ],
+      "output_fields": [
+        "asset_id",
+        "retention_state",
+        "reason_code",
+        "policy_version"
+      ],
+      "registry": {
+        "source": "public_registry",
+        "version": "1.0.0",
+        "summary": "Classify asset retention eligibility from supplied dependency and hold facts.",
+        "use_cases": [
+          {
+            "scenario": "As a retention steward, I want legal-held assets classified as held so that downstream systems never treat them as eligible for removal."
+          },
+          {
+            "scenario": "As a retention steward, I want referenced assets classified as retained so that active dependencies preserve them."
+          },
+          {
+            "scenario": "As a retention steward, I want unreferenced assets marked eligible rather than deleted so that removal remains a separate downstream decision."
+          },
+          {
+            "scenario": "As a retention steward, I want review-held assets classified as held so that review protection has the same precedence as a legal hold."
+          }
+        ],
+        "permitted_targets": [
+          "local",
+          "browser",
+          "edge",
+          "device"
+        ]
+      }
+    },
+    {
+      "capability_id": "review.prepare",
+      "capability_version": "1.0.0",
+      "component_id": "callweave.foundation.review.prepare-component",
+      "workflow_id": "callweave.foundation.review.prepare",
+      "workflow_version": "1.0.0",
+      "workflow_summary": "Exercise the standalone review.prepare capability as a one-node Traverse workflow.",
+      "input_fields": [
+        "cluster",
+        "privacy",
+        "policy"
+      ],
+      "output_fields": [
+        "allowed",
+        "cluster_id",
+        "reason",
+        "policy_version",
+        "assets"
+      ],
+      "registry": {
+        "source": "public_registry",
+        "version": "1.0.0",
+        "summary": "Permit advisory review assets only when a supplied privacy decision is already protected.",
+        "use_cases": [
+          {
+            "scenario": "As a reviewer, I want a privacy-protected unknown cluster to expose only sanitized assets so that optional external advisory review stays bounded."
+          },
+          {
+            "scenario": "As a reviewer, I want an unprotected cluster blocked from review preparation so that uncertain privacy status fails closed."
+          },
+          {
+            "scenario": "As a reviewer, I want a policy-blocked cluster prevented from review preparation so that explicitly denied privacy outcomes cannot be shared externally."
+          }
+        ],
+        "permitted_targets": [
+          "local",
+          "browser",
+          "edge",
+          "device"
+        ]
+      }
+    },
+    {
+      "capability_id": "review.state-transition-decide",
+      "capability_version": "1.0.0",
+      "component_id": "callweave.foundation.review.state-transition-decide-component",
+      "workflow_id": "callweave.foundation.review.state-transition-decide",
+      "workflow_version": "1.0.0",
+      "workflow_summary": "Exercise the standalone review.state-transition-decide capability as a one-node Traverse workflow.",
+      "input_fields": [
+        "current_state",
+        "review_decision",
+        "policy"
+      ],
+      "output_fields": [
+        "status",
+        "next_state",
+        "reason_code",
+        "policy_version",
+        "error_code",
+        "error_message"
+      ],
+      "registry": {
+        "source": "public_registry",
+        "version": "1.0.0",
+        "summary": "Decide the next reviewed state from the current state and reviewer decision.",
+        "use_cases": [
+          {
+            "scenario": "As a review consumer, I want a provisional item verified only when the reviewer explicitly verifies it so that final acceptance remains governed."
+          },
+          {
+            "scenario": "As a review consumer, I want a non-provisional item blocked from verification so that uncertain or rejected items cannot become verified by mistake."
+          },
+          {
+            "scenario": "As a review consumer, I want a reject decision to produce a rejected state so that negative review outcomes remain explicit and traceable."
+          },
+          {
+            "scenario": "As a review consumer, I want a provisional decision to preserve a provisional state so that a reviewer can keep an item in bounded limbo without falsely rejecting it."
+          },
+          {
+            "scenario": "As a review consumer, I want an already rejected item to remain rejected when the reviewer confirms rejection so that terminal negative outcomes stay explicit."
+          }
+        ],
+        "permitted_targets": [
+          "local",
+          "browser",
+          "edge",
+          "device"
+        ]
+      }
+    },
+    {
+      "capability_id": "revision.successor-assign",
+      "capability_version": "1.0.0",
+      "component_id": "callweave.foundation.revision.successor-assign-component",
+      "workflow_id": "callweave.foundation.revision.successor-assign",
+      "workflow_version": "1.0.0",
+      "workflow_summary": "Exercise the standalone revision.successor-assign capability as a one-node Traverse workflow.",
+      "input_fields": [
+        "subject_id",
+        "previous_revision",
+        "policy"
+      ],
+      "output_fields": [
+        "subject_id",
+        "revision",
+        "supersedes_revision",
+        "policy_version"
+      ],
+      "registry": {
+        "source": "public_registry",
+        "version": "1.0.0",
+        "summary": "Assign the next append-only revision number for a subject.",
+        "use_cases": [
+          {
+            "scenario": "As a revision consumer, I want a subject with an existing revision to receive the next append-only successor revision so that history remains strictly ordered."
+          },
+          {
+            "scenario": "As a revision consumer, I want a subject with no prior revision to receive revision one so that creation and supersession share the same primitive."
+          }
+        ],
+        "permitted_targets": [
+          "local",
+          "browser",
+          "edge",
+          "device"
+        ]
+      }
+    },
+    {
+      "capability_id": "summary.aggregate",
+      "capability_version": "1.0.0",
+      "component_id": "callweave.foundation.summary.aggregate-component",
+      "workflow_id": "callweave.foundation.summary.aggregate",
+      "workflow_version": "1.0.0",
+      "workflow_summary": "Exercise the standalone summary.aggregate capability as a one-node Traverse workflow.",
+      "input_fields": [
+        "scope_id",
+        "period_key",
+        "included_reference_ids",
+        "pending_reference_ids",
+        "coverage_state",
+        "policy"
+      ],
+      "output_fields": [
+        "scope_id",
+        "period_key",
+        "included_count",
+        "pending_count",
+        "coverage_state",
+        "policy_version"
+      ],
+      "registry": {
+        "source": "public_registry",
+        "version": "1.0.0",
+        "summary": "Aggregate bounded-scope references into a deterministic summary record.",
+        "use_cases": [
+          {
+            "scenario": "As a summary consumer, I want included and pending references counted deterministically so that later policies can consume a stable aggregate without re-reading the original reference lists."
+          },
+          {
+            "scenario": "As a summary consumer, I want an empty period summarized explicitly so that downstream scoring can distinguish zero evidence from missing input handling."
+          }
+        ],
+        "permitted_targets": [
+          "local",
+          "browser",
+          "edge",
+          "device"
+        ]
+      }
+    },
+    {
+      "capability_id": "uncertainty.score",
+      "capability_version": "1.0.0",
+      "component_id": "callweave.foundation.uncertainty.score-component",
+      "workflow_id": "callweave.foundation.uncertainty.score",
+      "workflow_version": "1.0.0",
+      "workflow_summary": "Exercise the standalone uncertainty.score capability as a one-node Traverse workflow.",
+      "input_fields": [
+        "included_count",
+        "pending_count",
+        "coverage_state",
+        "policy"
+      ],
+      "output_fields": [
+        "uncertainty_millis",
+        "reason_code",
+        "policy_version"
+      ],
+      "registry": {
+        "source": "public_registry",
+        "version": "1.0.0",
+        "summary": "Score uncertainty deterministically from aggregate counts and coverage state.",
+        "use_cases": [
+          {
+            "scenario": "As an uncertainty consumer, I want non-zero pending counts reflected in the uncertainty score so that downstream visual or review logic can preserve unresolved signal."
+          },
+          {
+            "scenario": "As an uncertainty consumer, I want an empty period to surface full uncertainty so that zero included and zero pending counts are never misread as certainty."
+          }
+        ],
+        "permitted_targets": [
+          "local",
+          "browser",
+          "edge",
+          "device"
+        ]
+      }
+    },
+    {
+      "capability_id": "visual.parameter-map",
+      "capability_version": "1.0.0",
+      "component_id": "callweave.foundation.visual.parameter-map-component",
+      "workflow_id": "callweave.foundation.visual.parameter-map",
+      "workflow_version": "1.0.0",
+      "workflow_summary": "Exercise the standalone visual.parameter-map capability as a one-node Traverse workflow.",
+      "input_fields": [
+        "summary",
+        "style_policy"
+      ],
+      "output_fields": [
+        "derived_seed",
+        "density_millis",
+        "motion_millis",
+        "uncertainty_treatment",
+        "policy_version"
+      ],
+      "registry": {
+        "source": "public_registry",
+        "version": "1.0.0",
+        "summary": "Derive deterministic visual parameters from summary facts and a style policy.",
+        "use_cases": [
+          {
+            "scenario": "As a visual composer, I want stable visual parameters derived from daily summary facts so that repeated runs produce the same composition inputs."
+          },
+          {
+            "scenario": "As a visual composer, I want higher uncertainty to surface a visibly stronger treatment so that the composition remains honest about ambiguity."
+          }
+        ],
+        "permitted_targets": [
+          "local",
+          "browser",
+          "edge",
+          "device"
+        ]
+      }
+    },
+    {
+      "capability_id": "inference.evidence-normalize",
+      "capability_version": "1.0.1",
+      "component_id": "callweave.foundation.inference.evidence-normalize-component",
+      "workflow_id": "callweave.foundation.inference.evidence-normalize",
+      "workflow_version": "1.0.0",
+      "workflow_summary": "Exercise the standalone inference.evidence-normalize capability as a one-node Traverse workflow.",
+      "input_fields": [
+        "source_ref",
+        "policy",
+        "detections"
+      ],
+      "output_fields": [
+        "source_ref",
+        "policy_version",
+        "evidence"
+      ],
+      "registry": {
+        "source": "public_registry",
+        "version": "1.0.1",
+        "summary": "Normalize opaque inference detections into deterministic evidence records.",
+        "use_cases": [
+          {
+            "scenario": "As an evidence consumer, I want detections sorted by capture time and given stable evidence identifiers so that downstream policies can compare results across targets."
+          },
+          {
+            "scenario": "As an evidence consumer, I want malformed confidence or intervals rejected before persistence so that invalid model output cannot enter the evidence store."
+          }
+        ],
+        "permitted_targets": [
+          "local",
+          "browser",
+          "edge",
+          "device"
+        ]
+      }
+    },
+    {
+      "capability_id": "core.prepare-inference-request",
+      "capability_version": "1.0.0",
+      "component_id": "callweave.foundation.core.prepare-inference-request-component",
+      "workflow_id": "callweave.foundation.core.prepare-inference-request",
+      "workflow_version": "1.0.0",
+      "workflow_summary": "Exercise the standalone core.prepare-inference-request capability as a one-node Traverse workflow.",
+      "input_fields": [
+        "input_artifact_ref",
+        "model_artifact_ref",
+        "inference_profile_ref",
+        "idempotency_key"
+      ],
+      "output_fields": [
+        "connector_id",
+        "operation",
+        "input_artifact_ref",
+        "model_artifact_ref",
+        "inference_profile_ref",
+        "idempotency_key",
+        "result_class"
+      ],
+      "registry": {
+        "source": "public_registry",
+        "version": "1.0.0",
+        "summary": "Create a connector-neutral local inference request from opaque artifact references.",
+        "use_cases": [
+          {
+            "scenario": "As an inference operator, I want a complete bounded request plan so that a configured local runtime can execute it later."
+          },
+          {
+            "scenario": "As an inference operator, I want each required opaque reference checked so that incomplete requests never reach a model runtime."
+          }
+        ],
+        "permitted_targets": [
+          "local",
+          "browser",
+          "edge",
+          "device"
+        ]
+      }
+    },
+    {
+      "capability_id": "core.evaluate-schedule-trigger",
+      "capability_version": "1.0.0",
+      "component_id": "callweave.foundation.core.evaluate-schedule-trigger-component",
+      "workflow_id": "callweave.foundation.core.evaluate-schedule-trigger",
+      "workflow_version": "1.0.0",
+      "workflow_summary": "Exercise the standalone core.evaluate-schedule-trigger capability as a one-node Traverse workflow.",
+      "input_fields": [
+        "trigger_id",
+        "job_kind",
+        "calendar_policy_ref",
+        "logical_deadline",
+        "is_due",
+        "idempotency_key"
+      ],
+      "output_fields": [
+        "connector_id",
+        "operation",
+        "job_kind",
+        "calendar_policy_ref",
+        "logical_deadline",
+        "idempotency_key",
+        "result_class"
+      ],
+      "registry": {
+        "source": "public_registry",
+        "version": "1.0.0",
+        "summary": "Evaluate declared trigger context into a connector-neutral scheduling plan.",
+        "use_cases": [
+          {
+            "scenario": "As an operations operator, I want a due trigger turned into a portable scheduler plan so that a compatible host may execute it."
+          },
+          {
+            "scenario": "As an operations operator, I want a not-due trigger represented without scheduling anything so that duplicate work is avoided."
+          },
+          {
+            "scenario": "As an operations operator, I want missing trigger context rejected before a scheduler is invoked, so that no ambiguous timer request is created."
+          }
+        ],
+        "permitted_targets": [
+          "local",
+          "browser",
+          "edge",
+          "device"
+        ]
+      }
+    },
+    {
+      "capability_id": "core.create-artifact-revision",
+      "capability_version": "1.0.0",
+      "component_id": "callweave.foundation.core.create-artifact-revision-component",
+      "workflow_id": "callweave.foundation.core.create-artifact-revision",
+      "workflow_version": "1.0.0",
+      "workflow_summary": "Exercise the standalone core.create-artifact-revision capability as a one-node Traverse workflow.",
+      "input_fields": [
+        "artifact",
+        "revision_policy"
+      ],
+      "output_fields": [
+        "artifact_id",
+        "revision_number",
+        "supersedes_revision",
+        "correction_reason",
+        "policy_version"
+      ],
+      "registry": {
+        "source": "public_registry",
+        "version": "1.0.0",
+        "summary": "Create immutable successor metadata for a corrected artifact.",
+        "use_cases": [
+          {
+            "scenario": "As an artifact operator, I want a correction to create the next immutable revision so that prior revisions remain preserved."
+          },
+          {
+            "scenario": "As an artifact operator, I want incomplete revision facts rejected so that no ambiguous successor is created."
+          }
+        ],
+        "permitted_targets": [
+          "local",
+          "browser",
+          "edge",
+          "device"
+        ]
+      }
+    },
+    {
+      "capability_id": "core.create-audio-capture-request-plan",
+      "capability_version": "1.0.0",
+      "component_id": "callweave.foundation.core.create-audio-capture-request-plan-component",
+      "workflow_id": "callweave.foundation.core.create-audio-capture-request-plan",
+      "workflow_version": "1.0.0",
+      "workflow_summary": "Exercise the standalone core.create-audio-capture-request-plan capability as a one-node Traverse workflow.",
+      "input_fields": [
+        "request_id",
+        "source_profile_ref",
+        "duration_seconds",
+        "idempotency_key"
+      ],
+      "output_fields": [
+        "connector_id",
+        "operation",
+        "request_id",
+        "source_profile_ref",
+        "duration_seconds",
+        "idempotency_key",
+        "result_class"
+      ],
+      "registry": {
+        "source": "public_registry",
+        "version": "1.0.0",
+        "summary": "Create a deterministic bounded audio capture request plan.",
+        "use_cases": [
+          {
+            "scenario": "As an audio operator, I want a valid bounded segment represented as a portable plan, so that a compatible host may later execute it."
+          },
+          {
+            "scenario": "As an audio operator, I want the one-hour maximum enforced, so that capture resource limits remain portable."
+          },
+          {
+            "scenario": "As an audio operator, I want missing identifiers rejected, so that a host is never asked to infer capture intent from ambient state."
+          },
+          {
+            "scenario": "As an audio operator, I want fractional duration rejected, so that plans remain integer and reproducible."
+          }
+        ],
+        "permitted_targets": [
+          "local",
+          "edge",
+          "device"
+        ]
+      }
+    },
+    {
+      "capability_id": "audio.calibration-plan-create",
+      "capability_version": "1.0.0",
+      "component_id": "callweave.foundation.audio.calibration-plan-create-component",
+      "workflow_id": "callweave.foundation.audio.calibration-plan-create",
+      "workflow_version": "1.0.0",
+      "workflow_summary": "Exercise the standalone audio.calibration-plan-create capability as a one-node Traverse workflow.",
+      "input_fields": [
+        "plan_id",
+        "target_level_dbfs",
+        "tolerance_db",
+        "duration_seconds",
+        "idempotency_key"
+      ],
+      "output_fields": [
+        "connector_id",
+        "operation",
+        "plan_id",
+        "target_level_dbfs",
+        "tolerance_db",
+        "duration_seconds",
+        "idempotency_key",
+        "result_class"
+      ],
+      "registry": {
+        "source": "public_registry",
+        "version": "1.0.0",
+        "summary": "Create a bounded, connector-neutral audio calibration plan.",
+        "use_cases": [
+          {
+            "scenario": "As an audio operator, I want a valid calibration policy represented as a portable plan so that a compatible audio-input host can measure it."
+          },
+          {
+            "scenario": "As an audio operator, I want an unsafe target rejected before a host is invoked so that calibration remains bounded."
+          }
+        ],
+        "permitted_targets": [
+          "local",
+          "browser",
+          "edge",
+          "device"
+        ]
+      }
+    },
+    {
+      "capability_id": "core.validate-audio-source-profile",
+      "capability_version": "1.0.0",
+      "component_id": "callweave.foundation.core.validate-audio-source-profile-component",
+      "workflow_id": "callweave.foundation.core.validate-audio-source-profile",
+      "workflow_version": "1.0.0",
+      "workflow_summary": "Exercise the standalone core.validate-audio-source-profile capability as a one-node Traverse workflow.",
+      "input_fields": [
+        "source_profile",
+        "capture_policy"
+      ],
+      "output_fields": [
+        "valid",
+        "reason_code",
+        "policy_version"
+      ],
+      "registry": {
+        "source": "public_registry",
+        "version": "1.0.0",
+        "summary": "Validate a portable audio-source profile against a bounded capture policy.",
+        "use_cases": [
+          {
+            "scenario": "As an audio operator, I want a supported PCM profile accepted, so that a host can safely receive a later capture request."
+          },
+          {
+            "scenario": "As an audio operator, I want unsupported channel counts rejected, so that a host is not asked for an out-of-policy capture."
+          },
+          {
+            "scenario": "As an audio operator, I want unsupported sample rates rejected, so that capture resource limits remain explicit and portable."
+          },
+          {
+            "scenario": "As an audio operator, I want unsupported bit depths rejected, so that a downstream transformation is never planned from an ambiguous format."
+          },
+          {
+            "scenario": "As an audio operator, I want an incompatible PCM encoding rejected, so that source format compatibility is verified before any host work begins."
+          },
+          {
+            "scenario": "As an audio operator, I want an overlong requested segment rejected, so that the capture limit is enforced before a host is asked to act."
+          },
+          {
+            "scenario": "As an audio operator, I want incomplete policy input rejected with a stable result, so that malformed requests do not reach an audio host."
+          }
+        ],
+        "permitted_targets": [
+          "local",
+          "edge",
+          "device"
+        ]
+      }
+    },
+    {
+      "capability_id": "core.create-audio-transform-plan",
+      "capability_version": "1.0.0",
+      "component_id": "callweave.foundation.core.create-audio-transform-plan-component",
+      "workflow_id": "callweave.foundation.core.create-audio-transform-plan",
+      "workflow_version": "1.0.0",
+      "workflow_summary": "Exercise the standalone core.create-audio-transform-plan capability as a one-node Traverse workflow.",
+      "input_fields": [
+        "source_artifact_ref",
+        "source_media_type",
+        "target_sample_rate_hz",
+        "target_channel_count",
+        "target_encoding",
+        "idempotency_key"
+      ],
+      "output_fields": [
+        "connector_id",
+        "operation",
+        "source_artifact_ref",
+        "target_sample_rate_hz",
+        "target_channel_count",
+        "target_encoding",
+        "idempotency_key",
+        "result_class"
+      ],
+      "registry": {
+        "source": "public_registry",
+        "version": "1.0.0",
+        "summary": "Create a deterministic, connector-neutral audio transformation plan.",
+        "use_cases": [
+          {
+            "scenario": "As an audio operator, I want a valid target PCM format represented as a portable plan, so that a compatible codec host can execute it."
+          },
+          {
+            "scenario": "As an audio operator, I want 24-bit PCM accepted, so that a supported target encoding can be planned."
+          },
+          {
+            "scenario": "As an audio operator, I want 32-bit float PCM accepted, so that a supported target encoding can be planned deterministically."
+          },
+          {
+            "scenario": "As an audio operator, I want an unsupported target rate rejected before a codec host is invoked, so that resource requirements remain bounded."
+          },
+          {
+            "scenario": "As an audio operator, I want an unsupported channel count rejected, so that a host receives only bounded target geometry."
+          },
+          {
+            "scenario": "As an audio operator, I want an unsupported target encoding rejected, so that the codec contract stays explicit."
+          },
+          {
+            "scenario": "As an audio operator, I want missing opaque identifiers rejected, so that no host operation is invented from ambient state."
+          }
+        ],
+        "permitted_targets": [
+          "local",
+          "edge",
+          "device"
+        ]
+      }
+    },
+    {
+      "capability_id": "core.create-audio-window-plan",
+      "capability_version": "1.0.0",
+      "component_id": "callweave.foundation.core.create-audio-window-plan-component",
+      "workflow_id": "callweave.foundation.core.create-audio-window-plan",
+      "workflow_version": "1.0.0",
+      "workflow_summary": "Exercise the standalone core.create-audio-window-plan capability as a one-node Traverse workflow.",
+      "input_fields": [
+        "artifact_ref",
+        "duration_millis",
+        "window_policy"
+      ],
+      "output_fields": [
+        "artifact_ref",
+        "window_millis",
+        "hop_millis",
+        "window_count",
+        "policy_version",
+        "result_class"
+      ],
+      "registry": {
+        "source": "public_registry",
+        "version": "1.0.0",
+        "summary": "Create a deterministic bounded-window plan for a declared-duration audio artifact.",
+        "use_cases": [
+          {
+            "scenario": "As an audio operator, I want a declared duration split into deterministic overlapping windows, so that a downstream worker receives bounded work units."
+          },
+          {
+            "scenario": "As an audio operator, I want a short artifact to produce one window, so that every positive declared duration has a bounded plan."
+          },
+          {
+            "scenario": "As an audio operator, I want a hop longer than its window rejected, so that no invalid overlap geometry is sent downstream."
+          },
+          {
+            "scenario": "As an audio operator, I want zero or missing geometry rejected, so that malformed policies do not create a plan."
+          },
+          {
+            "scenario": "As an audio operator, I want a missing duration rejected with a stable response, so that hosts do not infer a duration from artifact bytes."
+          },
+          {
+            "scenario": "As an audio operator, I want a fractional duration rejected, so that window counts remain integer and reproducible."
+          }
+        ],
+        "permitted_targets": [
+          "local",
+          "edge",
+          "device"
+        ]
+      }
+    }
+  ]
+}

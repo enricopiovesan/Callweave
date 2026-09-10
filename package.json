@@ -31,6 +31,8 @@
     "traverse:foundation:validate": "node scripts/traverse_foundation_validate.mjs",
     "traverse:foundation:activate": "node scripts/traverse_foundation_activate.mjs",
     "traverse:foundation:register": "node scripts/traverse_foundation_register.mjs",
+    "traverse:shared-surface:generate": "node scripts/generate_callweave_shared_surface.mjs",
+    "traverse:shared-surface:validate": "node scripts/generate_callweave_shared_surface.mjs --check && node scripts/validate_callweave_shared_surface.mjs",
     "traverse:pwa-runtime:setup": "node scripts/traverse_pwa_runtime_setup.mjs",
     "traverse:audio-source:generate": "node scripts/generate_callweave_audio_source_app.mjs",
     "traverse:audio-source:validate": "node scripts/traverse_audio_source_validate.mjs",
