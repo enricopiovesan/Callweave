@@ -67,6 +67,8 @@ policy checks and (where applicable) human confirmation.
   coverage. This report is descriptive only; it deliberately selects no
   probability threshold.
 - Add confirmed local bird, rain, vehicle, speech, silence, and mixed-noise clips.
+- Run `npm run audio:negative-controls-smoke -- --profile <profile>` to verify
+  synthetic quality controls against any location profile.
 - Record source URL/creator/date/license before redistribution or training use.
 - Keep filename labels as hints until human confirmation is recorded.
 

@@ -4,7 +4,9 @@ import { spawnSync } from 'node:child_process';
 
 const root = new URL('..', import.meta.url).pathname;
 const work = '/private/tmp/callweave-negative-controls';
-const profile = join(root, 'config', 'locations', 'golden-bc.json');
+const profileArg = process.argv.indexOf('--profile');
+const profile = profileArg >= 0 ? process.argv[profileArg + 1] : join(root, 'config', 'locations', 'golden-bc-expanded.json');
+if (!profile || profile.startsWith('--')) throw new Error('--profile requires a location profile path');
 const rate = 16_000;
 const seconds = 2;
 
