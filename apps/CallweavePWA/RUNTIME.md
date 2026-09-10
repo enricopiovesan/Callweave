@@ -13,7 +13,7 @@ before loading `main.js`:
 ```js
 globalThis.CallweaveRuntimeConfig = {
   baseUrl: 'https://runtime.example.invalid',
-  workspaceId: 'callweave-pwa-live-local',
+  workspaceId: 'callweave-pwa-absolute-local',
   appId: 'callweave.pwa',
   // Optional host-provided development token. Never commit one.
   token: null,
@@ -40,3 +40,14 @@ commands and render ordered runtime events. `request_capture` creates only a
 bounded capture plan. It is not wired to a recording button because microphone
 capture still requires a native host binding; the UI will not invent optimistic
 state or handle microphone capture itself.
+
+## Local verification
+
+`npm run traverse:pwa-runtime:setup` syncs, prepares, activates, and registers
+this app in its local workspace. The manifest is valid when loaded with that
+workspace's Registry resolver.
+
+At present, `traverse-cli serve` reloads registered app manifests without that
+resolver, so a Registry-backed app is omitted from its HTTP command router.
+This is a Traverse server limitation, not a PWA fallback: the PWA transport
+continues to surface the runtime response and does not simulate a state change.
