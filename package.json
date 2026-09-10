@@ -105,6 +105,7 @@
     "locations:generate-expanded": "node scripts/generate_expanded_location_profile.mjs",
     "audio-sources:evaluate": "node scripts/evaluate_public_source_samples.mjs",
     "test-corpus:status": "node scripts/report_test_corpus_status.mjs",
+    "long-form:validate": "node scripts/validate_long_form_fixtures.mjs",
     "audio-sources:import": "node scripts/import_audio_source_records.mjs"
   },
   "dependencies": {

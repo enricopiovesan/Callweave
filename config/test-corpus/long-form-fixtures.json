@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0.0",
+  "kind": "long_form_audio_fixtures",
+  "location_profile": "golden-bc-expanded",
+  "fixtures": [
+    {
+      "id": "golden-forest-creek-water-001",
+      "path": "sounds samples/British-Columbia-Forest-creek-water.mp3",
+      "duration_seconds": 7258.98,
+      "sha256": "acdf5c846e52f86297bcfbdfd75f787c5a031acbf514a3ef0563f5cedbcf0866",
+      "fixture_class": "environmental_negative_control",
+      "background": ["forest", "running_water"],
+      "expected_status": "unknown",
+      "purpose": "realistic_long_form_pipeline_and_background_noise_regression",
+      "redistribution": "user_supplied_evaluation_only"
+    }
+  ]
+}
