@@ -48,7 +48,7 @@ function shell(content) {
 function today() {
   const v = views.today;
   return shell(`<section class="page today-page"><header class="page-title"><div><p class="kicker">${v.label}</p><h1>${v.title}</h1><p class="place-copy">${v.subtitle} <span>· private place</span></p></div><p class="coverage">${v.facts.join(' · ')}</p></header>
-    <article class="listening-canvas"><img src="./assets/listening-soundscape.png" alt="Engraved frog, fox, moth, and wren gathered around shared sound waves"><div class="waveform" aria-label="Sound activity pattern" role="img">${bars(42)}</div><p>${v.status}</p><button class="runtime-button listening-cta" type="button" data-route="place">Start listening</button></article>
+    <article class="listening-canvas"><img src="./assets/listening-soundscape.png" alt="Engraved frog, fox, moth, and wren gathered around shared sound waves"><div class="waveform" aria-label="Sound activity pattern" role="img">${bars(42)}</div><p>${v.status}</p><button class="runtime-button listening-cta" type="button" data-action="start-listening">Start listening</button></article>
     <section class="quiet-row"><button class="text-link" data-open="day">View today’s record <span>→</span></button><button class="text-link" data-route="review">2 unknown sound groups <span>→</span></button></section>
   </section>`);
 }
@@ -66,7 +66,7 @@ function review() {
 }
 
 function place() {
-  return shell(`<section class="page"><header class="page-title"><div><p class="kicker">Location</p><h1>Golden, BC</h1><p class="place-copy">This place is private.</p></div></header><section class="place-panel"><p>Listening happens for this place. Your recording host keeps microphone access, location details, and audio private.</p><section class="runtime-panel" aria-labelledby="listening-heading"><div><p class="kicker">Listening</p><h2 id="listening-heading">Ready when you are</h2></div><p id="runtime-status" class="runtime-status" aria-live="polite">Checking whether listening is available…</p><div class="runtime-actions"><button id="capture-plan" class="runtime-button" type="button" disabled>Start listening</button><button id="runtime-retry" class="text-link" type="button" hidden>Try again <span>→</span></button></div><ol id="runtime-events" class="runtime-events" aria-live="polite"><li class="runtime-event is-empty">Listening updates will appear here.</li></ol></section><section class="native-host-note" aria-live="polite"><p id="native-host-status">Checking recording availability…</p></section><div class="place-actions"><button id="install-app" class="text-link" type="button" hidden>Install Callweave <span>→</span></button><button class="text-link" data-open="settings">Open place settings <span>→</span></button></div></section></section>`);
+  return shell(`<section class="page"><header class="page-title"><div><p class="kicker">Location</p><h1>Golden, BC</h1><p class="place-copy">This place is private.</p></div></header><section class="place-panel"><p>Listening happens for this place. Your recording host keeps microphone access, location details, and audio private.</p><section class="runtime-panel" aria-labelledby="listening-heading"><div><p class="kicker">Listening</p><h2 id="listening-heading">Ready when you are</h2></div><p id="runtime-status" class="runtime-status" aria-live="polite">Checking whether listening is available…</p><div class="runtime-actions"><button id="capture-plan" class="runtime-button" type="button" data-action="start-listening" disabled>Start listening</button><button id="runtime-retry" class="text-link" type="button" hidden>Try again <span>→</span></button></div><ol id="runtime-events" class="runtime-events" aria-live="polite"><li class="runtime-event is-empty">Listening updates will appear here.</li></ol></section><section class="native-host-note" aria-live="polite"><p id="native-host-status">Checking recording availability…</p></section><div class="place-actions"><button id="install-app" class="text-link" type="button" hidden>Install Callweave <span>→</span></button><button class="text-link" data-open="settings">Open place settings <span>→</span></button></div></section></section>`);
 }
 
 function bars(count) { return Array.from({ length: count }, (_, i) => `<i style="--h:${12 + Math.round(Math.abs(Math.sin(i * 1.72)) * 37)}%"></i>`).join(''); }
@@ -84,7 +84,8 @@ function render() {
 document.addEventListener('click', event => {
   const routeButton = event.target.closest('[data-route]');
   if (routeButton) { runtimeSubscription?.close(); runtimeSubscription = null; nativeHostUnsubscribe?.(); nativeHostUnsubscribe = null; route = routeButton.dataset.route; render(); return; }
-  if (event.target.closest('#capture-plan') || event.target.closest('#runtime-retry')) { requestCapturePlan(); return; }
+  if (event.target.closest('[data-action="start-listening"]')) { startListeningFromUserAction(); return; }
+  if (event.target.closest('#runtime-retry')) { requestListeningStart(); return; }
   if (event.target.closest('#install-app')) { requestInstallation(); return; }
   const openButton = event.target.closest('[data-open]');
   if (openButton) { modal(openButton.dataset.open); return; }
@@ -139,7 +140,16 @@ async function requestInstallation() {
   await prompt.prompt();
 }
 
-async function requestCapturePlan() {
+async function startListeningFromUserAction() {
+  if (route !== 'place') {
+    route = 'place';
+    render();
+    await Promise.all([refreshRuntimeStatus(), refreshNativeHostStatus()]);
+  }
+  requestListeningStart();
+}
+
+async function requestListeningStart() {
   const target = document.querySelector('#runtime-status');
   const button = document.querySelector('#capture-plan');
   const retry = document.querySelector('#runtime-retry');
