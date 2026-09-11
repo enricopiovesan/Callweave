@@ -13,6 +13,7 @@ const views = {
   archive: { title: 'Archive', label: 'Daily canvases', subtitle: 'A quiet record of this place' },
   review: { title: 'Review', label: 'Needs a closer listen', subtitle: 'Evidence stays evidence until a person reviews it.' },
   place: { title: 'Place', label: 'Golden, BC', subtitle: 'Private location profile' },
+  setup: { title: 'Set up listening', label: 'Listening setup', subtitle: 'Get a recording device ready for this place.' },
 };
 let route = 'today';
 let selected = null;
@@ -54,6 +55,7 @@ function today() {
   const v = views.today;
   return shell(`<section class="page today-page"><header class="page-title"><div><p class="kicker">${v.label}</p><h1>${v.title}</h1><p class="place-copy">${v.subtitle} <span>· private place</span></p></div><p class="coverage">${v.facts.join(' · ')}</p></header>
     <article class="listening-canvas"><img src="./assets/listening-soundscape.png" alt="Engraved frog, fox, moth, and wren gathered around shared sound waves"><div class="waveform" aria-label="Sound activity pattern" role="img">${bars(42)}</div><p>${v.status}</p><button id="home-start-listening" class="runtime-button listening-cta" type="button" data-action="start-listening" disabled>Start listening</button><p id="listening-status" class="listening-feedback" aria-live="polite" hidden></p></article>
+    <section id="listening-setup" class="listening-setup" hidden><p class="kicker">Listening setup</p><h2>Connect a recording device</h2><p>Callweave needs a recording connection before it can listen here.</p><button class="runtime-button" type="button" data-route="setup">Set up listening</button></section>
     <section class="quiet-row"><button class="text-link" data-open="day">View today’s record <span>→</span></button><button class="text-link" data-route="review">2 unknown sound groups <span>→</span></button></section>
   </section>`);
 }
@@ -74,6 +76,11 @@ function place() {
   return shell(`<section class="page"><header class="page-title"><div><p class="kicker">Location</p><h1>Golden, BC</h1><p class="place-copy">This place is private.</p></div></header><section class="place-panel"><p>Listening happens for this place. Your recording host keeps microphone access, location details, and audio private.</p><section class="runtime-panel" aria-labelledby="listening-heading"><div><p class="kicker">Listening</p><h2 id="listening-heading">Ready when you are</h2></div><p id="runtime-status" class="runtime-status" aria-live="polite">Checking whether listening is available…</p><div class="runtime-actions"><button id="capture-plan" class="runtime-button" type="button" data-action="start-listening" disabled>Start listening</button><button id="runtime-retry" class="text-link" type="button" hidden>Try again <span>→</span></button></div><ol id="runtime-events" class="runtime-events" aria-live="polite"><li class="runtime-event is-empty">Listening updates will appear here.</li></ol></section><section class="native-host-note" aria-live="polite"><p id="native-host-status">Checking recording availability…</p></section><div class="place-actions"><button id="install-app" class="text-link" type="button" hidden>Install Callweave <span>→</span></button><button class="text-link" data-open="settings">Open place settings <span>→</span></button></div></section></section>`);
 }
 
+function setup() {
+  const v = views.setup;
+  return shell(`<section class="page setup-page"><header class="page-title"><div><p class="kicker">${v.label}</p><h1>${v.title}</h1><p class="place-copy">${v.subtitle}</p></div></header><section class="setup-panel"><h2>Bring a recording device online</h2><ol><li><span>1</span><p>Open Callweave on the device that will listen in the background.</p></li><li><span>2</span><p>Allow that device to use its microphone.</p></li><li><span>3</span><p>Return here once the device says it is ready.</p></li></ol><p id="setup-status" class="setup-status" aria-live="polite">Check the connection after the device is ready.</p><button class="runtime-button" type="button" data-action="check-listening">Check connection</button><button class="text-link setup-back" type="button" data-route="today">Back to Today <span>→</span></button></section></section>`);
+}
+
 function bars(count) { return Array.from({ length: count }, (_, i) => `<i style="--h:${12 + Math.round(Math.abs(Math.sin(i * 1.72)) * 37)}%"></i>`).join(''); }
 
 function modal(title) {
@@ -83,7 +90,7 @@ function modal(title) {
 }
 
 function render() {
-  app.innerHTML = ({ today, archive, review, place })[route]();
+  app.innerHTML = ({ today, archive, review, place, setup })[route]();
   if (route === 'today') refreshHomeListeningAvailability();
   if (route === 'place') { refreshRuntimeStatus(); refreshNativeHostStatus(); syncInstallButton(); }
 }
@@ -91,6 +98,7 @@ document.addEventListener('click', event => {
   const routeButton = event.target.closest('[data-route]');
   if (routeButton) { runtimeSubscription?.close(); runtimeSubscription = null; nativeHostUnsubscribe?.(); nativeHostUnsubscribe = null; route = routeButton.dataset.route; render(); return; }
   if (event.target.closest('[data-action="start-listening"]')) { startListeningFromUserAction(); return; }
+  if (event.target.closest('[data-action="check-listening"]')) { checkListeningSetup(); return; }
   if (event.target.closest('#runtime-retry')) { requestListeningStart(); return; }
   if (event.target.closest('#install-app')) { requestInstallation(); return; }
   const openButton = event.target.closest('[data-open]');
@@ -123,8 +131,13 @@ async function refreshRuntimeStatus() {
 
 async function refreshHomeListeningAvailability() {
   const buttons = [document.querySelector('#home-start-listening'), document.querySelector('#mobile-start-listening')].filter(Boolean);
+  const setup = document.querySelector('#listening-setup');
   const config = runtimeConfigFromHost();
-  if (!config) return;
+  if (!config) {
+    for (const button of buttons) button.disabled = true;
+    if (setup) setup.hidden = false;
+    return;
+  }
   try {
     const [health, availability] = await Promise.all([
       new TraverseRuntimeClient(config).health(),
@@ -132,9 +145,35 @@ async function refreshHomeListeningAvailability() {
     ]);
     const available = health.status === 'connected' && availability.available;
     for (const button of buttons) button.disabled = !available;
+    if (setup) setup.hidden = available;
   } catch {
     for (const button of buttons) button.disabled = true;
+    if (setup) setup.hidden = false;
   }
+}
+
+async function checkListeningSetup() {
+  const target = document.querySelector('#setup-status');
+  if (!target) return;
+  target.textContent = 'Checking your recording connection…';
+  const config = runtimeConfigFromHost();
+  if (!config) {
+    target.textContent = 'This device is still not connected. Open Callweave in the recording host, allow microphone access there, then check again.';
+    return;
+  }
+  try {
+    const [health, availability] = await Promise.all([
+      new TraverseRuntimeClient(config).health(),
+      recordingAvailability(nativeHostFromBridge()),
+    ]);
+    if (health.status === 'connected' && availability.available) {
+      target.textContent = 'Listening is connected. Returning you to Today…';
+      route = 'today';
+      render();
+      return;
+    }
+  } catch { /* The recovery message below stays intentionally user-facing. */ }
+  target.textContent = 'This device is still not connected. Open Callweave in the recording host, allow microphone access there, then check again.';
 }
 
 async function refreshNativeHostStatus() {

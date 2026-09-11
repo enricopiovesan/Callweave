@@ -21,6 +21,9 @@
 .runtime-button:disabled { opacity: .45; cursor: not-allowed; }
 .listening-cta { margin-top: 1rem; }
 .listening-feedback { max-width: 20rem; margin: .8rem 0 0; color: var(--muted); font-size: .82rem; text-align: center; }
+.listening-setup { max-width: 31rem; margin: 0 auto 2.5rem; padding: 1.25rem; background: #fbfaf5; border: 1px solid var(--line); border-radius: .75rem; text-align: center; }
+.listening-setup h2, .setup-panel h2 { margin: .2rem 0 .45rem; font: 500 1.45rem/1.1 Georgia, serif; letter-spacing: -.03em; }.listening-setup p { margin: 0 0 1rem; color: var(--muted); font-size: .9rem; }
+.setup-page { max-width: 48rem; }.setup-panel { margin-top: 3rem; padding: 1.5rem; background: #fbfaf5; border: 1px solid var(--line); border-radius: .75rem; }.setup-panel ol { display: grid; gap: 1rem; padding: 0; margin: 1.5rem 0; list-style: none; }.setup-panel li { display: grid; grid-template-columns: 1.8rem 1fr; gap: .75rem; align-items: start; }.setup-panel li span { display: grid; width: 1.8rem; height: 1.8rem; place-items: center; color: #fff; background: var(--moss); border-radius: 50%; font-size: .8rem; font-weight: 700; }.setup-panel li p { margin: .15rem 0 0; color: var(--muted); }.setup-status { min-height: 2.5rem; color: var(--muted); font-size: .85rem; }.setup-back { display: block; margin-top: 1.2rem; }
 .runtime-events { padding: 0; margin: 1.4rem 0 0; list-style: none; border-top: 1px solid var(--line); }
 .runtime-event { padding: .75rem 0; border-bottom: 1px solid var(--line); display: grid; gap: .125rem; }
 .runtime-event strong { font-size: .875rem; }.runtime-event span, .runtime-event.is-empty { color: var(--muted); font-size: .75rem; }
