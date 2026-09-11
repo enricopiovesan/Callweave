@@ -1,0 +1,57 @@
+package callweave:recording@0.1.0;
+
+/// A target-neutral boundary implemented by the local recording host.
+///
+/// It deliberately contains no platform, filesystem, permission-provider, or
+/// audio-byte types. A host maps these operations to its local target APIs.
+interface recording-host {
+  enum availability {
+    ready,
+    permission-required,
+    unavailable,
+    background-unsupported,
+  }
+
+  record recording-status {
+    availability: availability,
+  }
+
+  record capture-request {
+    request-id: string,
+    source-profile-ref: string,
+    duration-seconds: u32,
+    idempotency-key: string,
+  }
+
+  resource recording-session;
+
+  enum recording-error {
+    permission-required,
+    unavailable,
+    background-unsupported,
+    invalid-request,
+  }
+
+  enum event-kind {
+    started,
+    stopped,
+    completed,
+    failed,
+  }
+
+  record recording-event {
+    kind: event-kind,
+    artifact-ref: option<string>,
+    error: option<recording-error>,
+  }
+
+  status: func() -> recording-status;
+  start: func(request: capture-request) -> result<recording-session, recording-error>;
+  stop: func(session: borrow<recording-session>) -> result<_, recording-error>;
+  events: func(session: borrow<recording-session>) -> list<recording-event>;
+}
+
+/// Imported by the portable recording capability and fulfilled by a local host.
+world recording-capability {
+  import recording-host;
+}

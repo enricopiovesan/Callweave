@@ -1,0 +1,42 @@
+{
+  "kind": "capability_contract",
+  "schema_version": "1.0.0",
+  "id": "audio.recording-session",
+  "version": "0.1.0",
+  "lifecycle": "draft",
+  "summary": "Start and observe a bounded recording through a portable local recording-host WIT import.",
+  "description": "The capability requests a recording session through callweave:recording/recording-host@0.1.0. It never imports target APIs, receives audio bytes, chooses storage, exposes a path, or implements permissions or background execution.",
+  "inputs": {
+    "schema": {
+      "type": "object",
+      "required": ["request_id", "source_profile_ref", "duration_seconds", "idempotency_key"],
+      "properties": {
+        "request_id": { "type": "string", "minLength": 1 },
+        "source_profile_ref": { "type": "string", "minLength": 1 },
+        "duration_seconds": { "type": "integer", "minimum": 1, "maximum": 3600 },
+        "idempotency_key": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    }
+  },
+  "outputs": {
+    "schema": {
+      "type": "object",
+      "required": ["result_class", "artifact_ref"],
+      "properties": {
+        "result_class": { "type": "string", "enum": ["started", "completed", "permission_required", "unavailable", "background_unsupported", "invalid_request"] },
+        "artifact_ref": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "host_import": {
+    "wit_package": "callweave:recording@0.1.0",
+    "interface": "recording-host",
+    "world": "recording-capability"
+  },
+  "side_effects": [{ "kind": "external_effect", "description": "Requests a bounded recording from the local host." }],
+  "permissions": [{ "id": "audio.recording-session.execute" }],
+  "permitted_targets": ["local", "device"],
+  "execution_status": "blocked_on_traverse_wit_host_abi"
+}
