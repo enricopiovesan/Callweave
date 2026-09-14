@@ -12,4 +12,6 @@ mkdir -p "$app/Contents/MacOS"
 cp "$build_root/CallweaveMac" "$app/Contents/MacOS/CallweaveMac"
 cp "$app_root/Info.plist" "$app/Contents/Info.plist"
 codesign --force --sign - "$app"
-open "$app"
+# `open` normally reactivates an already-running bundle, which would leave an
+# old development binary on screen after a rebuild. Always launch this bundle.
+open -n "$app"
