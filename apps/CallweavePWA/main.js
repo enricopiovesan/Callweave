@@ -88,6 +88,7 @@ function welcomePrivate() {
 function today() {
   const v = views.today;
   return shell(`<section class="page today-page"><header class="page-title"><div><p class="kicker">${v.label}</p><h1>${v.title}</h1><p class="place-copy">${v.subtitle} <span>· private place</span></p></div><button id="home-start-listening" class="runtime-button" type="button" data-action="start-listening">Start listening</button></header>
+    <p id="listening-status" class="runtime-status" aria-live="polite" hidden></p>
     <section class="today-hero"><div><p class="kicker">Today’s soundscape</p><h2>Morning is taking shape</h2><p>5 hours 42 minutes of listening so far. Two sounds still need a closer listen.</p><div class="waveform" aria-label="Sound activity pattern" role="img">${bars(42)}</div></div><img src="./assets/listening-soundscape.png" alt="Engraved frog, fox, moth, and wren gathered around shared sound waves"></section>
     <section class="today-stats"><div><strong>14</strong><span>sound events</span></div><div><strong>3</strong><span>animals heard</span></div><div><strong>2</strong><span>need review</span></div></section>
     <section class="today-section"><div class="section-heading"><div><p class="kicker">Heard today</p><h2>Animals in this recording</h2></div><button class="text-link" data-route="day">View record <span>→</span></button></div><div class="animal-row">${animalCards(recordings[0].animals)}</div></section>
@@ -183,34 +184,38 @@ async function requestInstallation() {
 async function startListeningFromUserAction() {
   const target = document.querySelector('#runtime-status') ?? document.querySelector('#listening-status');
   const button = document.querySelector('#capture-plan') ?? document.querySelector('[data-action="start-listening"]');
-  if (!target || !button) return;
-  target.hidden = false;
-  target.textContent = isRecording() ? 'Stopping listening…' : 'Starting listening…';
+  if (!button) return;
+  if (target) {
+    target.hidden = false;
+    target.textContent = 'Starting listening…';
+  }
+  button.disabled = true;
+  button.textContent = 'Starting…';
   try {
-    if (isRecording()) {
-      stopRecording();
-      target.textContent = 'Listening stopped.';
-      button.textContent = 'Start listening';
-      appendListeningMessage('Listening stopped.');
-    } else {
-      await startRecording();
-      sessionStartedAt = Date.now();
-      route = 'session';
-      render();
-      target.textContent = 'Listening in this browser.';
-      button.textContent = 'Stop listening';
-      appendListeningMessage('Listening started.');
-    }
-  } catch {
-    target.textContent = 'Microphone access was not granted.';
+    await startRecording();
+    sessionStartedAt = Date.now();
+    route = 'session';
+    render();
+  } catch (error) {
+    button.disabled = false;
+    button.textContent = 'Start listening';
+    if (target) target.textContent = microphoneErrorMessage(error);
   }
 }
 
-function stopListeningFromUserAction() {
-  stopRecording();
+async function stopListeningFromUserAction() {
+  await stopRecording();
   sessionStartedAt = null;
   route = 'complete';
   render();
+}
+
+function microphoneErrorMessage(error) {
+  if (error?.name === 'NotAllowedError') return 'Microphone access is blocked. Allow it in your browser settings, then try again.';
+  if (error?.name === 'NotFoundError') return 'No microphone is available. Connect or select one, then try again.';
+  if (error?.name === 'NotReadableError') return 'Your microphone is being used by another app. Close that app, then try again.';
+  if (error?.message === 'recording_unavailable') return 'This browser cannot record audio here. Use a current browser over HTTPS or localhost.';
+  return 'Listening could not start. Check your microphone and try again.';
 }
 
 function startSessionClock() {

@@ -6,7 +6,7 @@ let stream = null;
 let recorder = null;
 
 export function recordingAvailability(browser = globalThis) {
-  return Boolean(browser?.isSecureContext && browser.navigator?.mediaDevices?.getUserMedia);
+  return Boolean(browser?.isSecureContext && browser.navigator?.mediaDevices?.getUserMedia && browser.MediaRecorder);
 }
 
 export async function startRecording(browser = globalThis) {
@@ -19,9 +19,18 @@ export async function startRecording(browser = globalThis) {
   return Object.freeze({ state: 'recording' });
 }
 
-export function stopRecording() {
-  if (recorder?.state === 'recording') recorder.stop();
-  stream?.getTracks().forEach(track => track.stop());
+export async function stopRecording() {
+  const activeRecorder = recorder;
+  const activeStream = stream;
+  if (!activeRecorder || activeRecorder.state !== 'recording') {
+    return Object.freeze({ state: 'stopped' });
+  }
+
+  await new Promise(resolve => {
+    activeRecorder.addEventListener('stop', resolve, { once: true });
+    activeRecorder.stop();
+  });
+  activeStream?.getTracks().forEach(track => track.stop());
   stream = null;
   recorder = null;
   return Object.freeze({ state: 'stopped' });
