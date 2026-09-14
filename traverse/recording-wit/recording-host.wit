@@ -1,4 +1,4 @@
-package callweave:recording@0.1.0;
+package traverse:platform@0.1.0;
 
 /// A target-neutral boundary implemented by the local recording host.
 ///
@@ -29,14 +29,13 @@ interface recording-host {
     permission-required,
     unavailable,
     background-unsupported,
-    invalid-request,
+    recording-busy,
   }
 
   enum event-kind {
     started,
     stopped,
-    completed,
-    failed,
+    interrupted,
   }
 
   record recording-event {

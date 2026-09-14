@@ -4,8 +4,8 @@
   "id": "audio.recording-session",
   "version": "0.1.0",
   "lifecycle": "draft",
-  "summary": "Start and observe a bounded recording through a portable local recording-host WIT import.",
-  "description": "The capability requests a recording session through callweave:recording/recording-host@0.1.0. It never imports target APIs, receives audio bytes, chooses storage, exposes a path, or implements permissions or background execution.",
+  "summary": "Start and observe a bounded foreground recording through Traverse's portable local recording-host WIT import.",
+  "description": "The capability requests a recording session through traverse:platform/recording-host@0.1.0. It never imports target APIs, receives audio bytes, chooses storage, exposes a path, or implements permissions or background execution.",
   "inputs": {
     "schema": {
       "type": "object",
@@ -24,19 +24,30 @@
       "type": "object",
       "required": ["result_class", "artifact_ref"],
       "properties": {
-        "result_class": { "type": "string", "enum": ["started", "completed", "permission_required", "unavailable", "background_unsupported", "invalid_request"] },
+        "result_class": { "type": "string", "enum": ["started", "stopped", "permission_required", "unavailable", "background_unsupported", "recording_busy"] },
         "artifact_ref": { "type": "string" }
       },
       "additionalProperties": false
     }
   },
   "host_import": {
-    "wit_package": "callweave:recording@0.1.0",
+    "wit_package": "traverse:platform@0.1.0",
     "interface": "recording-host",
     "world": "recording-capability"
   },
   "side_effects": [{ "kind": "external_effect", "description": "Requests a bounded recording from the local host." }],
   "permissions": [{ "id": "audio.recording-session.execute" }],
   "permitted_targets": ["local", "device"],
-  "execution_status": "blocked_on_traverse_wit_host_abi"
+  "execution": {
+    "execution_profile": "component-wit-v1",
+    "required_wit_imports": [{
+      "package": "traverse:platform",
+      "interface": "recording-host",
+      "version": "0.1.0"
+    }],
+    "wit_bindings": {
+      "traverse:platform/recording-host@0.1.0": "callweave-local-recording"
+    }
+  },
+  "execution_status": "awaiting_target_host_adapter"
 }
