@@ -1,0 +1,84 @@
+import AVFoundation
+import Foundation
+
+/// The target-local implementation of `traverse:platform/recording-host@0.1.0`.
+/// It owns permissions, audio bytes, and the private artifact-to-file mapping.
+@MainActor
+final class RecordingHost: ObservableObject {
+    enum Availability: String { case ready; case permissionRequired = "permission-required"; case unavailable; case backgroundUnsupported = "background-unsupported" }
+    enum EventKind: String { case started; case stopped; case interrupted }
+    struct Event: Identifiable { let id = UUID(); let kind: EventKind; let recordingReference: String?; let occurredAt = Date() }
+
+    @Published private(set) var availability: Availability = .permissionRequired
+    @Published private(set) var isRecording = false
+    @Published private(set) var events: [Event] = []
+    @Published private(set) var publicMessage = "Checking microphone access…"
+
+    private let audioEngine = AVAudioEngine()
+    private var recordingFile: AVAudioFile?
+    private var activeReference: String?
+    private var privateArtifacts: [String: URL] = [:]
+
+    init() { refreshAvailability() }
+
+    func refreshAvailability() {
+        switch AVCaptureDevice.authorizationStatus(for: .audio) {
+        case .authorized:
+            availability = .ready; publicMessage = isRecording ? "Listening" : "Ready to listen"
+        case .notDetermined:
+            availability = .permissionRequired; publicMessage = "Microphone permission is needed to listen."
+        case .denied, .restricted:
+            availability = .permissionRequired; publicMessage = "Allow microphone access in System Settings to listen."
+        @unknown default:
+            availability = .unavailable; publicMessage = "Listening is unavailable on this device."
+        }
+    }
+
+    func requestPermission() async {
+        guard AVCaptureDevice.authorizationStatus(for: .audio) == .notDetermined else { refreshAvailability(); return }
+        let granted = await AVCaptureDevice.requestAccess(for: .audio)
+        refreshAvailability()
+        if !granted { publicMessage = "Microphone permission was not granted." }
+    }
+
+    /// WIT `start`, invoked only from a foreground user action.
+    func start() {
+        guard availability == .ready, !isRecording else { return }
+        do {
+            let input = audioEngine.inputNode
+            let format = input.outputFormat(forBus: 0)
+            let reference = "recording:\(UUID().uuidString.lowercased())"
+            let fileURL = try nextRecordingURL()
+            let file = try AVAudioFile(forWriting: fileURL, settings: format.settings)
+            input.installTap(onBus: 0, bufferSize: 4_096, format: format) { buffer, _ in
+                do { try file.write(from: buffer) } catch { /* Host-private I/O error. */ }
+            }
+            audioEngine.prepare(); try audioEngine.start()
+            recordingFile = file; activeReference = reference; privateArtifacts[reference] = fileURL
+            isRecording = true; publicMessage = "Listening"; append(.started, reference: reference)
+        } catch {
+            availability = .unavailable; publicMessage = "Listening could not start."
+        }
+    }
+
+    /// WIT `stop`; the opaque reference is the only artifact identity returned.
+    func stop() {
+        guard isRecording else { return }
+        let reference = activeReference
+        audioEngine.inputNode.removeTap(onBus: 0); audioEngine.stop()
+        recordingFile = nil; activeReference = nil; isRecording = false
+        publicMessage = "Recording saved locally"; append(.stopped, reference: reference)
+    }
+
+    private func append(_ kind: EventKind, reference: String?) {
+        events.insert(Event(kind: kind, recordingReference: reference), at: 0)
+        if events.count > 32 { events.removeLast() }
+    }
+
+    private func nextRecordingURL() throws -> URL {
+        let support = try FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+        let directory = support.appendingPathComponent("Callweave/Recordings", isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        return directory.appendingPathComponent("\(UUID().uuidString.lowercased()).caf")
+    }
+}

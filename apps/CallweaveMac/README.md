@@ -1,32 +1,13 @@
-# CallweaveMac
+# Callweave macOS listening host
 
-Native macOS developer test app for the current pre-connector Callweave
-foundation.
+This is the local implementation behind `traverse:platform/recording-host@0.1.0`.
+It owns macOS microphone permission, foreground capture, private audio storage,
+and bounded lifecycle events. It does not expose device identifiers, audio bytes,
+or local audio paths.
 
-It does not execute microphone capture, scheduled execution, durable connector
-activation, or local-model host binding itself. A separate Traverse compatible
-test bundle now exists for the first connector-bound capability path, but this
-native macOS app still exists only to exercise the checks that are already real
-today.
+Run it from this directory with `swift run`.
 
-## Run
-
-From this directory:
-
-```bash
-swift run
-```
-
-Or open the package in Xcode:
-
-```bash
-xed .
-```
-
-The app currently exposes:
-
-- pure capability fixture checks
-- business logic smoke tests
-- Traverse contract validation
-- workflow fixture validation
-- audio analyzer CLI help surface
+Recordings are kept in Application Support under a host-private mapping; only an
+opaque `recording:<uuid>` reference belongs to the portable contract. Background
+capture and PWA-to-native embedding remain unavailable until a target bridge is
+installed, and the PWA must continue to show that truthfully.
