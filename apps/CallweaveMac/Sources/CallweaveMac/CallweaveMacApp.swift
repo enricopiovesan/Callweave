@@ -34,6 +34,13 @@ struct ContentView: View {
                 Button("Check connection") { host.refreshAvailability() }
             }
 
+            if let diagnostic = host.diagnosticMessage {
+                Text(diagnostic)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .textSelection(.enabled)
+            }
+
             if !host.events.isEmpty {
                 Divider()
                 Text("Listening updates").font(.headline)

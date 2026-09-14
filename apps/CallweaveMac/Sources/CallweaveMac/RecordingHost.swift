@@ -13,6 +13,7 @@ final class RecordingHost: ObservableObject {
     @Published private(set) var isRecording = false
     @Published private(set) var events: [Event] = []
     @Published private(set) var publicMessage = "Checking microphone access…"
+    @Published private(set) var diagnosticMessage: String?
 
     private let audioEngine = AVAudioEngine()
     private var recordingFile: AVAudioFile?
@@ -43,10 +44,25 @@ final class RecordingHost: ObservableObject {
 
     /// WIT `start`, invoked only from a foreground user action.
     func start() {
-        guard availability == .ready, !isRecording else { return }
+        guard availability == .ready else {
+            publicMessage = "Listening needs microphone access first."
+            return
+        }
+        guard !isRecording else {
+            publicMessage = "Listening is already active."
+            return
+        }
+        publicMessage = "Starting listening…"
+        diagnosticMessage = nil
         do {
             let input = audioEngine.inputNode
-            let format = input.outputFormat(forBus: 0)
+            let format = input.inputFormat(forBus: 0)
+            guard format.sampleRate > 0, format.channelCount > 0 else {
+                availability = .unavailable
+                publicMessage = "No microphone input is available."
+                diagnosticMessage = "The selected input reports no usable audio format."
+                return
+            }
             let reference = "recording:\(UUID().uuidString.lowercased())"
             let fileURL = try nextRecordingURL()
             let file = try AVAudioFile(forWriting: fileURL, settings: format.settings)
@@ -54,10 +70,17 @@ final class RecordingHost: ObservableObject {
                 do { try file.write(from: buffer) } catch { /* Host-private I/O error. */ }
             }
             audioEngine.prepare(); try audioEngine.start()
+            guard audioEngine.isRunning else {
+                availability = .unavailable
+                publicMessage = "Listening could not start."
+                diagnosticMessage = "The audio engine did not enter its running state."
+                return
+            }
             recordingFile = file; activeReference = reference; privateArtifacts[reference] = fileURL
             isRecording = true; publicMessage = "Listening"; append(.started, reference: reference)
         } catch {
             availability = .unavailable; publicMessage = "Listening could not start."
+            diagnosticMessage = error.localizedDescription
         }
     }
 
