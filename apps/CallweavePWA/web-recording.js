@@ -4,6 +4,7 @@
  */
 let stream = null;
 let recorder = null;
+let chunks = [];
 
 export function recordingAvailability(browser = globalThis) {
   return Boolean(browser?.isSecureContext && browser.navigator?.mediaDevices?.getUserMedia && browser.MediaRecorder);
@@ -15,6 +16,10 @@ export async function startRecording(browser = globalThis) {
 
   stream = await browser.navigator.mediaDevices.getUserMedia({ audio: true });
   recorder = new browser.MediaRecorder(stream);
+  chunks = [];
+  recorder.addEventListener('dataavailable', event => {
+    if (event.data.size > 0) chunks.push(event.data);
+  });
   recorder.start();
   return Object.freeze({ state: 'recording' });
 }
@@ -23,7 +28,7 @@ export async function stopRecording() {
   const activeRecorder = recorder;
   const activeStream = stream;
   if (!activeRecorder || activeRecorder.state !== 'recording') {
-    return Object.freeze({ state: 'stopped' });
+    return Object.freeze({ state: 'stopped', blob: null });
   }
 
   await new Promise(resolve => {
@@ -31,9 +36,11 @@ export async function stopRecording() {
     activeRecorder.stop();
   });
   activeStream?.getTracks().forEach(track => track.stop());
+  const blob = new Blob(chunks, { type: activeRecorder.mimeType || 'audio/webm' });
+  chunks = [];
   stream = null;
   recorder = null;
-  return Object.freeze({ state: 'stopped' });
+  return Object.freeze({ state: 'stopped', blob });
 }
 
 export function isRecording() {
