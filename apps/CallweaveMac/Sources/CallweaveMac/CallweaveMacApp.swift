@@ -10,6 +10,9 @@ struct ContentView: View {
             Text("Local listening host")
                 .font(.headline)
                 .foregroundStyle(.secondary)
+            Text("Development build 0.1.0")
+                .font(.caption)
+                .foregroundStyle(.tertiary)
 
             VStack(alignment: .leading, spacing: 10) {
                 Text(host.publicMessage).font(.title3)
