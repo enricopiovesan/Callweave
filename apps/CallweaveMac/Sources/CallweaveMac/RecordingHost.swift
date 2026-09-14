@@ -25,7 +25,16 @@ final class RecordingHost: ObservableObject {
     func refreshAvailability() {
         switch AVCaptureDevice.authorizationStatus(for: .audio) {
         case .authorized:
-            availability = .ready; publicMessage = isRecording ? "Listening" : "Ready to listen"
+            let format = audioEngine.inputNode.inputFormat(forBus: 0)
+            guard format.sampleRate > 0, format.channelCount > 0 else {
+                availability = .unavailable
+                publicMessage = "No microphone input is available."
+                diagnosticMessage = "Select or reconnect a microphone in System Settings → Sound → Input, then check again."
+                return
+            }
+            availability = .ready
+            diagnosticMessage = nil
+            publicMessage = isRecording ? "Listening" : "Ready to listen"
         case .notDetermined:
             availability = .permissionRequired; publicMessage = "Microphone permission is needed to listen."
         case .denied, .restricted:
