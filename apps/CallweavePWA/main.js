@@ -109,7 +109,11 @@ function day() {
   const recording = recordings.find(item => item.id === selectedDay) ?? recordings[0];
   if (!recording) return archive();
   const audio = recording.audio ? `<audio class="recording-player" controls preload="metadata" src="${URL.createObjectURL(recording.audio)}">Your browser cannot play this recording.</audio>` : '';
-  return shell(`<section class="page detail-page"><button class="back-link" data-route="archive">← Archive</button><header class="page-title"><div><p class="kicker">Listening session</p><h1>${recording.day}</h1><p class="place-copy">${place()} <span>· private place</span></p></div><p class="coverage">Saved locally</p></header><section class="day-summary"><div class="summary-wave">${bars(56)}</div><dl><div><dt>Listening</dt><dd>${formatDuration(recording.durationSeconds)}</dd></div><div><dt>Started</dt><dd>${recording.time}</dd></div><div><dt>Animal findings</dt><dd>None yet</dd></div></dl></section><section class="record-section recording-detail"><div><p class="kicker">Your recording</p><h2>Listen back</h2><p>This private recording stays on this device.</p>${audio}</div></section><section class="record-section"><div><p class="kicker">Animal findings</p><h2>Nothing to show yet</h2><p>When Callweave identifies a sound with enough confidence, it will appear here for you to review.</p></div></section></section>`);
+  const observations = recording.observations ?? [];
+  const findings = observations.length
+    ? `<div class="observation-list">${observations.map(item => `<div><strong>${escape(item.label)}</strong><small>Your observation</small></div>`).join('')}</div>`
+    : `<p>Nothing has been noted for this recording yet.</p>`;
+  return shell(`<section class="page detail-page"><button class="back-link" data-route="archive">← Archive</button><header class="page-title"><div><p class="kicker">Listening session</p><h1>${recording.day}</h1><p class="place-copy">${place()} <span>· private place</span></p></div><p class="coverage">Saved locally</p></header><section class="day-summary"><div class="summary-wave">${bars(56)}</div><dl><div><dt>Listening</dt><dd>${formatDuration(recording.durationSeconds)}</dd></div><div><dt>Started</dt><dd>${recording.time}</dd></div><div><dt>Animal findings</dt><dd>${observations.length || 'None'}</dd></div></dl></section><section class="record-section recording-detail"><div><p class="kicker">Your recording</p><h2>Listen back</h2><p>This private recording stays on this device.</p>${audio}</div></section><section class="record-section observation-section"><div><p class="kicker">Animal findings</p><h2>Your observations</h2>${findings}</div><form id="observation-form" class="observation-form" data-recording-id="${recording.id}"><label for="observation-name">I heard</label><div><input id="observation-name" name="observation" maxlength="60" placeholder="e.g. Bird" required><button class="runtime-button" type="submit">Add</button></div></form></section></section>`);
 }
 
 function review() {
@@ -141,6 +145,7 @@ function formatDuration(seconds) {
   const minutes = Math.floor(value / 60);
   return minutes ? `${minutes}m ${value % 60}s` : `${value}s`;
 }
+function escape(value) { return String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[character]); }
 function formatDay(timestamp) { return new Intl.DateTimeFormat(undefined, { month: 'long', day: 'numeric', year: 'numeric' }).format(timestamp); }
 function formatTime(timestamp) { return new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' }).format(timestamp); }
 function animalCards(animals) { return animals.map((animal, index) => `<article class="animal-card"><span class="animal-mark animal-${index}">${animalEmoji(animal)}</span><strong>${animal}</strong><small>${index === 0 ? 'Most active' : `${3 + index * 2} sound events`}</small></article>`).join(''); }
@@ -171,14 +176,27 @@ document.addEventListener('click', event => {
   if (openButton) { modal(openButton.dataset.open); return; }
   if (event.target.closest('[data-close]')) { document.querySelector('.modal-backdrop')?.remove(); document.body.classList.remove('has-modal'); selected = null; }
 });
-document.addEventListener('submit', event => {
-  if (event.target.id !== 'place-form') return;
-  event.preventDefault();
-  const next = new FormData(event.target).get('placeName')?.trim();
-  if (!next) return;
-  placeName = next;
-  localStorage.setItem('callweave-place-name', placeName);
-  render();
+document.addEventListener('submit', async event => {
+  if (event.target.id === 'place-form') {
+    event.preventDefault();
+    const next = new FormData(event.target).get('placeName')?.trim();
+    if (!next) return;
+    placeName = next;
+    localStorage.setItem('callweave-place-name', placeName);
+    render();
+  }
+  if (event.target.id === 'observation-form') {
+    event.preventDefault();
+    const label = new FormData(event.target).get('observation')?.trim();
+    const id = event.target.dataset.recordingId;
+    const recording = recordings.find(item => item.id === id);
+    if (!label || !recording) return;
+    const observations = [...(recording.observations ?? []), { label }];
+    const updated = { ...recording, observations };
+    await saveLocalRecording(updated);
+    recordings = recordings.map(item => item.id === id ? updated : item);
+    render();
+  }
 });
 render();
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('./service-worker.js');
