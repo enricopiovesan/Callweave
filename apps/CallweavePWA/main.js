@@ -15,6 +15,8 @@ const views = {
 };
 let route = 'today';
 let selected = null;
+let selectedDay = 'August 17';
+let selectedFinding = 'Three-note call · recurring at dawn';
 let installPrompt = null;
 let sessionStartedAt = null;
 let sessionTicker = null;
@@ -74,18 +76,34 @@ function today() {
 
 function archive() {
   return shell(`<section class="page"><header class="page-title"><div><p class="kicker">${views.archive.label}</p><h1>${views.archive.title}</h1><p class="place-copy">${views.archive.subtitle}</p></div></header><div class="archive-grid">
-    ${['August 17','August 16','August 15','August 14','August 13','August 12'].map((day, i) => `<button class="day-card" data-open="${day}"><div class="mini-wave">${bars(18 + i)}</div><strong>${day}</strong><span>${i === 0 ? 'Partial coverage' : 'Listening complete'}</span></button>`).join('')}
+    ${['August 17','August 16','August 15','August 14','August 13','August 12'].map((day, i) => `<button class="day-card" data-day="${day}" data-route="day"><div class="mini-wave">${bars(18 + i)}</div><strong>${day}</strong><span>${i === 0 ? 'Partial coverage' : 'Listening complete'}</span></button>`).join('')}
   </div></section>`);
+}
+
+function day() {
+  return shell(`<section class="page detail-page"><button class="back-link" data-route="archive">← Archive</button><header class="page-title"><div><p class="kicker">Daily record</p><h1>${selectedDay}</h1><p class="place-copy">Golden, BC <span>· private place</span></p></div><p class="coverage">Partial coverage · 14 sound events</p></header><section class="day-summary"><div class="summary-wave">${bars(56)}</div><dl><div><dt>Listening</dt><dd>5h 42m</dd></div><div><dt>Known sounds</dt><dd>12</dd></div><div><dt>Needs review</dt><dd>2</dd></div></dl></section><section class="record-section"><div><p class="kicker">A quieter record</p><h2>Today at a glance</h2><p>Sound events are kept as evidence. Callweave presents the record without turning uncertain sound into a claim.</p></div><button class="runtime-button" data-route="review">Review 2 findings</button></section></section>`);
 }
 
 function review() {
   return shell(`<section class="page"><header class="page-title"><div><p class="kicker">${views.review.label}</p><h1>${views.review.title}</h1><p class="place-copy">${views.review.subtitle}</p></div></header><section class="review-list">
-    ${['Three-note call · recurring at dawn','High insect-like trill · after rain'].map((item, i) => `<button class="review-item" data-open="${item}"><span class="sound-dot ${i ? 'ochre' : ''}"></span><span><strong>${item}</strong><small>${i ? '5 retained clips' : '8 retained clips'}</small></span><span>→</span></button>`).join('')}
+    ${['Three-note call · recurring at dawn','High insect-like trill · after rain'].map((item, i) => `<button class="review-item" data-finding="${item}" data-route="finding"><span class="sound-dot ${i ? 'ochre' : ''}"></span><span><strong>${item}</strong><small>${i ? '5 retained clips' : '8 retained clips'}</small></span><span>→</span></button>`).join('')}
   </section></section>`);
 }
 
+function finding() {
+  return shell(`<section class="page detail-page"><button class="back-link" data-route="review">← Review</button><header class="page-title"><div><p class="kicker">Sound group</p><h1>Listen closer</h1><p class="place-copy">${selectedFinding}</p></div></header><section class="finding-card"><div class="finding-wave">${bars(46)}</div><p class="finding-meta">8 retained clips · Early morning · Provisional</p><p>This finding needs your judgment. The recorded evidence remains separate from your decision.</p><div class="review-actions"><button class="review-choice" data-review-action="verify">This looks right</button><button class="review-choice" data-review-action="hold">Keep for review</button><button class="review-choice" data-review-action="reject">Not this sound</button></div><p id="review-feedback" class="review-feedback" aria-live="polite"></p></section></section>`);
+}
+
 function place() {
-  return shell(`<section class="page"><header class="page-title"><div><p class="kicker">Location</p><h1>Golden, BC</h1><p class="place-copy">This place is private.</p></div></header><section class="place-panel"><p>Listening happens for this place. This app requests microphone access directly from your browser.</p><section class="runtime-panel" aria-labelledby="listening-heading"><div><p class="kicker">Listening</p><h2 id="listening-heading">Ready when you are</h2></div><p id="runtime-status" class="runtime-status" aria-live="polite">${recordingAvailability() ? 'Ready to listen.' : 'Microphone access is unavailable in this browser.'}</p><div class="runtime-actions"><button id="capture-plan" class="runtime-button" type="button" data-action="start-listening" ${recordingAvailability() ? '' : 'disabled'}>Start listening</button></div><ol id="runtime-events" class="runtime-events" aria-live="polite"><li class="runtime-event is-empty">Listening updates will appear here.</li></ol></section><div class="place-actions"><button id="install-app" class="text-link" type="button" hidden>Install Callweave <span>→</span></button><button class="text-link" data-open="settings">Open place settings <span>→</span></button></div></section></section>`);
+  return shell(`<section class="page"><header class="page-title"><div><p class="kicker">Location</p><h1>Golden, BC</h1><p class="place-copy">This place is private.</p></div></header><section class="place-panel"><p>Listening happens for this place. This app requests microphone access directly from your browser.</p><section class="runtime-panel" aria-labelledby="listening-heading"><div><p class="kicker">Listening</p><h2 id="listening-heading">Ready when you are</h2></div><p id="runtime-status" class="runtime-status" aria-live="polite">${recordingAvailability() ? 'Ready to listen.' : 'Microphone access is unavailable in this browser.'}</p><div class="runtime-actions"><button id="capture-plan" class="runtime-button" type="button" data-action="start-listening" ${recordingAvailability() ? '' : 'disabled'}>Start listening</button></div><ol id="runtime-events" class="runtime-events" aria-live="polite"><li class="runtime-event is-empty">Listening updates will appear here.</li></ol></section><div class="place-actions"><button id="install-app" class="text-link" type="button" hidden>Install Callweave <span>→</span></button><button class="text-link" data-route="settings">Place settings <span>→</span></button></div></section></section>`);
+}
+
+function settings() {
+  return shell(`<section class="page detail-page"><button class="back-link" data-route="place">← Golden, BC</button><header class="page-title"><div><p class="kicker">Place settings</p><h1>This place</h1><p class="place-copy">Controls that shape where and when Callweave listens.</p></div></header><section class="settings-list"><div><strong>Privacy</strong><span>Private to this device</span></div><div><strong>Listening window</strong><span>From dawn to dusk</span></div><div><strong>Sound review</strong><span>Ask before confirming a finding</span></div><div><strong>Retention</strong><span>Managed by this place’s policy</span></div></section></section>`);
+}
+
+function complete() {
+  return shell(`<section class="page completion-page"><p class="kicker">Listening complete</p><h1>A moment was saved</h1><p class="place-copy">Your listening session is now part of today’s private record.</p><div class="completion-orbit">${icon('listen')}</div><div class="completion-actions"><button class="runtime-button" data-route="day">View today’s record</button><button class="text-link" data-route="today">Back to Today <span>→</span></button></div></section>`);
 }
 
 function setup() {
@@ -103,16 +121,18 @@ function modal(title) {
 
 function render() {
   clearInterval(sessionTicker);
-  app.innerHTML = ({ today, archive, review, place, setup, session: listeningSession })[route]();
+  app.innerHTML = ({ today, archive, day, review, finding, place, settings, setup, complete, session: listeningSession })[route]();
   if (route === 'session') startSessionClock();
   if (route === 'place') syncInstallButton();
 }
 document.addEventListener('click', event => {
   const routeButton = event.target.closest('[data-route]');
-  if (routeButton) { route = routeButton.dataset.route; render(); return; }
+  if (routeButton) { if (routeButton.dataset.day) selectedDay = routeButton.dataset.day; if (routeButton.dataset.finding) selectedFinding = routeButton.dataset.finding; route = routeButton.dataset.route; render(); return; }
   if (event.target.closest('[data-action="start-listening"]')) { startListeningFromUserAction(); return; }
   if (event.target.closest('[data-action="stop-listening"]')) { stopListeningFromUserAction(); return; }
   if (event.target.closest('#install-app')) { requestInstallation(); return; }
+  const reviewAction = event.target.closest('[data-review-action]');
+  if (reviewAction) { const feedback = document.querySelector('#review-feedback'); if (feedback) feedback.textContent = 'Your review decision is ready to be applied.'; return; }
   const openButton = event.target.closest('[data-open]');
   if (openButton) { modal(openButton.dataset.open); return; }
   if (event.target.closest('[data-close]')) { document.querySelector('.modal-backdrop')?.remove(); document.body.classList.remove('has-modal'); selected = null; }
@@ -165,7 +185,7 @@ async function startListeningFromUserAction() {
 function stopListeningFromUserAction() {
   stopRecording();
   sessionStartedAt = null;
-  route = 'today';
+  route = 'complete';
   render();
 }
 
