@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { closeDay, clusterUnknownEvidence, createDailyCanvasPlan, evaluateModelRelease, evaluatePrivacyGate, initializeLocation, manageKnowledge, manageObservation, planRecovery, prepareReview, resolveDetection } from '../src/business-logic.mjs';
+import { assessCalibration, classifyBackground, closeDay, clusterUnknownEvidence, createDailyCanvasPlan, evaluateModelRelease, evaluatePrivacyGate, initializeLocation, manageKnowledge, manageObservation, planRecovery, prepareReview, qualifyAcousticEvent, resolveDetection } from '../src/business-logic.mjs';
 import { AppendOnlyState } from '../src/append-only-state.mjs';
 
 const candidateSet = initializeLocation({ location: { id: 'golden' }, policy: { version: '1' }, sources: [{ id: 's1', license: 'CC-BY', taxon: 'Aves example', status: 'expected' }] });
@@ -18,6 +18,9 @@ assert.equal(evaluateModelRelease({ candidate: { id: 'm1', sha256: 'abc', licens
 assert.equal(createDailyCanvasPlan({ close, policy: { version: '1' } }).visual_facts.uncertainty_millis, 500);
 assert.deepEqual(planRecovery({ expectedIds: ['a', 'b'], completedIds: ['a'], policy: { version: '1' } }).replay_ids, ['b']);
 assert.equal(evaluatePrivacyGate({ cases: [{ contains_speech: true, risk_detected: true }, { contains_speech: false, risk_detected: true }], policy: { version: '1', minimum_speech_cases: 1, maximum_false_negative_millis: 0 } }).decision, 'approve_for_policy');
+assert.equal(qualifyAcousticEvent({ windows: [{ window_id: 'w1', activity: 'active', signal_rms: 0.1, background_dominant: false, clipped: false }, { window_id: 'w2', activity: 'active', signal_rms: 0.1, background_dominant: true, clipped: false }], policy: { version: '1', minimum_windows: 1, minimum_rms: 0.01 } }).qualified, true);
+assert.equal(classifyBackground({ windows: [{ background_dominant: true }, { background_dominant: true }, { background_dominant: false }], policy: { version: '1', dominance_ratio: 0.6 } }).category, 'continuous_background');
+assert.equal(assessCalibration({ cases: [{ expected_taxon: 'elk', predicted_taxon: 'elk' }, { expected_taxon: 'bear' }], policy: { version: '1' } }).accuracy_millis, 1000);
 const state = new AppendOnlyState();
 const first = state.append({ type: 'observation', payload: { id: 'o1', state: 'provisional' }, idempotencyKey: 'request-1', timestamp: '2026-08-17T00:00:00Z' });
 assert.equal(first.replayed, false);

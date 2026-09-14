@@ -106,3 +106,45 @@ export function evaluatePrivacyGate({ cases, policy }) {
   if (falseNegativeMillis > policy.maximum_false_negative_millis) return { ...result, decision: 'reject', reason: 'false_negative_limit_exceeded' };
   return { ...result, decision: 'approve_for_policy', reason: 'privacy_gate_passed' };
 }
+
+/** Qualify acoustic windows without naming a species or accessing audio bytes. */
+export function qualifyAcousticEvent({ windows, policy }) {
+  requireValue(policy?.version, 'policy.version');
+  if (!Array.isArray(windows) || windows.length === 0) throw new Error('windows are required');
+  const usable = windows.filter(window => window.activity === 'active' && !window.background_dominant && !window.clipped && (window.signal_rms ?? 0) >= (policy.minimum_rms ?? 0.005));
+  return { policy_version: policy.version, qualified: usable.length >= (policy.minimum_windows ?? 1), qualified_window_ids: usable.map(window => window.window_id ?? window.start_millis).sort(), rejected_window_count: windows.length - usable.length, reason: usable.length >= (policy.minimum_windows ?? 1) ? 'animal_like_interval_candidate' : 'insufficient_non_background_signal' };
+}
+
+/** Classify supplied quality facts into a generic background category. */
+export function classifyBackground({ windows, policy }) {
+  requireValue(policy?.version, 'policy.version');
+  if (!Array.isArray(windows) || windows.length === 0) throw new Error('windows are required');
+  const dominant = windows.filter(window => window.background_dominant === true).length;
+  const ratio = dominant / windows.length;
+  const category = ratio >= (policy.dominance_ratio ?? 0.6) ? 'continuous_background' : dominant ? 'mixed_background' : 'no_dominant_background';
+  return { policy_version: policy.version, category, dominant_windows: dominant, total_windows: windows.length, dominance_ratio: ratio };
+}
+
+/** Compute descriptive calibration metrics from labeled outcomes; no threshold is selected. */
+export function assessCalibration({ cases, policy }) {
+  requireValue(policy?.version, 'policy.version');
+  if (!Array.isArray(cases) || cases.length === 0) throw new Error('cases are required');
+  const positives = cases.filter(item => item.expected_taxon && item.predicted_taxon);
+  const correct = positives.filter(item => item.expected_taxon === item.predicted_taxon).length;
+  const expected = cases.filter(item => item.expected_taxon).length;
+  const predicted = cases.filter(item => item.predicted_taxon).length;
+  return { policy_version: policy.version, case_count: cases.length, correct_count: correct, accuracy_millis: positives.length ? Math.round(correct * 1000 / positives.length) : null, labeled_positive_count: expected, predicted_positive_count: predicted, unknown_count: cases.filter(item => !item.predicted_taxon).length, policy: 'descriptive_only_no_threshold_selected' };
+}
+
+/** Normalize model-independent detection facts into stable evidence records. */
+export function normalizeInferenceEvidence({ detections, source_ref, policy }) {
+  requireValue(source_ref, 'source_ref'); requireValue(policy?.version, 'policy.version');
+  if (!Array.isArray(detections) || detections.length === 0) throw new Error('detections are required');
+  const normalized = detections.map((d) => {
+    requireValue(d?.id, 'detection.id'); requireValue(d?.label, 'detection.label'); requireValue(d?.model_ref, 'detection.model_ref');
+    if (!Number.isInteger(d.score_millis) || d.score_millis < 0 || d.score_millis > 1000) throw new Error('score_millis must be 0..1000');
+    if (!Number.isInteger(d.start_ms) || !Number.isInteger(d.end_ms) || d.start_ms < 0 || d.end_ms <= d.start_ms) throw new Error('invalid detection interval');
+    return { id: stableId('evidence', { source_ref, detection: d.id, policy: policy.version }), source_ref, detection_id: d.id, label: d.label, confidence_millis: d.score_millis, start_ms: d.start_ms, end_ms: d.end_ms, model_ref: d.model_ref, policy_version: policy.version };
+  }).sort((a, b) => a.start_ms - b.start_ms || a.detection_id.localeCompare(b.detection_id));
+  return { source_ref, policy_version: policy.version, evidence: normalized };
+}
