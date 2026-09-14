@@ -12,6 +12,7 @@ final class RecordingHost: ObservableObject {
     @Published private(set) var availability: Availability = .permissionRequired
     @Published private(set) var isRecording = false
     @Published private(set) var events: [Event] = []
+    @Published private(set) var startedAt: Date?
     @Published private(set) var publicMessage = "Checking microphone access…"
     @Published private(set) var diagnosticMessage: String?
 
@@ -71,7 +72,7 @@ final class RecordingHost: ObservableObject {
                 return
             }
             self.recorder = recorder; activeReference = reference; privateArtifacts[reference] = fileURL
-            isRecording = true; publicMessage = "Listening"; append(.started, reference: reference)
+            isRecording = true; startedAt = Date(); publicMessage = "Listening"; append(.started, reference: reference)
         } catch {
             availability = .unavailable; publicMessage = "Listening could not start."
             diagnosticMessage = error.localizedDescription
@@ -83,7 +84,7 @@ final class RecordingHost: ObservableObject {
         guard isRecording else { return }
         let reference = activeReference
         recorder?.stop()
-        recorder = nil; activeReference = nil; isRecording = false
+        recorder = nil; activeReference = nil; isRecording = false; startedAt = nil
         publicMessage = "Recording saved locally"; append(.stopped, reference: reference)
     }
 

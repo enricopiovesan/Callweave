@@ -16,6 +16,8 @@ const views = {
 let route = 'today';
 let selected = null;
 let installPrompt = null;
+let sessionStartedAt = null;
+let sessionTicker = null;
 
 function icon(name) {
   const paths = {
@@ -45,6 +47,20 @@ function shell(content) {
     <main class="main">${content}</main>
     <nav class="mobile-nav">${navItem('today','Today')}${navItem('archive','Archive')}${listeningNavItem()}${navItem('review','Review')}${navItem('place','Place')}</nav>
   </div>`;
+}
+
+function listeningSession() {
+  return `<main class="listening-session" aria-labelledby="session-title">
+    <header class="session-head"><div class="wordmark"><i></i>Callweave</div><p>Golden, BC</p></header>
+    <section class="session-center">
+      <p class="kicker">Listening now</p>
+      <div class="session-ripple" aria-hidden="true"><span></span><span></span><span></span><div class="session-core">${icon('listen')}</div></div>
+      <h1 id="session-title">Listening</h1>
+      <p id="session-elapsed" class="session-elapsed">00:00</p>
+      <p class="session-copy">Callweave is listening for the sounds around this place.</p>
+    </section>
+    <footer class="session-footer"><button class="stop-listening" type="button" data-action="stop-listening">Stop listening</button><p>Audio stays on this device.</p></footer>
+  </main>`;
 }
 
 function today() {
@@ -86,13 +102,16 @@ function modal(title) {
 }
 
 function render() {
-  app.innerHTML = ({ today, archive, review, place, setup })[route]();
+  clearInterval(sessionTicker);
+  app.innerHTML = ({ today, archive, review, place, setup, session: listeningSession })[route]();
+  if (route === 'session') startSessionClock();
   if (route === 'place') syncInstallButton();
 }
 document.addEventListener('click', event => {
   const routeButton = event.target.closest('[data-route]');
   if (routeButton) { route = routeButton.dataset.route; render(); return; }
   if (event.target.closest('[data-action="start-listening"]')) { startListeningFromUserAction(); return; }
+  if (event.target.closest('[data-action="stop-listening"]')) { stopListeningFromUserAction(); return; }
   if (event.target.closest('#install-app')) { requestInstallation(); return; }
   const openButton = event.target.closest('[data-open]');
   if (openButton) { modal(openButton.dataset.open); return; }
@@ -131,6 +150,9 @@ async function startListeningFromUserAction() {
       appendListeningMessage('Listening stopped.');
     } else {
       await startRecording();
+      sessionStartedAt = Date.now();
+      route = 'session';
+      render();
       target.textContent = 'Listening in this browser.';
       button.textContent = 'Stop listening';
       appendListeningMessage('Listening started.');
@@ -138,6 +160,24 @@ async function startListeningFromUserAction() {
   } catch {
     target.textContent = 'Microphone access was not granted.';
   }
+}
+
+function stopListeningFromUserAction() {
+  stopRecording();
+  sessionStartedAt = null;
+  route = 'today';
+  render();
+}
+
+function startSessionClock() {
+  const update = () => {
+    const target = document.querySelector('#session-elapsed');
+    if (!target || !sessionStartedAt) return;
+    const seconds = Math.floor((Date.now() - sessionStartedAt) / 1000);
+    target.textContent = `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
+  };
+  update();
+  sessionTicker = setInterval(update, 1000);
 }
 
 function appendListeningMessage(message) {
