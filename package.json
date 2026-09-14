@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "mac-host:run": "bash scripts/run_callweave_mac_host.sh",
     "birdnet:readiness": "node scripts/birdnet-readiness.mjs",
     "perch:readiness": "node scripts/perch-readiness.mjs",
     "analyze:audio": "node scripts/analyze-audio.mjs",

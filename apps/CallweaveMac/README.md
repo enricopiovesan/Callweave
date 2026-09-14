@@ -5,7 +5,14 @@ It owns macOS microphone permission, foreground capture, private audio storage,
 and bounded lifecycle events. It does not expose device identifiers, audio bytes,
 or local audio paths.
 
-Run it from this directory with `swift run`.
+Build and open a correctly bundled development app from the repository root:
+
+```bash
+bash scripts/run_callweave_mac_host.sh
+```
+
+The script adds the required macOS microphone usage description and ad-hoc
+signs the local development bundle before opening it.
 
 Recordings are kept in Application Support under a host-private mapping; only an
 opaque `recording:<uuid>` reference belongs to the portable contract. Background
