@@ -15,8 +15,7 @@ final class RecordingHost: ObservableObject {
     @Published private(set) var publicMessage = "Checking microphone access…"
     @Published private(set) var diagnosticMessage: String?
 
-    private let audioEngine = AVAudioEngine()
-    private var recordingFile: AVAudioFile?
+    private var recorder: AVAudioRecorder?
     private var activeReference: String?
     private var privateArtifacts: [String: URL] = [:]
 
@@ -25,15 +24,6 @@ final class RecordingHost: ObservableObject {
     func refreshAvailability() {
         switch AVCaptureDevice.authorizationStatus(for: .audio) {
         case .authorized:
-            // An input node receives hardware audio on its output bus. Its
-            // input bus legitimately has no format on macOS.
-            let format = audioEngine.inputNode.outputFormat(forBus: 0)
-            guard format.sampleRate > 0, format.channelCount > 0 else {
-                availability = .unavailable
-                publicMessage = "No microphone input is available."
-                diagnosticMessage = "Select or reconnect a microphone in System Settings → Sound → Input, then check again."
-                return
-            }
             availability = .ready
             diagnosticMessage = nil
             publicMessage = isRecording ? "Listening" : "Ready to listen"
@@ -66,28 +56,21 @@ final class RecordingHost: ObservableObject {
         publicMessage = "Starting listening…"
         diagnosticMessage = nil
         do {
-            let input = audioEngine.inputNode
-            let format = input.outputFormat(forBus: 0)
-            guard format.sampleRate > 0, format.channelCount > 0 else {
-                availability = .unavailable
-                publicMessage = "No microphone input is available."
-                diagnosticMessage = "The selected input reports no usable audio format."
-                return
-            }
             let reference = "recording:\(UUID().uuidString.lowercased())"
             let fileURL = try nextRecordingURL()
-            let file = try AVAudioFile(forWriting: fileURL, settings: format.settings)
-            input.installTap(onBus: 0, bufferSize: 4_096, format: format) { buffer, _ in
-                do { try file.write(from: buffer) } catch { /* Host-private I/O error. */ }
-            }
-            audioEngine.prepare(); try audioEngine.start()
-            guard audioEngine.isRunning else {
+            let recorder = try AVAudioRecorder(url: fileURL, settings: [
+                AVFormatIDKey: kAudioFormatMPEG4AAC,
+                AVSampleRateKey: 44_100,
+                AVNumberOfChannelsKey: 1,
+                AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
+            ])
+            guard recorder.prepareToRecord(), recorder.record() else {
                 availability = .unavailable
                 publicMessage = "Listening could not start."
-                diagnosticMessage = "The audio engine did not enter its running state."
+                diagnosticMessage = "macOS did not make the selected microphone available to the recorder."
                 return
             }
-            recordingFile = file; activeReference = reference; privateArtifacts[reference] = fileURL
+            self.recorder = recorder; activeReference = reference; privateArtifacts[reference] = fileURL
             isRecording = true; publicMessage = "Listening"; append(.started, reference: reference)
         } catch {
             availability = .unavailable; publicMessage = "Listening could not start."
@@ -99,8 +82,8 @@ final class RecordingHost: ObservableObject {
     func stop() {
         guard isRecording else { return }
         let reference = activeReference
-        audioEngine.inputNode.removeTap(onBus: 0); audioEngine.stop()
-        recordingFile = nil; activeReference = nil; isRecording = false
+        recorder?.stop()
+        recorder = nil; activeReference = nil; isRecording = false
         publicMessage = "Recording saved locally"; append(.stopped, reference: reference)
     }
 
@@ -113,6 +96,6 @@ final class RecordingHost: ObservableObject {
         let support = try FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
         let directory = support.appendingPathComponent("Callweave/Recordings", isDirectory: true)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-        return directory.appendingPathComponent("\(UUID().uuidString.lowercased()).caf")
+        return directory.appendingPathComponent("\(UUID().uuidString.lowercased()).m4a")
     }
 }
