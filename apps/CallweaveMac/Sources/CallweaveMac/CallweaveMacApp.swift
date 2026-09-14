@@ -66,6 +66,8 @@ struct ContentView: View {
 @main
 struct CallweaveMacApp: App {
     var body: some Scene {
-        WindowGroup { ContentView() }.windowResizability(.contentSize)
+        WindowGroup { ContentView() }
+            .windowResizability(.contentSize)
+            .handlesExternalEvents(matching: ["listen"])
     }
 }

@@ -18,6 +18,7 @@
 .runtime-panel h2 { font: 500 1.55rem/1 Georgia, serif; letter-spacing: -.04em; margin: 0; }
 .runtime-actions { display: flex; align-items: center; gap: 1.25rem; }
 .runtime-button { border: 1px solid var(--ink); border-radius: 999px; background: var(--ink); color: #fff; padding: .65rem 1rem; font-size: .875rem; font-weight: 700; }
+a.runtime-button { display: inline-flex; align-items: center; text-decoration: none; }
 .runtime-button:disabled { opacity: .45; cursor: not-allowed; }
 .listening-cta { margin-top: 1rem; }
 .listening-feedback { max-width: 20rem; margin: .8rem 0 0; color: var(--muted); font-size: .82rem; text-align: center; }
