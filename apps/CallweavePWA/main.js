@@ -13,7 +13,15 @@ const views = {
   place: { title: 'Place', label: 'Golden, BC', subtitle: 'Private location profile' },
   setup: { title: 'Enable listening', label: 'Listening setup', subtitle: 'Allow Callweave to use this browser’s microphone.' },
 };
-let route = 'today';
+const recordings = [
+  { day: 'August 17', time: '05:42–11:24', duration: '5h 42m', coverage: 'Partial coverage', animals: ['Pacific wren', 'Boreal chorus frog', 'Field cricket'], count: 14 },
+  { day: 'August 16', time: '05:38–20:11', duration: '14h 33m', coverage: 'Complete', animals: ['Coyote', 'Pacific wren', 'Tree frog'], count: 27 },
+  { day: 'August 15', time: '05:37–20:12', duration: '14h 35m', coverage: 'Complete', animals: ['Red squirrel', 'Swainson’s thrush', 'Field cricket'], count: 31 },
+  { day: 'August 14', time: '05:35–20:14', duration: '14h 39m', coverage: 'Complete', animals: ['American robin', 'Tree frog'], count: 19 },
+  { day: 'August 13', time: '05:34–20:15', duration: '14h 41m', coverage: 'Complete', animals: ['Coyote', 'Boreal chorus frog'], count: 22 },
+  { day: 'August 12', time: '05:33–20:17', duration: '14h 44m', coverage: 'Complete', animals: ['Pacific wren', 'Field cricket'], count: 25 },
+];
+let route = location.hash === '#welcome' ? 'welcome' : 'today';
 let selected = null;
 let selectedDay = 'August 17';
 let selectedFinding = 'Three-note call · recurring at dawn';
@@ -65,23 +73,37 @@ function listeningSession() {
   </main>`;
 }
 
+function welcome() {
+  return `<main class="welcome" aria-labelledby="welcome-title"><header class="welcome-head"><div class="wordmark"><i></i>Callweave</div><span>1 of 3</span></header><section class="welcome-center"><p class="kicker">Listen closer</p><h1 id="welcome-title">The life around you has a voice.</h1><p>Callweave keeps a private, daily record of the animals and sounds around one place.</p><img src="./assets/listening-soundscape.png" alt="Illustrated animals gathered around sound waves"><button class="runtime-button" data-route="welcome-listen">Begin</button></section></main>`;
+}
+
+function welcomeListen() {
+  return `<main class="welcome" aria-labelledby="welcome-listen-title"><header class="welcome-head"><div class="wordmark"><i></i>Callweave</div><span>2 of 3</span></header><section class="welcome-center welcome-steps"><p class="kicker">How it works</p><h1 id="welcome-listen-title">Listen. Notice. Return.</h1><ol><li><span>1</span><div><strong>Listen at your place</strong><p>Start a session when you want to capture the soundscape around you.</p></div></li><li><span>2</span><div><strong>Keep a daily record</strong><p>Find recordings, listening time, and the animals heard in one place.</p></div></li><li><span>3</span><div><strong>Review what is uncertain</strong><p>Callweave asks before a sound becomes a confirmed finding.</p></div></li></ol><button class="runtime-button" data-route="welcome-private">Continue</button></section></main>`;
+}
+
+function welcomePrivate() {
+  return `<main class="welcome" aria-labelledby="welcome-private-title"><header class="welcome-head"><div class="wordmark"><i></i>Callweave</div><span>3 of 3</span></header><section class="welcome-center"><p class="kicker">Your place, privately</p><h1 id="welcome-private-title">The sounds stay with you.</h1><p>Recording, location, and your daily record remain private to this place. You stay in control of what gets reviewed.</p><div class="welcome-seal">⌁</div><button class="runtime-button" data-route="today">Open Callweave</button></section></main>`;
+}
+
 function today() {
   const v = views.today;
-  return shell(`<section class="page today-page"><header class="page-title"><div><p class="kicker">${v.label}</p><h1>${v.title}</h1><p class="place-copy">${v.subtitle} <span>· private place</span></p></div><p class="coverage">${v.facts.join(' · ')}</p></header>
-    <article class="listening-canvas"><img src="./assets/listening-soundscape.png" alt="Engraved frog, fox, moth, and wren gathered around shared sound waves"><div class="waveform" aria-label="Sound activity pattern" role="img">${bars(42)}</div><p>${v.status}</p><button id="home-start-listening" class="runtime-button listening-cta" type="button" data-action="start-listening">Start listening</button><p id="listening-status" class="listening-feedback" aria-live="polite" hidden></p></article>
+  return shell(`<section class="page today-page"><header class="page-title"><div><p class="kicker">${v.label}</p><h1>${v.title}</h1><p class="place-copy">${v.subtitle} <span>· private place</span></p></div><button id="home-start-listening" class="runtime-button" type="button" data-action="start-listening">Start listening</button></header>
+    <section class="today-hero"><div><p class="kicker">Today’s soundscape</p><h2>Morning is taking shape</h2><p>5 hours 42 minutes of listening so far. Two sounds still need a closer listen.</p><div class="waveform" aria-label="Sound activity pattern" role="img">${bars(42)}</div></div><img src="./assets/listening-soundscape.png" alt="Engraved frog, fox, moth, and wren gathered around shared sound waves"></section>
+    <section class="today-stats"><div><strong>14</strong><span>sound events</span></div><div><strong>3</strong><span>animals heard</span></div><div><strong>2</strong><span>need review</span></div></section>
+    <section class="today-section"><div class="section-heading"><div><p class="kicker">Heard today</p><h2>Animals in this recording</h2></div><button class="text-link" data-route="day">View record <span>→</span></button></div><div class="animal-row">${animalCards(recordings[0].animals)}</div></section>
     <section id="listening-setup" class="listening-setup" ${recordingAvailability() ? 'hidden' : ''}><p class="kicker">Listening setup</p><h2>Microphone unavailable</h2><p>This browser cannot access a microphone. Open Callweave in a supported browser and allow microphone access.</p></section>
-    <section class="quiet-row"><button class="text-link" data-open="day">View today’s record <span>→</span></button><button class="text-link" data-route="review">2 unknown sound groups <span>→</span></button></section>
   </section>`);
 }
 
 function archive() {
   return shell(`<section class="page"><header class="page-title"><div><p class="kicker">${views.archive.label}</p><h1>${views.archive.title}</h1><p class="place-copy">${views.archive.subtitle}</p></div></header><div class="archive-grid">
-    ${['August 17','August 16','August 15','August 14','August 13','August 12'].map((day, i) => `<button class="day-card" data-day="${day}" data-route="day"><div class="mini-wave">${bars(18 + i)}</div><strong>${day}</strong><span>${i === 0 ? 'Partial coverage' : 'Listening complete'}</span></button>`).join('')}
+    ${recordings.map((recording, i) => `<button class="day-card" data-day="${recording.day}" data-route="day"><div class="mini-wave">${bars(18 + i)}</div><strong>${recording.day}</strong><span>${recording.coverage} · ${recording.count} sound events</span><small>${recording.animals.slice(0, 2).join(' · ')}</small></button>`).join('')}
   </div></section>`);
 }
 
 function day() {
-  return shell(`<section class="page detail-page"><button class="back-link" data-route="archive">← Archive</button><header class="page-title"><div><p class="kicker">Daily record</p><h1>${selectedDay}</h1><p class="place-copy">Golden, BC <span>· private place</span></p></div><p class="coverage">Partial coverage · 14 sound events</p></header><section class="day-summary"><div class="summary-wave">${bars(56)}</div><dl><div><dt>Listening</dt><dd>5h 42m</dd></div><div><dt>Known sounds</dt><dd>12</dd></div><div><dt>Needs review</dt><dd>2</dd></div></dl></section><section class="record-section"><div><p class="kicker">A quieter record</p><h2>Today at a glance</h2><p>Sound events are kept as evidence. Callweave presents the record without turning uncertain sound into a claim.</p></div><button class="runtime-button" data-route="review">Review 2 findings</button></section></section>`);
+  const recording = recordings.find(item => item.day === selectedDay) ?? recordings[0];
+  return shell(`<section class="page detail-page"><button class="back-link" data-route="archive">← Archive</button><header class="page-title"><div><p class="kicker">Daily record</p><h1>${recording.day}</h1><p class="place-copy">Golden, BC <span>· private place</span></p></div><p class="coverage">${recording.coverage} · ${recording.count} sound events</p></header><section class="day-summary"><div class="summary-wave">${bars(56)}</div><dl><div><dt>Listening</dt><dd>${recording.duration}</dd></div><div><dt>Window</dt><dd>${recording.time}</dd></div><div><dt>Animals heard</dt><dd>${recording.animals.length}</dd></div></dl></section><section class="today-section"><div class="section-heading"><div><p class="kicker">Animals heard</p><h2>In this recording</h2></div></div><div class="animal-row">${animalCards(recording.animals)}</div></section><section class="record-section"><div><p class="kicker">Needs review</p><h2>Two sounds need a closer listen</h2><p>Callweave keeps the recording and its evidence together until a person decides what to do next.</p></div><button class="runtime-button" data-route="review">Review findings</button></section></section>`);
 }
 
 function review() {
@@ -99,7 +121,7 @@ function place() {
 }
 
 function settings() {
-  return shell(`<section class="page detail-page"><button class="back-link" data-route="place">← Golden, BC</button><header class="page-title"><div><p class="kicker">Place settings</p><h1>This place</h1><p class="place-copy">Controls that shape where and when Callweave listens.</p></div></header><section class="settings-list"><div><strong>Privacy</strong><span>Private to this device</span></div><div><strong>Listening window</strong><span>From dawn to dusk</span></div><div><strong>Sound review</strong><span>Ask before confirming a finding</span></div><div><strong>Retention</strong><span>Managed by this place’s policy</span></div></section></section>`);
+  return shell(`<section class="page detail-page"><button class="back-link" data-route="place">← Golden, BC</button><header class="page-title"><div><p class="kicker">Settings</p><h1>Your place</h1><p class="place-copy">Controls that shape how Callweave listens and what stays in your record.</p></div></header><section class="settings-group"><p class="kicker">Listening</p><div class="settings-list"><button><span><strong>Listening window</strong><small>From dawn to dusk</small></span><b>›</b></button><button><span><strong>Microphone</strong><small>This browser’s microphone</small></span><b>›</b></button></div></section><section class="settings-group"><p class="kicker">Your record</p><div class="settings-list"><button><span><strong>Privacy</strong><small>Private to this device</small></span><b>›</b></button><button><span><strong>Sound review</strong><small>Ask before confirming a finding</small></span><b>›</b></button><button><span><strong>Retention</strong><small>Managed by this place’s policy</small></span><b>›</b></button></div></section><section class="settings-group"><p class="kicker">Callweave</p><div class="settings-list"><button data-route="welcome"><span><strong>How Callweave works</strong><small>Take the welcome tour again</small></span><b>›</b></button></div></section></section>`);
 }
 
 function complete() {
@@ -112,6 +134,8 @@ function setup() {
 }
 
 function bars(count) { return Array.from({ length: count }, (_, i) => `<i style="--h:${12 + Math.round(Math.abs(Math.sin(i * 1.72)) * 37)}%"></i>`).join(''); }
+function animalCards(animals) { return animals.map((animal, index) => `<article class="animal-card"><span class="animal-mark animal-${index}">${animalEmoji(animal)}</span><strong>${animal}</strong><small>${index === 0 ? 'Most active' : `${3 + index * 2} sound events`}</small></article>`).join(''); }
+function animalEmoji(animal) { return animal.includes('frog') ? '♧' : animal.includes('cricket') ? '⌇' : animal.includes('Coyote') ? '◒' : animal.includes('squirrel') ? '◔' : '⌁'; }
 
 function modal(title) {
   selected = title;
@@ -121,7 +145,7 @@ function modal(title) {
 
 function render() {
   clearInterval(sessionTicker);
-  app.innerHTML = ({ today, archive, day, review, finding, place, settings, setup, complete, session: listeningSession })[route]();
+  app.innerHTML = ({ welcome, 'welcome-listen': welcomeListen, 'welcome-private': welcomePrivate, today, archive, day, review, finding, place, settings, setup, complete, session: listeningSession })[route]();
   if (route === 'session') startSessionClock();
   if (route === 'place') syncInstallButton();
 }
