@@ -1,10 +1,8 @@
-import { TraverseRuntimeClient, runtimeConfigFromHost } from './runtime-client.js';
-import { commandResultView, runtimeEventView } from './runtime-events.js';
-import { captureRequestPayload, nativeHostFromBridge, recordingAvailability, subscribeRecordingEvents, subscribeRuntimeEvents } from './native-host.js';
+import { isRecording, recordingAvailability, startRecording, stopRecording } from './web-recording.js';
 
 const app = document.querySelector('#app');
 
-// Presentation fixture only. A host adapter should replace this with read-only view models.
+// Presentation fixture only. Runtime-provided view models replace this static sample data.
 const views = {
   today: {
     title: 'Today', label: 'Monday, August 17', subtitle: 'Golden, BC',
@@ -13,12 +11,10 @@ const views = {
   archive: { title: 'Archive', label: 'Daily canvases', subtitle: 'A quiet record of this place' },
   review: { title: 'Review', label: 'Needs a closer listen', subtitle: 'Evidence stays evidence until a person reviews it.' },
   place: { title: 'Place', label: 'Golden, BC', subtitle: 'Private location profile' },
-  setup: { title: 'Set up listening', label: 'Listening setup', subtitle: 'Get a recording device ready for this place.' },
+  setup: { title: 'Enable listening', label: 'Listening setup', subtitle: 'Allow Callweave to use this browser’s microphone.' },
 };
 let route = 'today';
 let selected = null;
-let runtimeSubscription = null;
-let nativeHostUnsubscribe = null;
 let installPrompt = null;
 
 function icon(name) {
@@ -39,7 +35,7 @@ function navItem(key, label) {
 }
 
 function listeningNavItem() {
-  return `<button id="mobile-start-listening" class="mobile-listen" type="button" data-action="start-listening" aria-label="Start listening" disabled>${icon('listen')}<span>Listen</span></button>`;
+  return `<button id="mobile-start-listening" class="mobile-listen" type="button" data-action="start-listening" aria-label="Start listening">${icon('listen')}<span>Listen</span></button>`;
 }
 
 function shell(content) {
@@ -54,8 +50,8 @@ function shell(content) {
 function today() {
   const v = views.today;
   return shell(`<section class="page today-page"><header class="page-title"><div><p class="kicker">${v.label}</p><h1>${v.title}</h1><p class="place-copy">${v.subtitle} <span>· private place</span></p></div><p class="coverage">${v.facts.join(' · ')}</p></header>
-    <article class="listening-canvas"><img src="./assets/listening-soundscape.png" alt="Engraved frog, fox, moth, and wren gathered around shared sound waves"><div class="waveform" aria-label="Sound activity pattern" role="img">${bars(42)}</div><p>${v.status}</p><button id="home-start-listening" class="runtime-button listening-cta" type="button" data-action="start-listening" disabled>Start listening</button><p id="listening-status" class="listening-feedback" aria-live="polite" hidden></p></article>
-    <section id="listening-setup" class="listening-setup" hidden><p class="kicker">Listening setup</p><h2>Connect a recording device</h2><p>Callweave needs a recording connection before it can listen here.</p><button class="runtime-button" type="button" data-route="setup">Set up listening</button></section>
+    <article class="listening-canvas"><img src="./assets/listening-soundscape.png" alt="Engraved frog, fox, moth, and wren gathered around shared sound waves"><div class="waveform" aria-label="Sound activity pattern" role="img">${bars(42)}</div><p>${v.status}</p><button id="home-start-listening" class="runtime-button listening-cta" type="button" data-action="start-listening">Start listening</button><p id="listening-status" class="listening-feedback" aria-live="polite" hidden></p></article>
+    <section id="listening-setup" class="listening-setup" ${recordingAvailability() ? 'hidden' : ''}><p class="kicker">Listening setup</p><h2>Microphone unavailable</h2><p>This browser cannot access a microphone. Open Callweave in a supported browser and allow microphone access.</p></section>
     <section class="quiet-row"><button class="text-link" data-open="day">View today’s record <span>→</span></button><button class="text-link" data-route="review">2 unknown sound groups <span>→</span></button></section>
   </section>`);
 }
@@ -73,12 +69,12 @@ function review() {
 }
 
 function place() {
-  return shell(`<section class="page"><header class="page-title"><div><p class="kicker">Location</p><h1>Golden, BC</h1><p class="place-copy">This place is private.</p></div></header><section class="place-panel"><p>Listening happens for this place. Your recording host keeps microphone access, location details, and audio private.</p><section class="runtime-panel" aria-labelledby="listening-heading"><div><p class="kicker">Listening</p><h2 id="listening-heading">Ready when you are</h2></div><p id="runtime-status" class="runtime-status" aria-live="polite">Checking whether listening is available…</p><div class="runtime-actions"><button id="capture-plan" class="runtime-button" type="button" data-action="start-listening" disabled>Start listening</button><button id="runtime-retry" class="text-link" type="button" hidden>Try again <span>→</span></button></div><ol id="runtime-events" class="runtime-events" aria-live="polite"><li class="runtime-event is-empty">Listening updates will appear here.</li></ol></section><section class="native-host-note" aria-live="polite"><p id="native-host-status">Checking recording availability…</p></section><div class="place-actions"><button id="install-app" class="text-link" type="button" hidden>Install Callweave <span>→</span></button><button class="text-link" data-open="settings">Open place settings <span>→</span></button></div></section></section>`);
+  return shell(`<section class="page"><header class="page-title"><div><p class="kicker">Location</p><h1>Golden, BC</h1><p class="place-copy">This place is private.</p></div></header><section class="place-panel"><p>Listening happens for this place. This app requests microphone access directly from your browser.</p><section class="runtime-panel" aria-labelledby="listening-heading"><div><p class="kicker">Listening</p><h2 id="listening-heading">Ready when you are</h2></div><p id="runtime-status" class="runtime-status" aria-live="polite">${recordingAvailability() ? 'Ready to listen.' : 'Microphone access is unavailable in this browser.'}</p><div class="runtime-actions"><button id="capture-plan" class="runtime-button" type="button" data-action="start-listening" ${recordingAvailability() ? '' : 'disabled'}>Start listening</button></div><ol id="runtime-events" class="runtime-events" aria-live="polite"><li class="runtime-event is-empty">Listening updates will appear here.</li></ol></section><div class="place-actions"><button id="install-app" class="text-link" type="button" hidden>Install Callweave <span>→</span></button><button class="text-link" data-open="settings">Open place settings <span>→</span></button></div></section></section>`);
 }
 
 function setup() {
   const v = views.setup;
-  return shell(`<section class="page setup-page"><header class="page-title"><div><p class="kicker">${v.label}</p><h1>${v.title}</h1><p class="place-copy">${v.subtitle}</p></div></header><section class="setup-panel"><h2>Open the listening host</h2><ol><li><span>1</span><p>Open Callweave on the Mac that will listen.</p></li><li><span>2</span><p>Allow that device to use its microphone.</p></li><li><span>3</span><p>Start listening in the host.</p></li></ol><p id="setup-status" class="setup-status" aria-live="polite">The host keeps microphone access and audio local.</p><a class="runtime-button" href="callweave://listen">Open Callweave host</a><button class="text-link setup-back" type="button" data-route="today">Back to Today <span>→</span></button></section></section>`);
+  return shell(`<section class="page setup-page"><header class="page-title"><div><p class="kicker">${v.label}</p><h1>${v.title}</h1><p class="place-copy">${v.subtitle}</p></div></header><section class="setup-panel"><h2>Use this browser’s microphone</h2><ol><li><span>1</span><p>Select Start listening.</p></li><li><span>2</span><p>Allow microphone access in the browser prompt.</p></li><li><span>3</span><p>Keep this browser open while listening.</p></li></ol><p id="setup-status" class="setup-status" aria-live="polite">Audio stays on this device.</p><button class="runtime-button" type="button" data-action="start-listening">Start listening</button><button class="text-link setup-back" type="button" data-route="today">Back to Today <span>→</span></button></section></section>`);
 }
 
 function bars(count) { return Array.from({ length: count }, (_, i) => `<i style="--h:${12 + Math.round(Math.abs(Math.sin(i * 1.72)) * 37)}%"></i>`).join(''); }
@@ -86,20 +82,17 @@ function bars(count) { return Array.from({ length: count }, (_, i) => `<i style=
 function modal(title) {
   selected = title;
   document.body.classList.add('has-modal');
-  document.body.insertAdjacentHTML('beforeend', `<div class="modal-backdrop" data-close><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><button class="icon-close" data-close aria-label="Close">${icon('close')}</button><p class="kicker">Presentation detail</p><h2 id="modal-title">${title}</h2><p>This screen can show evidence supplied by the host. It does not make an identification, validate a result, or change any record.</p><button class="text-link" data-close>Close <span>→</span></button></section></div>`);
+  document.body.insertAdjacentHTML('beforeend', `<div class="modal-backdrop" data-close><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><button class="icon-close" data-close aria-label="Close">${icon('close')}</button><p class="kicker">Presentation detail</p><h2 id="modal-title">${title}</h2><p>This screen can show evidence supplied by Callweave. It does not make an identification, validate a result, or change any record.</p><button class="text-link" data-close>Close <span>→</span></button></section></div>`);
 }
 
 function render() {
   app.innerHTML = ({ today, archive, review, place, setup })[route]();
-  if (route === 'today') refreshHomeListeningAvailability();
-  if (route === 'place') { refreshRuntimeStatus(); refreshNativeHostStatus(); syncInstallButton(); }
+  if (route === 'place') syncInstallButton();
 }
 document.addEventListener('click', event => {
   const routeButton = event.target.closest('[data-route]');
-  if (routeButton) { runtimeSubscription?.close(); runtimeSubscription = null; nativeHostUnsubscribe?.(); nativeHostUnsubscribe = null; route = routeButton.dataset.route; render(); return; }
+  if (routeButton) { route = routeButton.dataset.route; render(); return; }
   if (event.target.closest('[data-action="start-listening"]')) { startListeningFromUserAction(); return; }
-  if (event.target.closest('[data-action="check-listening"]')) { checkListeningSetup(); return; }
-  if (event.target.closest('#runtime-retry')) { requestListeningStart(); return; }
   if (event.target.closest('#install-app')) { requestInstallation(); return; }
   const openButton = event.target.closest('[data-open]');
   if (openButton) { modal(openButton.dataset.open); return; }
@@ -110,83 +103,6 @@ if ('serviceWorker' in navigator) navigator.serviceWorker.register('./service-wo
 window.addEventListener('beforeinstallprompt', event => { event.preventDefault(); installPrompt = event; syncInstallButton(); });
 window.addEventListener('appinstalled', () => { installPrompt = null; syncInstallButton(); });
 
-async function refreshRuntimeStatus() {
-  const target = document.querySelector('#runtime-status');
-  const config = runtimeConfigFromHost();
-  if (!target) return;
-  if (!config) {
-    target.textContent = 'Listening is not connected on this device yet.';
-    return;
-  }
-  try {
-    const health = await new TraverseRuntimeClient(config).health();
-    target.textContent = health.status === 'connected'
-      ? 'Ready to start listening.'
-      : 'Listening is temporarily unavailable.';
-    document.querySelector('#capture-plan').disabled = health.status !== 'connected';
-  } catch {
-    target.textContent = 'Listening is not available right now.';
-  }
-}
-
-async function refreshHomeListeningAvailability() {
-  const buttons = [document.querySelector('#home-start-listening'), document.querySelector('#mobile-start-listening')].filter(Boolean);
-  const setup = document.querySelector('#listening-setup');
-  const config = runtimeConfigFromHost();
-  if (!config) {
-    for (const button of buttons) button.disabled = true;
-    if (setup) setup.hidden = false;
-    return;
-  }
-  try {
-    const [health, availability] = await Promise.all([
-      new TraverseRuntimeClient(config).health(),
-      recordingAvailability(nativeHostFromBridge()),
-    ]);
-    const available = health.status === 'connected' && availability.available;
-    for (const button of buttons) button.disabled = !available;
-    if (setup) setup.hidden = available;
-  } catch {
-    for (const button of buttons) button.disabled = true;
-    if (setup) setup.hidden = false;
-  }
-}
-
-async function checkListeningSetup() {
-  const target = document.querySelector('#setup-status');
-  if (!target) return;
-  target.textContent = 'Checking your recording connection…';
-  const config = runtimeConfigFromHost();
-  if (!config) {
-    target.textContent = 'This device is still not connected. Open Callweave in the recording host, allow microphone access there, then check again.';
-    return;
-  }
-  try {
-    const [health, availability] = await Promise.all([
-      new TraverseRuntimeClient(config).health(),
-      recordingAvailability(nativeHostFromBridge()),
-    ]);
-    if (health.status === 'connected' && availability.available) {
-      target.textContent = 'Listening is connected. Returning you to Today…';
-      route = 'today';
-      render();
-      return;
-    }
-  } catch { /* The recovery message below stays intentionally user-facing. */ }
-  target.textContent = 'This device is still not connected. Open Callweave in the recording host, allow microphone access there, then check again.';
-}
-
-async function refreshNativeHostStatus() {
-  const target = document.querySelector('#native-host-status');
-  if (!target) return;
-  const bridge = nativeHostFromBridge();
-  const availability = await recordingAvailability(bridge);
-  target.textContent = availability.available
-    ? 'Recording is available on this device.'
-    : 'Recording is not available on this device yet.';
-  nativeHostUnsubscribe?.();
-  nativeHostUnsubscribe = subscribeRecordingEvents(bridge, event => appendListeningUpdate(event));
-}
 
 function syncInstallButton() {
   const button = document.querySelector('#install-app');
@@ -202,82 +118,26 @@ async function requestInstallation() {
 }
 
 async function startListeningFromUserAction() {
-  requestListeningStart();
-}
-
-async function requestListeningStart() {
   const target = document.querySelector('#runtime-status') ?? document.querySelector('#listening-status');
   const button = document.querySelector('#capture-plan') ?? document.querySelector('[data-action="start-listening"]');
-  const retry = document.querySelector('#runtime-retry');
-  const config = runtimeConfigFromHost();
   if (!target || !button) return;
-  if (!config) {
-    target.hidden = false;
-    target.textContent = 'Listening is not connected on this device yet.';
-    return;
-  }
   target.hidden = false;
-  button.disabled = true;
-  if (retry) retry.hidden = true;
-  target.textContent = 'Preparing listening…';
+  target.textContent = isRecording() ? 'Stopping listening…' : 'Starting listening…';
   try {
-    const payload = await captureRequestPayload(nativeHostFromBridge());
-    if (!payload) {
-      target.textContent = 'Recording needs to be enabled on this device.';
-      return;
+    if (isRecording()) {
+      stopRecording();
+      target.textContent = 'Listening stopped.';
+      button.textContent = 'Start listening';
+      appendListeningMessage('Listening stopped.');
+    } else {
+      await startRecording();
+      target.textContent = 'Listening in this browser.';
+      button.textContent = 'Stop listening';
+      appendListeningMessage('Listening started.');
     }
-    target.textContent = 'Starting listening…';
-    const result = await new TraverseRuntimeClient(config).dispatchCommand({ command: 'request_capture', payload });
-    const view = commandResultView(result);
-    target.textContent = listeningMessage(view.state);
-    appendListeningMessage(listeningMessage(view.state));
-    if (view.executionId) subscribeToRuntime(config, view.executionId);
-  } catch (error) {
-    target.textContent = 'Listening could not start. Please try again.';
-    if (retry) retry.hidden = false;
-  } finally {
-    button.disabled = false;
+  } catch {
+    target.textContent = 'Microphone access was not granted.';
   }
-}
-
-function subscribeToRuntime(config, executionId) {
-  runtimeSubscription?.close();
-  const nativeSubscription = subscribeRuntimeEvents(
-    nativeHostFromBridge(),
-    { executionId },
-    appendRuntimeEvent,
-    () => appendListeningMessage('Listening updates were interrupted.'),
-  );
-  if (nativeSubscription) {
-    runtimeSubscription = { close: nativeSubscription };
-    return;
-  }
-  const client = new TraverseRuntimeClient(config);
-  runtimeSubscription = client.subscribe({
-    executionId,
-    onMessage: appendListeningUpdate,
-    onError: () => appendListeningMessage('Listening updates were interrupted.'),
-    onClose: ({ reason }) => reason && appendListeningMessage('Listening updates have ended.'),
-  });
-}
-
-function listeningMessage(state) {
-  const messages = {
-    idle: 'Listening is ready.',
-    planning: 'Preparing your recording.',
-    capture_planned: 'Your recording is ready to begin.',
-    request_rejected: 'Listening needs attention before it can begin.',
-  };
-  return messages[state] ?? 'Listening is being updated.';
-}
-
-function appendListeningUpdate(event) {
-  const nativeMessages = {
-    recording_started: 'Recording has started.',
-    recording_stopped: 'Recording has stopped.',
-    recording_unavailable: 'Recording is not available on this device.',
-  };
-  appendListeningMessage(nativeMessages[event?.type] ?? listeningMessage(runtimeEventView(event).state));
 }
 
 function appendListeningMessage(message) {
