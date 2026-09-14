@@ -25,7 +25,9 @@ final class RecordingHost: ObservableObject {
     func refreshAvailability() {
         switch AVCaptureDevice.authorizationStatus(for: .audio) {
         case .authorized:
-            let format = audioEngine.inputNode.inputFormat(forBus: 0)
+            // An input node receives hardware audio on its output bus. Its
+            // input bus legitimately has no format on macOS.
+            let format = audioEngine.inputNode.outputFormat(forBus: 0)
             guard format.sampleRate > 0, format.channelCount > 0 else {
                 availability = .unavailable
                 publicMessage = "No microphone input is available."
@@ -65,7 +67,7 @@ final class RecordingHost: ObservableObject {
         diagnosticMessage = nil
         do {
             let input = audioEngine.inputNode
-            let format = input.inputFormat(forBus: 0)
+            let format = input.outputFormat(forBus: 0)
             guard format.sampleRate > 0, format.channelCount > 0 else {
                 availability = .unavailable
                 publicMessage = "No microphone input is available."
