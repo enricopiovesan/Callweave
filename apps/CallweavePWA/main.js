@@ -10,7 +10,6 @@ const views = {
   },
   archive: { title: 'Archive', label: 'Daily canvases', subtitle: 'A quiet record of this place' },
   review: { title: 'Review', label: 'Needs a closer listen', subtitle: 'Evidence stays evidence until a person reviews it.' },
-  place: { title: 'Place', label: '', subtitle: 'Private location profile' },
   setup: { title: 'Enable listening', label: 'Listening setup', subtitle: 'Allow Callweave to use this browser’s microphone.' },
 };
 let recordings = [];
@@ -32,6 +31,7 @@ function icon(name) {
     archive: '<path d="M4 6h16v14H4zM7 3h10v3M8 10h8M8 14h5"/>',
     review: '<path d="M4 13c3-5 5-5 8 0s5 5 8 0M4 17c3-5 5-5 8 0s5 5 8 0M4 9c3-5 5-5 8 0s5 5 8 0"/>',
     place: '<path d="M12 21s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12Z"/><circle cx="12" cy="9" r="2"/>',
+    settings: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.12 2.12-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.04 1.56V20.3h-3v-.08A1.7 1.7 0 0 0 10.66 18.66a1.7 1.7 0 0 0-1.88.34l-.06.06L6.6 16.94l.06-.06A1.7 1.7 0 0 0 7 15a1.7 1.7 0 0 0-1.56-1.04H5.3v-3h.14A1.7 1.7 0 0 0 7 9.92a1.7 1.7 0 0 0-.34-1.88L6.6 7.98 8.72 5.86l.06.06a1.7 1.7 0 0 0 1.88.34A1.7 1.7 0 0 0 11.7 4.7v-.08h3v.08a1.7 1.7 0 0 0 1.04 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06 2.12 2.12-.06.06A1.7 1.7 0 0 0 19.4 9.9c.24.63.85 1.05 1.52 1.05h.08v3h-.08c-.67 0-1.28.42-1.52 1.05Z"/>',
     listen: '<path d="M5 12h2M9 8v8M13 5v14M17 8v8M21 12h-2"/>',
     close: '<path d="m7 7 10 10M17 7 7 17"/>',
   };
@@ -49,10 +49,10 @@ function listeningNavItem() {
 
 function shell(content) {
   return `<div class="app-shell">
-    <header class="mobile-head"><div class="wordmark"><i></i>Callweave</div><button class="place-button" data-route="place">${place()}</button></header>
-    <aside class="rail"><div class="wordmark"><i></i><b>Callweave</b></div><nav>${navItem('today','Today')}${navItem('archive','Archive')}${navItem('review','Review')}<div class="rail-spacer"></div>${navItem('place','Place')}</nav></aside>
+    <header class="mobile-head"><div class="wordmark"><i></i>Callweave</div><button class="place-button" data-route="settings">${place()}</button></header>
+    <aside class="rail"><div class="wordmark"><i></i><b>Callweave</b></div><nav>${navItem('today','Today')}${navItem('archive','Archive')}${navItem('review','Review')}<div class="rail-spacer"></div>${navItem('settings','Settings')}</nav></aside>
     <main class="main">${content}</main>
-    <nav class="mobile-nav">${navItem('today','Today')}${navItem('archive','Archive')}${listeningNavItem()}${navItem('review','Review')}${navItem('place','Place')}</nav>
+    <nav class="mobile-nav">${navItem('today','Today')}${navItem('archive','Archive')}${listeningNavItem()}${navItem('review','Review')}${navItem('settings','Settings')}</nav>
   </div>`;
 }
 
@@ -121,12 +121,8 @@ function finding() {
   return shell(`<section class="page detail-page"><button class="back-link" data-route="review">← Review</button><header class="page-title"><div><p class="kicker">Sound group</p><h1>Listen closer</h1><p class="place-copy">${selectedFinding}</p></div></header><section class="finding-card"><div class="finding-wave">${bars(46)}</div><p class="finding-meta">8 retained clips · Early morning · Provisional</p><p>This finding needs your judgment. The recorded evidence remains separate from your decision.</p><div class="review-actions"><button class="review-choice" data-review-action="verify">This looks right</button><button class="review-choice" data-review-action="hold">Keep for review</button><button class="review-choice" data-review-action="reject">Not this sound</button></div><p id="review-feedback" class="review-feedback" aria-live="polite"></p></section></section>`);
 }
 
-function placeView() {
-  return shell(`<section class="page"><header class="page-title"><div><p class="kicker">Location</p><h1>${place()}</h1><p class="place-copy">This place is private.</p></div></header><section class="place-panel"><p>Listening happens for this place. This app requests microphone access directly from your browser.</p><section class="runtime-panel" aria-labelledby="listening-heading"><div><p class="kicker">Listening</p><h2 id="listening-heading">Ready when you are</h2></div><p id="runtime-status" class="runtime-status" aria-live="polite">${recordingAvailability() ? 'Checking microphone…' : 'Microphone access is unavailable in this browser.'}</p><div class="runtime-actions"><button id="capture-plan" class="runtime-button" type="button" data-action="start-listening" ${recordingAvailability() ? '' : 'disabled'}>Start listening</button></div></section><div class="place-actions"><button id="install-app" class="text-link" type="button" hidden>Install Callweave <span>→</span></button><button class="text-link" data-route="settings">Place settings <span>→</span></button></div></section></section>`);
-}
-
 function settings() {
-  return shell(`<section class="page detail-page"><button class="back-link" data-route="place">← ${place()}</button><header class="page-title"><div><p class="kicker">Settings</p><h1>Your place</h1><p class="place-copy">Private controls for where and how Callweave listens.</p></div></header><section class="settings-group"><p class="kicker">Microphone</p><div class="microphone-card"><span id="mic-indicator" class="mic-indicator" aria-hidden="true"></span><div><strong id="mic-heading">Checking microphone</strong><p id="mic-status" aria-live="polite">Checking browser permission and available inputs…</p></div></div><button class="text-link" type="button" data-action="refresh-microphone">Check microphone <span>→</span></button></section><section class="settings-group"><p class="kicker">Place</p><form id="place-form" class="place-form"><label for="place-name">Place name</label><div><input id="place-name" name="placeName" value="${place()}" maxlength="60" required><button class="runtime-button" type="submit">Save</button></div><small>This label stays in this browser.</small></form></section><section class="settings-group"><p class="kicker">Your record</p><div class="settings-list"><div><span><strong>Privacy</strong><small>Audio stays on this device</small></span></div><div><span><strong>Animal analysis</strong><small>Not connected yet</small></span></div></div></section></section>`);
+  return shell(`<section class="page detail-page"><button class="back-link" data-route="today">← Today</button><header class="page-title"><div><p class="kicker">Settings</p><h1>Your place</h1><p class="place-copy">Private controls for location, microphone, and your record.</p></div></header><section class="settings-group"><p class="kicker">Current location</p><form id="place-form" class="place-form"><label for="place-name">Place name</label><div><input id="place-name" name="placeName" value="${place()}" maxlength="60" required><button class="runtime-button" type="submit">Save</button></div><small>This label stays in this browser.</small></form></section><section class="settings-group"><p class="kicker">Microphone</p><div class="microphone-card"><span id="mic-indicator" class="mic-indicator" aria-hidden="true"></span><div><strong id="mic-heading">Checking microphone</strong><p id="mic-status" aria-live="polite">Checking browser permission and available inputs…</p></div></div><button class="text-link" type="button" data-action="refresh-microphone">Check microphone <span>→</span></button></section><section class="settings-group"><p class="kicker">Your record</p><div class="settings-list"><div><span><strong>Privacy</strong><small>Audio stays on this device</small></span></div><div><span><strong>Animal analysis</strong><small>Not connected yet</small></span></div></div></section></section>`);
 }
 
 function complete() {
@@ -157,9 +153,8 @@ function modal(title) {
 
 function render() {
   clearInterval(sessionTicker);
-  app.innerHTML = ({ welcome, 'welcome-listen': welcomeListen, 'welcome-private': welcomePrivate, today, archive, day, review, finding, place: placeView, settings, setup, complete, session: listeningSession })[route]();
+  app.innerHTML = ({ welcome, 'welcome-listen': welcomeListen, 'welcome-private': welcomePrivate, today, archive, day, review, finding, settings, setup, complete, session: listeningSession })[route]();
   if (route === 'session') startSessionClock();
-  if (route === 'place') { syncInstallButton(); refreshMicrophoneStatus('#runtime-status'); }
   if (route === 'settings') refreshMicrophoneStatus('#mic-status');
 }
 document.addEventListener('click', event => {
