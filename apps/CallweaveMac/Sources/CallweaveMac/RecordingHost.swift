@@ -17,6 +17,7 @@ final class RecordingHost: ObservableObject {
     @Published private(set) var diagnosticMessage: String?
 
     private var recorder: AVAudioRecorder?
+    private var player: AVAudioPlayer?
     private var activeReference: String?
     private var privateArtifacts: [String: URL] = [:]
 
@@ -86,6 +87,20 @@ final class RecordingHost: ObservableObject {
         recorder?.stop()
         recorder = nil; activeReference = nil; isRecording = false; startedAt = nil
         publicMessage = "Recording saved locally"; append(.stopped, reference: reference)
+    }
+
+    func play(reference: String?) {
+        guard let reference, let fileURL = privateArtifacts[reference] else {
+            publicMessage = "This recording is unavailable on this device."
+            return
+        }
+        do {
+            player = try AVAudioPlayer(contentsOf: fileURL)
+            player?.play()
+        } catch {
+            publicMessage = "This recording could not be played."
+            diagnosticMessage = error.localizedDescription
+        }
     }
 
     private func append(_ kind: EventKind, reference: String?) {

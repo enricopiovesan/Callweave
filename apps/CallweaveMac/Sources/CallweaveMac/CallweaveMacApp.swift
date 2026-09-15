@@ -118,7 +118,7 @@ struct ContentView: View {
             Spacer()
         }
         .padding(38)
-        .sheet(item: $selectedSession) { session in ArchiveSessionView(session: session) }
+        .sheet(item: $selectedSession) { session in ArchiveSessionView(host: host, session: session) }
     }
 
     private var settings: some View {
@@ -144,6 +144,7 @@ struct ContentView: View {
 }
 
 private struct ArchiveSessionView: View {
+    @ObservedObject var host: RecordingHost
     let session: RecordingHost.Event
     @Environment(\.dismiss) private var dismiss
 
@@ -160,6 +161,16 @@ private struct ArchiveSessionView: View {
             VStack(alignment: .leading, spacing: 10) {
                 Label("Saved on this device", systemImage: "lock")
                 Text("This private recording is available to Callweave on this Mac.")
+                    .foregroundStyle(.secondary)
+            }
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(.quaternary, in: RoundedRectangle(cornerRadius: 14))
+            Button("Listen back") { host.play(reference: session.recordingReference) }
+                .buttonStyle(.borderedProminent)
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Animal findings").font(.headline)
+                Text("No findings yet. This recording has not been analysed.")
                     .foregroundStyle(.secondary)
             }
             .padding()
