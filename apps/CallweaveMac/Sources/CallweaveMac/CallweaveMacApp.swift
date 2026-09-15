@@ -6,11 +6,11 @@ struct ContentView: View {
     @State private var selectedSession: RecordingHost.Event?
 
     private enum Route: String, CaseIterable, Identifiable {
-        case today = "Today", archive = "Archive", settings = "Settings"
+        case today = "Today", settings = "Settings"
         var id: String { rawValue }
         var symbol: String {
             switch self {
-            case .today: "eye"; case .archive: "archivebox"; case .settings: "gearshape"
+            case .today: "eye"; case .settings: "gearshape"
             }
         }
     }
@@ -60,7 +60,6 @@ struct ContentView: View {
             Group {
                 switch route {
                 case .today: listeningHome
-                case .archive: archive
                 case .settings: settings
                 }
             }
@@ -107,35 +106,19 @@ struct ContentView: View {
                     .textSelection(.enabled)
             }
 
-            Spacer()
-        }
-        .padding(38)
-    }
-
-    private var archive: some View {
-        VStack(alignment: .leading, spacing: 22) {
-            Text("Archive").font(.system(size: 48, weight: .semibold, design: .serif))
-            Text("Private recordings from this place").foregroundStyle(.secondary)
-            if host.events.filter({ $0.kind == .stopped }).isEmpty {
-                ContentUnavailableView("No recordings yet", systemImage: "waveform", description: Text("Finished listening sessions will appear here."))
-            } else {
+            if !host.events.filter({ $0.kind == .stopped }).isEmpty {
+                Divider()
+                Text("Past sessions").font(.headline)
                 List(host.events.filter { $0.kind == .stopped }) { event in
                     Button { selectedSession = event } label: {
-                        HStack {
-                            Label(event.occurredAt.formatted(date: .abbreviated, time: .shortened), systemImage: "waveform.path.ecg")
-                            Spacer()
-                            Image(systemName: "chevron.right").foregroundStyle(.tertiary)
-                        }
-                    }
-                    .buttonStyle(.plain)
-                }
+                        HStack { Label(event.occurredAt.formatted(date: .abbreviated, time: .shortened), systemImage: "waveform.path.ecg"); Spacer(); Image(systemName: "chevron.right").foregroundStyle(.tertiary) }
+                    }.buttonStyle(.plain)
+                }.frame(minHeight: 120)
             }
             Spacer()
         }
         .padding(38)
-        .sheet(item: $selectedSession) { session in
-            ArchiveSessionView(session: session)
-        }
+        .sheet(item: $selectedSession) { session in ArchiveSessionView(session: session) }
     }
 
     private var settings: some View {
