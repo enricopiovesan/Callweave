@@ -5,11 +5,11 @@ struct ContentView: View {
     @State private var route: Route = .today
 
     private enum Route: String, CaseIterable, Identifiable {
-        case today = "Today", archive = "Archive", review = "Review", place = "Place"
+        case today = "Today", archive = "Archive", review = "Review", settings = "Settings"
         var id: String { rawValue }
         var symbol: String {
             switch self {
-            case .today: "eye"; case .archive: "archivebox"; case .review: "waveform"; case .place: "mappin"
+            case .today: "eye"; case .archive: "archivebox"; case .review: "waveform"; case .settings: "gearshape"
             }
         }
     }
@@ -53,7 +53,7 @@ struct ContentView: View {
                 case .today: listeningHome
                 case .archive: archive
                 case .review: review
-                case .place: place
+                case .settings: settings
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -68,13 +68,10 @@ struct ContentView: View {
             Text("Golden, BC · private place")
                 .font(.headline)
                 .foregroundStyle(.secondary)
-            Text("Partial coverage · 14 retained sound events")
-                .font(.caption)
-                .foregroundStyle(.tertiary)
 
             VStack(alignment: .leading, spacing: 10) {
                 Text(host.publicMessage).font(.title3)
-                Text("Callweave listens for the sounds around this place and keeps recordings on this device.")
+                Text("Start a private listening session for the sounds around this place.")
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -102,18 +99,6 @@ struct ContentView: View {
                     .textSelection(.enabled)
             }
 
-            if !host.events.isEmpty {
-                Divider()
-                Text("Listening updates").font(.headline)
-                List(host.events) { event in
-                    HStack {
-                        Text(event.kind.rawValue.capitalized)
-                        Spacer()
-                        Text(event.occurredAt, style: .time).foregroundStyle(.secondary)
-                    }
-                }
-                .frame(minHeight: 140)
-            }
             Spacer()
         }
         .padding(38)
@@ -122,17 +107,12 @@ struct ContentView: View {
     private var archive: some View {
         VStack(alignment: .leading, spacing: 22) {
             Text("Archive").font(.system(size: 48, weight: .semibold, design: .serif))
-            Text("Daily canvases from this place").foregroundStyle(.secondary)
-            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
-                ForEach(["August 17", "August 16", "August 15", "August 14", "August 13", "August 12"], id: \.self) { day in
-                    VStack(alignment: .leading, spacing: 8) {
-                        Image(systemName: "waveform.path.ecg").font(.title2).foregroundStyle(.green)
-                        Text(day).font(.headline)
-                        Text(day == "August 17" ? "Partial coverage" : "Listening complete").font(.caption).foregroundStyle(.secondary)
-                    }
-                    .frame(maxWidth: .infinity, minHeight: 105, alignment: .leading)
-                    .padding()
-                    .background(.quaternary, in: RoundedRectangle(cornerRadius: 12))
+            Text("Private recordings from this place").foregroundStyle(.secondary)
+            if host.events.filter({ $0.kind == .stopped }).isEmpty {
+                ContentUnavailableView("No recordings yet", systemImage: "waveform", description: Text("Finished listening sessions will appear here."))
+            } else {
+                List(host.events.filter { $0.kind == .stopped }) { event in
+                    Label(event.occurredAt.formatted(date: .abbreviated, time: .shortened), systemImage: "waveform.path.ecg")
                 }
             }
             Spacer()
@@ -144,30 +124,21 @@ struct ContentView: View {
         VStack(alignment: .leading, spacing: 22) {
             Text("Review").font(.system(size: 48, weight: .semibold, design: .serif))
             Text("Needs a closer listen").foregroundStyle(.secondary)
-            ForEach(["Three-note call · recurring at dawn", "High insect-like trill · after rain"], id: \.self) { item in
-                HStack(spacing: 14) {
-                    Circle().fill(.green).frame(width: 9, height: 9)
-                    VStack(alignment: .leading) { Text(item).font(.headline); Text("Retained evidence · awaiting review").font(.caption).foregroundStyle(.secondary) }
-                    Spacer()
-                    Image(systemName: "chevron.right").foregroundStyle(.secondary)
-                }
-                .padding(.vertical, 14)
-                Divider()
-            }
+            ContentUnavailableView("Nothing needs review", systemImage: "ear", description: Text("Sound findings will appear here once analysis provides evidence for review."))
             Spacer()
         }
         .padding(38)
     }
 
-    private var place: some View {
+    private var settings: some View {
         VStack(alignment: .leading, spacing: 22) {
-            Text("Golden, BC").font(.system(size: 48, weight: .semibold, design: .serif))
-            Text("Private location profile").foregroundStyle(.secondary)
+            Text("Settings").font(.system(size: 48, weight: .semibold, design: .serif))
+            Text("Private controls for this place and microphone.").foregroundStyle(.secondary)
             VStack(alignment: .leading, spacing: 15) {
                 setting("Privacy", "Private to this device")
-                setting("Listening window", "From dawn to dusk")
-                setting("Sound review", "Ask before confirming a finding")
-                setting("Retention", "Managed by this place’s policy")
+                setting("Current place", "Golden, BC")
+                setting("Microphone", host.availability == .ready ? "Connected" : "Needs permission")
+                setting("Privacy", "Audio stays on this device")
             }
             .padding()
             .background(.quaternary, in: RoundedRectangle(cornerRadius: 14))
