@@ -13,8 +13,8 @@ addFormats(ajv);
 const validateInput = ajv.compile(contract.inputs.schema);
 const validateOutput = ajv.compile(contract.outputs.schema);
 
-async function invoke(input) {
-  const request = Buffer.from(JSON.stringify(input));
+async function invoke(input, rawJson = null) {
+  const request = Buffer.from(rawJson ?? JSON.stringify(input));
   let requestOffset = 0;
   let instance;
   let output = Buffer.alloc(0);
@@ -91,6 +91,12 @@ for (const [input, expectedClass] of invalidCases) {
   assert.deepEqual(output, { result_class: expectedClass });
   assert.equal(validateOutput(output), true, `${expectedClass}: output contract: ${ajv.errorsText(validateOutput.errors)}`);
 }
+
+assert.deepEqual(
+  await invoke(null, '{"input_sample_rate_hz":8000,"input_channel_count":1,"target_sample_rate_hz":8000,"target_channel_count":1,"samples_s16":[1,]}'),
+  { result_class: 'invalid_samples' },
+  'reject trailing comma in raw JSON sample array',
+);
 
 const largeInput = {
   input_sample_rate_hz: 8000,
