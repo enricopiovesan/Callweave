@@ -1,5 +1,12 @@
 import SwiftUI
 
+private enum CallweaveTheme {
+    static let canvas = Color(red: 0.96, green: 0.96, blue: 0.95)
+    static let ink = Color(red: 0.07, green: 0.07, blue: 0.065)
+    static let olive = Color(red: 0.30, green: 0.40, blue: 0.23)
+    static let listening = Color(red: 0.07, green: 0.075, blue: 0.065)
+}
+
 struct ContentView: View {
     @StateObject private var host = RecordingHost()
     @State private var route: Route = .today
@@ -56,7 +63,7 @@ struct ContentView: View {
             }
             .padding(22)
             .frame(width: 160)
-            .background(Color.white)
+            .background(.white)
             Divider()
             Group {
                 switch route {
@@ -67,41 +74,26 @@ struct ContentView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .frame(minWidth: 760, minHeight: 560)
-        .foregroundStyle(Color.black)
-        .background(Color(red: 0.96, green: 0.96, blue: 0.95))
-        .tint(Color.black)
+        .foregroundStyle(CallweaveTheme.ink)
+        .background(CallweaveTheme.canvas)
+        .tint(CallweaveTheme.olive)
     }
 
     private var listeningHome: some View {
-        VStack(alignment: .leading, spacing: 24) {
+        VStack(alignment: .leading, spacing: 18) {
             Text("Sessions")
-                .font(.system(size: 48, weight: .semibold, design: .serif))
-            Text("Golden, BC · private place")
-                .font(.headline)
+                .font(.system(size: 52, weight: .bold, design: .default))
+                .tracking(-1.5)
+            Text("Your field recordings, woven into wildlife observations.")
+                .font(.body)
                 .foregroundStyle(.secondary)
 
-            VStack(alignment: .leading, spacing: 10) {
-                Text(host.publicMessage).font(.title3)
-                Text("Start a private listening session for the sounds around this place.")
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
+            Button { startOrRequestPermission() } label: {
+                Text(host.availability == .permissionRequired ? "Allow microphone" : "Start listening")
+                    .fontWeight(.bold).frame(maxWidth: .infinity).padding(.vertical, 11)
             }
-            .padding()
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(.quaternary, in: RoundedRectangle(cornerRadius: 14))
-
-            HStack {
-                if host.availability == .permissionRequired {
-                    Button("Allow microphone") { Task { await host.requestPermission() } }
-                } else if host.isRecording {
-                    Button("Stop listening") { host.stop() }.buttonStyle(.borderedProminent)
-                } else {
-                    Button("Start listening") { host.start() }
-                        .buttonStyle(.borderedProminent)
-                        .disabled(host.availability != .ready)
-                }
-                Button("Refresh microphone") { host.refreshAvailability() }
-            }
+            .buttonStyle(.plain).foregroundStyle(.white).background(CallweaveTheme.ink, in: Capsule())
+            .disabled(host.availability != .ready && host.availability != .permissionRequired)
 
             if let diagnostic = host.diagnosticMessage {
                 Text(diagnostic)
@@ -111,32 +103,35 @@ struct ContentView: View {
             }
 
             if !host.events.filter({ $0.kind == .stopped }).isEmpty {
-                Divider()
-                Text("Past sessions").font(.headline)
+                Text("Recent sessions").font(.headline).padding(.top, 4)
                 List(host.events.filter { $0.kind == .stopped }) { event in
                     Button { selectedSession = event } label: {
-                        HStack { Label(event.occurredAt.formatted(date: .abbreviated, time: .shortened), systemImage: "waveform.path.ecg"); Spacer(); Image(systemName: "chevron.right").foregroundStyle(.tertiary) }
-                    }.buttonStyle(.plain)
-                }.frame(minHeight: 120)
+                        HStack { VStack(alignment: .leading, spacing: 5) { Text(event.occurredAt.formatted(date: .abbreviated, time: .shortened)).fontWeight(.bold); Text("Golden, BC · Saved on this Mac").font(.caption).foregroundStyle(.secondary) }; Spacer(); Image(systemName: "arrow.up.right").foregroundStyle(.secondary) }
+                        .padding(13).background(.white, in: RoundedRectangle(cornerRadius: 14))
+                    }.buttonStyle(.plain).listRowBackground(CallweaveTheme.canvas)
+                }.listStyle(.plain).frame(minHeight: 130)
             }
             Spacer()
         }
-        .padding(38)
+        .padding(42)
         .sheet(item: $selectedSession) { session in ArchiveSessionView(host: host, session: session) }
+    }
+
+    private func startOrRequestPermission() {
+        if host.availability == .permissionRequired { Task { await host.requestPermission() } }
+        else { host.start() }
     }
 
     private var settings: some View {
         VStack(alignment: .leading, spacing: 22) {
-            Text("Settings").font(.system(size: 48, weight: .semibold, design: .serif))
-            Text("Private controls for this place and microphone.").foregroundStyle(.secondary)
+            Text("Settings").font(.system(size: 52, weight: .bold)).tracking(-1.5)
             VStack(alignment: .leading, spacing: 15) {
-                setting("Privacy", "Private to this device")
-                setting("Current place", "Golden, BC")
                 setting("Microphone", host.availability == .ready ? "Connected" : "Needs permission")
-                setting("Privacy", "Audio stays on this device")
+                setting("Current location", "Golden, BC")
+                setting("Private recordings", "Audio stays on this Mac")
             }
             .padding()
-            .background(.quaternary, in: RoundedRectangle(cornerRadius: 14))
+            .background(.white, in: RoundedRectangle(cornerRadius: 18))
             Spacer()
         }
         .padding(38)
@@ -159,7 +154,7 @@ private struct ArchiveSessionView: View {
                 Spacer()
             }
             Text("Listening session")
-                .font(.system(size: 40, weight: .semibold, design: .serif))
+                .font(.system(size: 40, weight: .bold))
             Text(session.occurredAt.formatted(date: .complete, time: .shortened))
                 .foregroundStyle(.secondary)
             VStack(alignment: .leading, spacing: 10) {
@@ -173,8 +168,8 @@ private struct ArchiveSessionView: View {
             Button("Listen back") { host.play(reference: session.recordingReference) }
                 .buttonStyle(.borderedProminent)
             VStack(alignment: .leading, spacing: 8) {
-                Text("Animal findings").font(.headline)
-                Text("No findings yet. This recording has not been analysed.")
+                Text("Recognized · 0").font(.headline)
+                Text("No animals have been identified yet. This session remains ready for analysis.")
                     .foregroundStyle(.secondary)
             }
             .padding()
@@ -194,48 +189,37 @@ private struct ListeningSessionView: View {
         TimelineView(.periodic(from: .now, by: 1)) { context in
             VStack(spacing: 0) {
                 HStack {
-                    Label("Callweave", systemImage: "waveform")
-                        .font(.headline)
+                    Label("LISTENING", systemImage: "circle.fill")
+                        .font(.caption.weight(.bold))
+                        .padding(.horizontal, 10).padding(.vertical, 6).background(.white.opacity(0.12), in: Capsule())
                     Spacer()
-                    Text("Golden, BC")
-                        .foregroundStyle(.white.opacity(0.68))
+                    Text("Callweave").fontWeight(.bold)
                 }
                 .padding(32)
 
                 Spacer()
                 VStack(spacing: 18) {
-                    ZStack {
-                        Circle().stroke(.yellow.opacity(0.2), lineWidth: 1).frame(width: 250, height: 250)
-                        Circle().stroke(.yellow.opacity(0.38), lineWidth: 1).frame(width: 180, height: 180)
-                        Circle().fill(.yellow).frame(width: 86, height: 86)
-                        Image(systemName: "waveform")
-                            .font(.system(size: 31, weight: .medium))
-                            .foregroundStyle(.green.opacity(0.9))
-                    }
-                    Text("Listening")
-                        .font(.system(size: 58, weight: .semibold, design: .serif))
                     Text(elapsed(at: context.date))
-                        .font(.system(.title2, design: .monospaced))
-                    Text("Callweave is listening for the sounds around this place.")
-                        .foregroundStyle(.white.opacity(0.68))
+                        .font(.system(size: 64, weight: .bold, design: .default))
+                    Text("Golden, BC").foregroundStyle(.white.opacity(0.62))
+                    Image(systemName: "waveform")
+                        .font(.system(size: 62, weight: .regular))
+                        .foregroundStyle(.white)
+                    Text("Keep this Mac awake. Callweave is capturing nearby calls in high fidelity.")
+                        .multilineTextAlignment(.center).padding().background(.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 16)).foregroundStyle(.white.opacity(0.68))
                 }
                 Spacer()
 
                 HStack {
-                    Button("Stop listening") { host.stop() }
-                        .buttonStyle(.borderedProminent)
-                        .tint(.white)
-                        .foregroundStyle(.green)
                     Spacer()
-                    Text("Audio stays on this device.")
-                        .font(.caption)
-                        .foregroundStyle(.white.opacity(0.68))
+                    Button { host.stop() } label: { Circle().fill(CallweaveTheme.olive).frame(width: 70, height: 70).overlay(Circle().stroke(.white, lineWidth: 4)) }
+                    Spacer()
                 }
                 .padding(32)
             }
             .frame(minWidth: 620, minHeight: 480)
             .foregroundStyle(.white)
-            .background(Color(red: 0.07, green: 0.24, blue: 0.20))
+            .background(CallweaveTheme.listening)
         }
     }
 

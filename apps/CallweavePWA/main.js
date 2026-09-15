@@ -52,21 +52,20 @@ function shell(content) {
     <header class="mobile-head"><div class="wordmark"><i></i>Callweave</div><button class="place-button" data-route="settings">${place()}</button></header>
     <aside class="rail"><div class="wordmark"><i></i><b>Callweave</b></div><nav><button class="rail-listen runtime-button" type="button" data-action="start-listening">${icon('listen')}<span>Listen</span></button>${navItem('today','Sessions')}<div class="rail-spacer"></div>${navItem('settings','Settings')}</nav></aside>
     <main class="main">${content}</main>
-    <nav class="mobile-nav">${listeningNavItem()}${navItem('today','Sessions')}${navItem('settings','Settings')}</nav>
+    <nav class="mobile-nav">${navItem('today','Sessions')}${listeningNavItem()}${navItem('settings','Settings')}</nav>
   </div>`;
 }
 
 function listeningSession() {
   return `<main class="listening-session" aria-labelledby="session-title">
-    <header class="session-head"><div class="wordmark"><i></i>Callweave</div><p>${place()}</p></header>
+    <header class="session-head"><span class="listening-chip"><i></i>Listening</span><div class="session-wordmark">Callweave</div></header>
     <section class="session-center">
-      <p class="kicker">Listening now</p>
-      <div class="session-ripple" aria-hidden="true"><span></span><span></span><span></span><div class="session-core">${icon('listen')}</div></div>
-      <h1 id="session-title">Listening</h1>
-      <p id="session-elapsed" class="session-elapsed">00:00</p>
-      <p class="session-copy">Callweave is listening for the sounds around this place.</p><div class="input-meter" aria-label="Live microphone level"><span id="input-level"></span></div><p class="session-proof">Live microphone input</p>
+      <h1 id="session-elapsed" class="session-elapsed">00:00</h1>
+      <p class="session-place">${place()}</p>
+      <div class="session-wave" aria-label="Live microphone level">${bars(15)}</div>
+      <p class="session-copy">Keep this browser open. Callweave is capturing nearby calls in high fidelity.</p>
     </section>
-    <footer class="session-footer"><button class="stop-listening" type="button" data-action="stop-listening">Stop listening</button><p>Audio stays on this device.</p></footer>
+    <footer class="session-footer"><button class="stop-listening" type="button" data-action="stop-listening" aria-label="Stop recording"><span></span></button><b>Stop recording</b></footer>
   </main>`;
 }
 
@@ -83,20 +82,8 @@ function welcomePrivate() {
 }
 
 function today() {
-  const v = views.today;
-  const latest = recordings[0];
-  const headline = latest ? 'Your latest listening session is ready.' : 'Start your first listening session.';
-  const copy = latest ? `${formatDuration(latest.durationSeconds)} saved locally. Add anything you noticed when you listen back.` : 'Record a moment from this place. It will remain in this browser until you choose otherwise.';
-  const recordSection = latest
-    ? `<section class="today-section"><div class="section-heading"><div><p class="kicker">Latest recording</p><h2>${latest.day}</h2></div><button class="text-link" data-day="${latest.id}" data-route="day">View record <span>→</span></button></div><p class="empty-copy">Audio is saved locally and ready to listen back to.</p>${recordings.length > 1 ? `<div class="recent-sessions">${recordings.slice(1).map(recording => `<button data-day="${recording.id}" data-route="day"><strong>${recording.day}</strong><span>${formatDuration(recording.durationSeconds)} · ${recording.observations?.length ?? 0} observations</span></button>`).join('')}</div>` : ''}</section>`
-    : `<section class="today-section empty-state"><p class="kicker">Your record</p><h2>No recordings yet</h2><p>When you stop a listening session, it will appear here and in Archive.</p></section>`;
-  return shell(`<section class="page today-page"><header class="page-title"><div><p class="kicker">${v.label}</p><h1>${v.title}</h1><p class="place-copy">${place()} <span>· private place</span></p></div><button id="home-start-listening" class="runtime-button" type="button" data-action="start-listening">Start listening</button></header>
-    <p id="listening-status" class="runtime-status" aria-live="polite" hidden></p>
-    <section class="today-hero"><div><p class="kicker">Today’s soundscape</p><h2>${headline}</h2><p>${copy}</p><div class="waveform" aria-label="Sound activity pattern" role="img">${bars(42)}</div></div><img src="./assets/listening-soundscape.png" alt="Engraved frog, fox, moth, and wren gathered around shared sound waves"></section>
-    <section class="today-stats"><div><strong>${recordings.length}</strong><span>sessions saved</span></div><div><strong>0</strong><span>animals confirmed</span></div><div><strong>0</strong><span>need review</span></div></section>
-    ${recordSection}
-    <section id="listening-setup" class="listening-setup" ${recordingAvailability() ? 'hidden' : ''}><p class="kicker">Listening setup</p><h2>Microphone unavailable</h2><p>This browser cannot access a microphone. Open Callweave in a supported browser and allow microphone access.</p></section>
-  </section>`);
+  const cards = recordings.length ? recordings.map(recording => `<button class="session-card" data-day="${recording.id}" data-route="day"><span>${recording.day} · ${recording.time}</span><b>${place()}</b><small>${formatDuration(recording.durationSeconds)} · ${recording.observations?.length ?? 0} animals</small><i>↗</i></button>`).join('') : `<section class="session-empty"><b>Your first session starts here.</b><span>Listen to the sounds around this place and keep the recording private.</span></section>`;
+  return shell(`<section class="page sessions-page"><header class="sessions-heading"><h1>Sessions</h1><span>${recordings.length} logs</span></header><p class="sessions-subtitle">Your field recordings, woven into wildlife observations.</p><div class="sessions-list">${cards}</div><p id="listening-status" class="runtime-status" aria-live="polite" hidden></p><button id="home-start-listening" class="sessions-start" type="button" data-action="start-listening">Start listening</button></section>`);
 }
 
 function archive() {
@@ -111,9 +98,9 @@ function day() {
   const audio = recording.audio ? `<audio class="recording-player" controls preload="metadata" src="${URL.createObjectURL(recording.audio)}">Your browser cannot play this recording.</audio>` : '';
   const observations = recording.observations ?? [];
   const findings = observations.length
-    ? `<div class="observation-list">${observations.map(item => `<div><strong>${escape(item.label)}</strong><small>Your observation</small></div>`).join('')}</div>`
-    : `<p>Nothing has been noted for this recording yet.</p>`;
-  return shell(`<section class="page detail-page"><button class="back-link" data-route="today">← Sessions</button><header class="page-title"><div><p class="kicker">Listening session</p><h1>${recording.day}</h1><p class="place-copy">${place()} <span>· private place</span></p></div><p class="coverage">Saved locally</p></header><section class="day-summary"><div class="summary-wave">${bars(56)}</div><dl><div><dt>Listening</dt><dd>${formatDuration(recording.durationSeconds)}</dd></div><div><dt>Started</dt><dd>${recording.time}</dd></div><div><dt>Animal findings</dt><dd>${observations.length || 'None'}</dd></div></dl></section><section class="record-section recording-detail"><div><p class="kicker">Your recording</p><h2>Listen back</h2><p>This private recording stays on this device.</p>${audio}</div></section><section class="record-section observation-section"><div><p class="kicker">Animal findings</p><h2>Your observations</h2>${findings}</div><form id="observation-form" class="observation-form" data-recording-id="${recording.id}"><label for="observation-name">I heard</label><div><input id="observation-name" name="observation" maxlength="60" placeholder="e.g. Bird" required><button class="runtime-button" type="submit">Add</button></div></form></section></section>`);
+    ? `<div class="observation-list">${observations.map(item => `<div><span></span><strong>${escape(item.label)}</strong><small>Noted by you</small></div>`).join('')}</div>`
+    : `<p class="honest-empty">No animals have been identified yet. Add what you heard below.</p>`;
+  return shell(`<section class="page detail-page"><button class="back-link" data-route="today">← Sessions</button><header class="detail-heading"><p>Session</p><h1>${place()}</h1><span>${recording.day} · ${recording.time} · ${formatDuration(recording.durationSeconds)}</span></header><section class="day-summary"><div class="summary-wave">${bars(27)}</div>${audio}</section><section class="observation-section"><div class="observation-heading"><p>Recognized · ${observations.length}</p><button class="text-link" type="button" data-action="focus-observation">＋ Add animal</button></div>${findings}<form id="observation-form" class="observation-form" data-recording-id="${recording.id}"><label for="observation-name">What else did you hear?</label><div><input id="observation-name" name="observation" maxlength="60" placeholder="Search or enter an animal" required><button class="runtime-button" type="submit">Add</button></div></form></section></section>`);
 }
 
 function review() {
@@ -127,11 +114,11 @@ function finding() {
 }
 
 function settings() {
-  return shell(`<section class="page detail-page"><button class="back-link" data-route="today">← Sessions</button><header class="page-title"><div><p class="kicker">Settings</p><h1>Your place</h1><p class="place-copy">Private controls for location, microphone, and your record.</p></div></header><section class="settings-group"><p class="kicker">Current location</p><form id="place-form" class="place-form"><label for="place-name">Place name</label><div><input id="place-name" name="placeName" value="${place()}" maxlength="60" required><button class="runtime-button" type="submit">Save</button></div><small>This label stays in this browser.</small></form></section><section class="settings-group"><p class="kicker">Microphone</p><div class="microphone-card"><span id="mic-indicator" class="mic-indicator" aria-hidden="true"></span><div><strong id="mic-heading">Checking microphone</strong><p id="mic-status" aria-live="polite">Checking browser permission and available inputs…</p></div></div><button class="text-link" type="button" data-action="refresh-microphone">Check microphone <span>→</span></button></section><section class="settings-group"><p class="kicker">Your record</p><div class="settings-list"><div><span><strong>Privacy</strong><small>Audio stays on this device</small></span></div><div><span><strong>Listening</strong><small>${recordings.length} saved session${recordings.length === 1 ? '' : 's'}</small></span></div></div></section></section>`);
+  return shell(`<section class="page settings-page"><header class="settings-heading"><h1>Settings</h1></header><section class="settings-tile"><p>⌁ &nbsp; Microphone <b>›</b></p><strong id="mic-heading">Checking microphone</strong><small id="mic-status" aria-live="polite">Checking browser permission and available inputs…</small><button class="text-link" type="button" data-action="refresh-microphone">Refresh microphone</button></section><section class="settings-tile"><p>⌖ &nbsp; Location <b>›</b></p><form id="place-form" class="place-form"><label for="place-name">Current place</label><div><input id="place-name" name="placeName" value="${place()}" maxlength="60" required><button class="runtime-button" type="submit">Save</button></div></form><small>This label remains on this device.</small></section><section class="privacy-setting"><div><strong>Private recordings</strong><small>Audio and your notes stay on this device.</small></div><span aria-hidden="true"></span></section></section>`);
 }
 
-function complete() {
-  return shell(`<section class="page completion-page"><p class="kicker">Listening complete</p><h1>A moment was saved</h1><p class="place-copy">This recording is stored in this browser and is now part of your private sessions.</p><div class="completion-orbit">${icon('listen')}</div><div class="completion-actions"><button class="runtime-button" data-day="${selectedDay ?? ''}" data-route="day">View recording</button><button class="text-link" data-route="today">Back to Sessions <span>→</span></button></div></section>`);
+function analysis() {
+  return `<main class="analysis-screen"><header>Callweave / Analysis</header><section><h1>We’re preparing<br>your session.</h1><p>Your recording is safely saved on this device. Animal identification will appear only when analysis is connected.</p><div class="analysis-dots" aria-hidden="true">● · ● · ● · ● · ●</div></section><footer><span>Saved locally</span><div><i></i></div><button data-route="day" data-day="${selectedDay ?? ''}">View session</button></footer></main>`;
 }
 
 function setup() {
@@ -159,7 +146,7 @@ function modal(title) {
 
 function render() {
   clearInterval(sessionTicker);
-  app.innerHTML = ({ welcome, 'welcome-listen': welcomeListen, 'welcome-private': welcomePrivate, today, archive, day, review, finding, settings, setup, complete, session: listeningSession })[route]();
+  app.innerHTML = ({ welcome, 'welcome-listen': welcomeListen, 'welcome-private': welcomePrivate, today, archive, day, review, finding, settings, setup, analysis, complete: analysis, session: listeningSession })[route]();
   if (route === 'session') startSessionClock();
   if (route === 'settings') refreshMicrophoneStatus('#mic-status');
 }
@@ -169,6 +156,7 @@ document.addEventListener('click', event => {
   if (event.target.closest('[data-action="start-listening"]')) { startListeningFromUserAction(); return; }
   if (event.target.closest('[data-action="stop-listening"]')) { stopListeningFromUserAction(); return; }
   if (event.target.closest('[data-action="refresh-microphone"]')) { refreshMicrophoneStatus('#mic-status'); return; }
+  if (event.target.closest('[data-action="focus-observation"]')) { document.querySelector('#observation-name')?.focus(); return; }
   if (event.target.closest('#install-app')) { requestInstallation(); return; }
   const reviewAction = event.target.closest('[data-review-action]');
   if (reviewAction) { const feedback = document.querySelector('#review-feedback'); if (feedback) feedback.textContent = 'Your review decision is ready to be applied.'; return; }
@@ -256,7 +244,7 @@ async function stopListeningFromUserAction() {
     selectedDay = recording.id;
   }
   sessionStartedAt = null;
-  route = 'complete';
+  route = 'analysis';
   render();
 }
 
