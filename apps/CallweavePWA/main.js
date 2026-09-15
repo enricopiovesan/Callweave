@@ -118,7 +118,7 @@ function settings() {
 }
 
 function analysis() {
-  return `<main class="analysis-screen" aria-labelledby="analysis-title"><header>Callweave / Analysis</header><section class="analysis-content"><h1 id="analysis-title">We’re weaving<br>the calls.</h1><p id="analysis-status" aria-live="polite">Preparing the local recording for the analysis capability.</p><div class="analysis-dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></section><footer><div class="analysis-progress-meta"><span>Analysis in progress</span><b>Working locally</b></div><div class="analysis-progress" role="progressbar" aria-label="Analysis in progress" aria-valuetext="Working"><i></i></div><p>Keep Callweave open while this session is processed.</p></footer></main>`;
+  return `<main class="analysis-screen" aria-labelledby="analysis-title"><header>Callweave / Analysis</header><section class="analysis-content"><h1 id="analysis-title">We’re weaving<br>the calls.</h1><p id="analysis-status" aria-live="polite">Your recording is saved. Waiting for the local analysis capability to begin.</p><div class="analysis-dots" aria-label="Analysis waiting"><i></i><i></i><i></i><i class="is-current"></i><i></i><i></i><i></i></div></section><footer><div class="analysis-progress-meta"><span>Analysis waiting</span><b>Recording saved</b></div><div class="analysis-progress" role="progressbar" aria-label="Analysis waiting" aria-valuetext="Waiting for analysis capability"></div><p>Results will appear here only when the analyzer returns them.</p></footer></main>`;
 }
 
 function setup() {
