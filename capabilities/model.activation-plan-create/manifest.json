@@ -13,7 +13,7 @@
     "format": "wasm",
     "path": "artifacts/activation-plan-create.wasm",
     "abi_version": "1.0.0",
-    "expected_digest": "fnv1a64:26a46e5a2d29458d"
+    "expected_digest": "fnv1a64:eb872fa6acc2bcb8"
   },
   "source": {
     "language": "rust",
