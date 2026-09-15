@@ -3,6 +3,7 @@ import SwiftUI
 struct ContentView: View {
     @StateObject private var host = RecordingHost()
     @State private var route: Route = .today
+    @State private var selectedSession: RecordingHost.Event?
 
     private enum Route: String, CaseIterable, Identifiable {
         case today = "Today", archive = "Archive", settings = "Settings"
@@ -119,12 +120,22 @@ struct ContentView: View {
                 ContentUnavailableView("No recordings yet", systemImage: "waveform", description: Text("Finished listening sessions will appear here."))
             } else {
                 List(host.events.filter { $0.kind == .stopped }) { event in
-                    Label(event.occurredAt.formatted(date: .abbreviated, time: .shortened), systemImage: "waveform.path.ecg")
+                    Button { selectedSession = event } label: {
+                        HStack {
+                            Label(event.occurredAt.formatted(date: .abbreviated, time: .shortened), systemImage: "waveform.path.ecg")
+                            Spacer()
+                            Image(systemName: "chevron.right").foregroundStyle(.tertiary)
+                        }
+                    }
+                    .buttonStyle(.plain)
                 }
             }
             Spacer()
         }
         .padding(38)
+        .sheet(item: $selectedSession) { session in
+            ArchiveSessionView(session: session)
+        }
     }
 
     private var settings: some View {
@@ -146,6 +157,35 @@ struct ContentView: View {
 
     private func setting(_ title: String, _ value: String) -> some View {
         HStack { Text(title).fontWeight(.medium); Spacer(); Text(value).foregroundStyle(.secondary) }
+    }
+}
+
+private struct ArchiveSessionView: View {
+    let session: RecordingHost.Event
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 22) {
+            HStack {
+                Button("Close") { dismiss() }
+                Spacer()
+            }
+            Text("Listening session")
+                .font(.system(size: 40, weight: .semibold, design: .serif))
+            Text(session.occurredAt.formatted(date: .complete, time: .shortened))
+                .foregroundStyle(.secondary)
+            VStack(alignment: .leading, spacing: 10) {
+                Label("Saved on this device", systemImage: "lock")
+                Text("This private recording is available to Callweave on this Mac.")
+                    .foregroundStyle(.secondary)
+            }
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(.quaternary, in: RoundedRectangle(cornerRadius: 14))
+            Spacer()
+        }
+        .padding(32)
+        .frame(minWidth: 460, minHeight: 360)
     }
 }
 
