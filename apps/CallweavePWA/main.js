@@ -50,9 +50,9 @@ function listeningNavItem() {
 function shell(content) {
   return `<div class="app-shell">
     <header class="mobile-head"><div class="wordmark"><i></i>Callweave</div><button class="place-button" data-route="settings">${place()}</button></header>
-    <aside class="rail"><div class="wordmark"><i></i><b>Callweave</b></div><nav>${navItem('today','Today')}${navItem('archive','Archive')}${navItem('review','Review')}<div class="rail-spacer"></div>${navItem('settings','Settings')}</nav></aside>
+    <aside class="rail"><div class="wordmark"><i></i><b>Callweave</b></div><nav>${navItem('today','Today')}${navItem('archive','Archive')}<button class="rail-listen runtime-button" type="button" data-action="start-listening">${icon('listen')}<span>Listen</span></button><div class="rail-spacer"></div>${navItem('settings','Settings')}</nav></aside>
     <main class="main">${content}</main>
-    <nav class="mobile-nav">${navItem('today','Today')}${navItem('archive','Archive')}${listeningNavItem()}${navItem('review','Review')}${navItem('settings','Settings')}</nav>
+    <nav class="mobile-nav">${navItem('today','Today')}${navItem('archive','Archive')}${listeningNavItem()}${navItem('settings','Settings')}</nav>
   </div>`;
 }
 

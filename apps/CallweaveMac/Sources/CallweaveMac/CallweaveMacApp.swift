@@ -5,11 +5,11 @@ struct ContentView: View {
     @State private var route: Route = .today
 
     private enum Route: String, CaseIterable, Identifiable {
-        case today = "Today", archive = "Archive", review = "Review", settings = "Settings"
+        case today = "Today", archive = "Archive", settings = "Settings"
         var id: String { rawValue }
         var symbol: String {
             switch self {
-            case .today: "eye"; case .archive: "archivebox"; case .review: "waveform"; case .settings: "gearshape"
+            case .today: "eye"; case .archive: "archivebox"; case .settings: "gearshape"
             }
         }
     }
@@ -40,6 +40,14 @@ struct ContentView: View {
                     .padding(.horizontal, 10)
                     .background(route == item ? Color.green.opacity(0.14) : .clear, in: RoundedRectangle(cornerRadius: 8))
                 }
+                Button { host.start() } label: {
+                    Label("Listen", systemImage: "waveform")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.vertical, 8)
+                }
+                .buttonStyle(.borderedProminent)
+                .disabled(host.availability != .ready)
+                .padding(.horizontal, 10)
                 Spacer()
                 Text("Golden, BC")
                     .font(.caption)
@@ -52,7 +60,6 @@ struct ContentView: View {
                 switch route {
                 case .today: listeningHome
                 case .archive: archive
-                case .review: review
                 case .settings: settings
                 }
             }
@@ -115,16 +122,6 @@ struct ContentView: View {
                     Label(event.occurredAt.formatted(date: .abbreviated, time: .shortened), systemImage: "waveform.path.ecg")
                 }
             }
-            Spacer()
-        }
-        .padding(38)
-    }
-
-    private var review: some View {
-        VStack(alignment: .leading, spacing: 22) {
-            Text("Review").font(.system(size: 48, weight: .semibold, design: .serif))
-            Text("Needs a closer listen").foregroundStyle(.secondary)
-            ContentUnavailableView("Nothing needs review", systemImage: "ear", description: Text("Sound findings will appear here once analysis provides evidence for review."))
             Spacer()
         }
         .padding(38)

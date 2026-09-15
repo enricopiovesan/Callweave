@@ -20,6 +20,8 @@
 .runtime-button { border: 1px solid var(--ink); border-radius: 999px; background: var(--ink); color: #fff; padding: .65rem 1rem; font-size: .875rem; font-weight: 700; }
 a.runtime-button { display: inline-flex; align-items: center; text-decoration: none; }
 .runtime-button:disabled { opacity: .45; cursor: not-allowed; }
+.rail-listen { display: flex; align-items: center; justify-content: center; gap: .55rem; width: calc(100% - 1.25rem); margin: 1rem .625rem 0; }
+.rail-listen svg { width: 1.05rem; height: 1.05rem; fill: none; stroke: currentColor; stroke-width: 1.8; }
 .listening-cta { margin-top: 1rem; }
 .listening-feedback { max-width: 20rem; margin: .8rem 0 0; color: var(--muted); font-size: .82rem; text-align: center; }
 .listening-setup { max-width: 31rem; margin: 0 auto 2.5rem; padding: 1.25rem; background: #fbfaf5; border: 1px solid var(--line); border-radius: .75rem; text-align: center; }
