@@ -1,0 +1,10 @@
+{
+  "kind": "runtime_request",
+  "schema_version": "1.0.0",
+  "request_id": "audio-wav-pcm16-decode-mono",
+  "intent": { "capability_id": "audio.wav-pcm16-decode", "capability_version": "1.0.0" },
+  "input": { "wav_bytes_base64": "UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQQAAAAAANAH" },
+  "lookup": { "scope": "prefer_private", "allow_ambiguity": false },
+  "context": { "requested_target": "local", "caller": "audio-wav-pcm16-decode-smoke" },
+  "governing_spec": "006-runtime-request-execution"
+}

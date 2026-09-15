@@ -1,0 +1,80 @@
+name: Validate generic WASM capability wave 4
+
+on:
+  pull_request:
+    paths:
+      - 'capabilities/audio.pcm-transform/**'
+      - 'capabilities/audio.pcm-window/**'
+      - 'capabilities/audio.wav-pcm16-decode/**'
+      - 'capabilities/audio.privacy-risk-evaluate/**'
+      - 'capabilities/artifact.shareability-classify/**'
+      - 'capabilities/candidate.policy-evaluate/**'
+      - 'capabilities/event.append-plan-create/**'
+      - 'capabilities/model.activation-plan-create/**'
+      - 'capabilities/retention.action-plan-create/**'
+      - 'scripts/audio_pcm_transform_smoke.mjs'
+      - 'scripts/audio_pcm_window_smoke.mjs'
+      - 'scripts/audio_wav_pcm16_decode_smoke.mjs'
+      - 'scripts/audio_privacy_risk_evaluate_smoke.mjs'
+      - 'scripts/artifact_shareability_classify_smoke.mjs'
+      - 'scripts/candidate_policy_evaluate_smoke.mjs'
+      - 'scripts/event_append_plan_create_smoke.mjs'
+      - 'scripts/model_activation_plan_create_smoke.mjs'
+      - 'scripts/retention_action_plan_create_smoke.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/validate-wave4-capabilities.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'capabilities/audio.pcm-transform/**'
+      - 'capabilities/audio.pcm-window/**'
+      - 'capabilities/audio.wav-pcm16-decode/**'
+      - 'capabilities/audio.privacy-risk-evaluate/**'
+      - 'capabilities/artifact.shareability-classify/**'
+      - 'capabilities/candidate.policy-evaluate/**'
+      - 'capabilities/event.append-plan-create/**'
+      - 'capabilities/model.activation-plan-create/**'
+      - 'capabilities/retention.action-plan-create/**'
+      - 'scripts/audio_pcm_transform_smoke.mjs'
+      - 'scripts/audio_pcm_window_smoke.mjs'
+      - 'scripts/audio_wav_pcm16_decode_smoke.mjs'
+      - 'scripts/audio_privacy_risk_evaluate_smoke.mjs'
+      - 'scripts/artifact_shareability_classify_smoke.mjs'
+      - 'scripts/candidate_policy_evaluate_smoke.mjs'
+      - 'scripts/event_append_plan_create_smoke.mjs'
+      - 'scripts/model_activation_plan_create_smoke.mjs'
+      - 'scripts/retention_action_plan_create_smoke.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/validate-wave4-capabilities.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.94.0
+          targets: wasm32-unknown-unknown
+      - run: npm ci
+      - run: npm run audio:pcm-transform:build
+      - run: npm run audio:pcm-window:build
+      - run: npm run audio:wav-pcm16-decode:build
+      - run: npm run audio:privacy-risk-evaluate:build
+      - run: npm run artifact:shareability-classify:build
+      - run: npm run candidate:policy-evaluate:build
+      - run: npm run event:append-plan-create:build
+      - run: npm run model:activation-plan-create:build
+      - run: npm run retention:action-plan-create:build
+      - run: npm run wave4:smoke
+      - run: git diff --exit-code -- capabilities/audio.pcm-transform/manifest.json capabilities/audio.pcm-window/manifest.json capabilities/audio.wav-pcm16-decode/manifest.json capabilities/audio.privacy-risk-evaluate/manifest.json capabilities/artifact.shareability-classify/manifest.json capabilities/candidate.policy-evaluate/manifest.json capabilities/event.append-plan-create/manifest.json capabilities/model.activation-plan-create/manifest.json capabilities/retention.action-plan-create/manifest.json
