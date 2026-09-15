@@ -6,7 +6,7 @@ let placeName = localStorage.getItem('callweave-place-name') || 'Golden, BC';
 
 const views = {
   today: {
-    title: 'Today', label: 'Your private soundscape', subtitle: '',
+    title: 'Sessions', label: 'Your private soundscape', subtitle: '',
   },
   archive: { title: 'Archive', label: 'Daily canvases', subtitle: 'A quiet record of this place' },
   review: { title: 'Review', label: 'Needs a closer listen', subtitle: 'Evidence stays evidence until a person reviews it.' },
@@ -50,9 +50,9 @@ function listeningNavItem() {
 function shell(content) {
   return `<div class="app-shell">
     <header class="mobile-head"><div class="wordmark"><i></i>Callweave</div><button class="place-button" data-route="settings">${place()}</button></header>
-    <aside class="rail"><div class="wordmark"><i></i><b>Callweave</b></div><nav><button class="rail-listen runtime-button" type="button" data-action="start-listening">${icon('listen')}<span>Listen</span></button>${navItem('today','Today')}<div class="rail-spacer"></div>${navItem('settings','Settings')}</nav></aside>
+    <aside class="rail"><div class="wordmark"><i></i><b>Callweave</b></div><nav><button class="rail-listen runtime-button" type="button" data-action="start-listening">${icon('listen')}<span>Listen</span></button>${navItem('today','Sessions')}<div class="rail-spacer"></div>${navItem('settings','Settings')}</nav></aside>
     <main class="main">${content}</main>
-    <nav class="mobile-nav">${listeningNavItem()}${navItem('today','Today')}${navItem('settings','Settings')}</nav>
+    <nav class="mobile-nav">${listeningNavItem()}${navItem('today','Sessions')}${navItem('settings','Settings')}</nav>
   </div>`;
 }
 
@@ -113,7 +113,7 @@ function day() {
   const findings = observations.length
     ? `<div class="observation-list">${observations.map(item => `<div><strong>${escape(item.label)}</strong><small>Your observation</small></div>`).join('')}</div>`
     : `<p>Nothing has been noted for this recording yet.</p>`;
-  return shell(`<section class="page detail-page"><button class="back-link" data-route="today">← Today</button><header class="page-title"><div><p class="kicker">Listening session</p><h1>${recording.day}</h1><p class="place-copy">${place()} <span>· private place</span></p></div><p class="coverage">Saved locally</p></header><section class="day-summary"><div class="summary-wave">${bars(56)}</div><dl><div><dt>Listening</dt><dd>${formatDuration(recording.durationSeconds)}</dd></div><div><dt>Started</dt><dd>${recording.time}</dd></div><div><dt>Animal findings</dt><dd>${observations.length || 'None'}</dd></div></dl></section><section class="record-section recording-detail"><div><p class="kicker">Your recording</p><h2>Listen back</h2><p>This private recording stays on this device.</p>${audio}</div></section><section class="record-section observation-section"><div><p class="kicker">Animal findings</p><h2>Your observations</h2>${findings}</div><form id="observation-form" class="observation-form" data-recording-id="${recording.id}"><label for="observation-name">I heard</label><div><input id="observation-name" name="observation" maxlength="60" placeholder="e.g. Bird" required><button class="runtime-button" type="submit">Add</button></div></form></section></section>`);
+  return shell(`<section class="page detail-page"><button class="back-link" data-route="today">← Sessions</button><header class="page-title"><div><p class="kicker">Listening session</p><h1>${recording.day}</h1><p class="place-copy">${place()} <span>· private place</span></p></div><p class="coverage">Saved locally</p></header><section class="day-summary"><div class="summary-wave">${bars(56)}</div><dl><div><dt>Listening</dt><dd>${formatDuration(recording.durationSeconds)}</dd></div><div><dt>Started</dt><dd>${recording.time}</dd></div><div><dt>Animal findings</dt><dd>${observations.length || 'None'}</dd></div></dl></section><section class="record-section recording-detail"><div><p class="kicker">Your recording</p><h2>Listen back</h2><p>This private recording stays on this device.</p>${audio}</div></section><section class="record-section observation-section"><div><p class="kicker">Animal findings</p><h2>Your observations</h2>${findings}</div><form id="observation-form" class="observation-form" data-recording-id="${recording.id}"><label for="observation-name">I heard</label><div><input id="observation-name" name="observation" maxlength="60" placeholder="e.g. Bird" required><button class="runtime-button" type="submit">Add</button></div></form></section></section>`);
 }
 
 function review() {
@@ -127,11 +127,11 @@ function finding() {
 }
 
 function settings() {
-  return shell(`<section class="page detail-page"><button class="back-link" data-route="today">← Today</button><header class="page-title"><div><p class="kicker">Settings</p><h1>Your place</h1><p class="place-copy">Private controls for location, microphone, and your record.</p></div></header><section class="settings-group"><p class="kicker">Current location</p><form id="place-form" class="place-form"><label for="place-name">Place name</label><div><input id="place-name" name="placeName" value="${place()}" maxlength="60" required><button class="runtime-button" type="submit">Save</button></div><small>This label stays in this browser.</small></form></section><section class="settings-group"><p class="kicker">Microphone</p><div class="microphone-card"><span id="mic-indicator" class="mic-indicator" aria-hidden="true"></span><div><strong id="mic-heading">Checking microphone</strong><p id="mic-status" aria-live="polite">Checking browser permission and available inputs…</p></div></div><button class="text-link" type="button" data-action="refresh-microphone">Check microphone <span>→</span></button></section><section class="settings-group"><p class="kicker">Your record</p><div class="settings-list"><div><span><strong>Privacy</strong><small>Audio stays on this device</small></span></div><div><span><strong>Listening</strong><small>${recordings.length} saved session${recordings.length === 1 ? '' : 's'}</small></span></div></div></section></section>`);
+  return shell(`<section class="page detail-page"><button class="back-link" data-route="today">← Sessions</button><header class="page-title"><div><p class="kicker">Settings</p><h1>Your place</h1><p class="place-copy">Private controls for location, microphone, and your record.</p></div></header><section class="settings-group"><p class="kicker">Current location</p><form id="place-form" class="place-form"><label for="place-name">Place name</label><div><input id="place-name" name="placeName" value="${place()}" maxlength="60" required><button class="runtime-button" type="submit">Save</button></div><small>This label stays in this browser.</small></form></section><section class="settings-group"><p class="kicker">Microphone</p><div class="microphone-card"><span id="mic-indicator" class="mic-indicator" aria-hidden="true"></span><div><strong id="mic-heading">Checking microphone</strong><p id="mic-status" aria-live="polite">Checking browser permission and available inputs…</p></div></div><button class="text-link" type="button" data-action="refresh-microphone">Check microphone <span>→</span></button></section><section class="settings-group"><p class="kicker">Your record</p><div class="settings-list"><div><span><strong>Privacy</strong><small>Audio stays on this device</small></span></div><div><span><strong>Listening</strong><small>${recordings.length} saved session${recordings.length === 1 ? '' : 's'}</small></span></div></div></section></section>`);
 }
 
 function complete() {
-  return shell(`<section class="page completion-page"><p class="kicker">Listening complete</p><h1>A moment was saved</h1><p class="place-copy">This recording is stored in this browser and is now part of your private archive.</p><div class="completion-orbit">${icon('listen')}</div><div class="completion-actions"><button class="runtime-button" data-day="${selectedDay ?? ''}" data-route="day">View recording</button><button class="text-link" data-route="today">Back to Today <span>→</span></button></div></section>`);
+  return shell(`<section class="page completion-page"><p class="kicker">Listening complete</p><h1>A moment was saved</h1><p class="place-copy">This recording is stored in this browser and is now part of your private sessions.</p><div class="completion-orbit">${icon('listen')}</div><div class="completion-actions"><button class="runtime-button" data-day="${selectedDay ?? ''}" data-route="day">View recording</button><button class="text-link" data-route="today">Back to Sessions <span>→</span></button></div></section>`);
 }
 
 function setup() {

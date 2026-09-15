@@ -6,7 +6,7 @@ struct ContentView: View {
     @State private var selectedSession: RecordingHost.Event?
 
     private enum Route: String, CaseIterable, Identifiable {
-        case today = "Today", settings = "Settings"
+        case today = "Sessions", settings = "Settings"
         var id: String { rawValue }
         var symbol: String {
             switch self {
@@ -70,7 +70,7 @@ struct ContentView: View {
 
     private var listeningHome: some View {
         VStack(alignment: .leading, spacing: 24) {
-            Text("Today")
+            Text("Sessions")
                 .font(.system(size: 48, weight: .semibold, design: .serif))
             Text("Golden, BC · private place")
                 .font(.headline)
