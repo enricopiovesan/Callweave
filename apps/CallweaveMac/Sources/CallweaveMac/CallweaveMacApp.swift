@@ -56,6 +56,7 @@ struct ContentView: View {
             }
             .padding(22)
             .frame(width: 160)
+            .background(Color.white)
             Divider()
             Group {
                 switch route {
@@ -66,6 +67,9 @@ struct ContentView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .frame(minWidth: 760, minHeight: 560)
+        .foregroundStyle(Color.black)
+        .background(Color(red: 0.96, green: 0.96, blue: 0.95))
+        .tint(Color.black)
     }
 
     private var listeningHome: some View {
