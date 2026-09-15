@@ -83,7 +83,9 @@ assert.equal(validateOutput(invalid), true, ajv.errorsText(validateOutput.errors
 const emptyTargets = { ...base, policy: { ...policy, allowed_targets: [] } };
 assert.equal(validateInput(emptyTargets), false);
 assert.deepEqual(await invoke(emptyTargets), { result_class: 'invalid_request' });
+const trailingTargetComma = JSON.stringify(base).replace('"allowed_targets":["wasm32-wasip2"]', '"allowed_targets":["wasm32-wasip2",]');
+assert.deepEqual(await invoke(trailingTargetComma), { result_class: 'invalid_request' });
 const duplicateDigest = JSON.stringify(base).replace('"digest_evidence":"verified"', '"digest_evidence":"verified","digest_evidence":"failed"');
 assert.deepEqual(await invoke(duplicateDigest), { result_class: 'invalid_request' });
 assert.deepEqual(await invoke({ ...base, padding: 'x'.repeat(5000) }), { result_class: 'input_limit_exceeded' });
-console.log('model_activation_plan_create_wasm=passed eligible=1 rejected=6 review=1 invalid=4');
+console.log('model_activation_plan_create_wasm=passed eligible=1 rejected=6 review=1 invalid=5');

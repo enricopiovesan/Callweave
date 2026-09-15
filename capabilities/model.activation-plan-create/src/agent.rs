@@ -216,6 +216,12 @@ fn string_array<'a>(input: &'a [u8], key: &[u8]) -> StringList<'a> {
         spaces(array, &mut cursor);
         if array.get(cursor) == Some(&b',') {
             cursor += 1;
+            let mut next = cursor;
+            spaces(array, &mut next);
+            if array.get(next) == Some(&b']') {
+                list.invalid = true;
+                return list;
+            }
         } else if array.get(cursor) != Some(&b']') {
             list.invalid = true;
             return list;
