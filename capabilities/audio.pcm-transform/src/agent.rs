@@ -241,7 +241,13 @@ fn sample_array(input: &[u8], samples: &mut [i16]) -> Option<usize> {
         index = next;
         skip_space(input, &mut index);
         match input.get(index) {
-            Some(b',') => index += 1,
+            Some(b',') => {
+                index += 1;
+                skip_space(input, &mut index);
+                if input.get(index) == Some(&b']') {
+                    return None;
+                }
+            }
             Some(b']') => return Some(count),
             _ => return None,
         }
@@ -262,15 +268,28 @@ fn signed_integer(input: &[u8], mut index: usize) -> Option<(i32, usize)> {
         index += 1;
     }
     let start = index;
-    let mut value = 0i32;
+    let mut value = 0u32;
+    let limit = i32::MAX as u32 + u32::from(negative);
     while let Some(byte @ b'0'..=b'9') = input.get(index).copied() {
-        value = value.checked_mul(10)?.checked_add((byte - b'0') as i32)?;
+        value = value.checked_mul(10)?.checked_add((byte - b'0') as u32)?;
+        if value > limit {
+            return None;
+        }
         index += 1;
     }
     if index == start {
         return None;
     }
-    Some((if negative { -value } else { value }, index))
+    let signed = if negative {
+        if value == i32::MAX as u32 + 1 {
+            i32::MIN
+        } else {
+            -(value as i32)
+        }
+    } else {
+        value as i32
+    };
+    Some((signed, index))
 }
 
 fn skip_space(input: &[u8], index: &mut usize) {

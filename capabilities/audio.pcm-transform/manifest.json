@@ -13,7 +13,7 @@
     "format": "wasm",
     "path": "artifacts/pcm-transform.wasm",
     "abi_version": "1.0.0",
-    "expected_digest": "fnv1a64:6a8f31cae027fd10"
+    "expected_digest": "fnv1a64:1fe83b9f3f65d241"
   },
   "source": {
     "language": "rust",
