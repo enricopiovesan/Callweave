@@ -31,6 +31,14 @@ struct ContentView: View {
                 Label("Callweave", systemImage: "waveform")
                     .font(.headline)
                     .padding(.bottom, 28)
+                Button { host.start() } label: {
+                    Label("Listen", systemImage: "waveform")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.vertical, 8)
+                }
+                .buttonStyle(.borderedProminent)
+                .disabled(host.availability != .ready)
+                .padding(.horizontal, 10)
                 ForEach(Route.allCases) { item in
                     Button { route = item } label: {
                         Label(item.rawValue, systemImage: item.symbol)
@@ -41,14 +49,6 @@ struct ContentView: View {
                     .padding(.horizontal, 10)
                     .background(route == item ? Color.green.opacity(0.14) : .clear, in: RoundedRectangle(cornerRadius: 8))
                 }
-                Button { host.start() } label: {
-                    Label("Listen", systemImage: "waveform")
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.vertical, 8)
-                }
-                .buttonStyle(.borderedProminent)
-                .disabled(host.availability != .ready)
-                .padding(.horizontal, 10)
                 Spacer()
                 Text("Golden, BC")
                     .font(.caption)
