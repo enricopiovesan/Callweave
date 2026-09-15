@@ -1,0 +1,10 @@
+{
+  "kind": "runtime_request",
+  "schema_version": "1.0.0",
+  "request_id": "audio-pcm-transform-downsample-nyquist-01",
+  "intent": { "capability_id": "audio.pcm-transform", "capability_version": "1.0.0" },
+  "input": { "input_sample_rate_hz": 16000, "input_channel_count": 1, "target_sample_rate_hz": 8000, "target_channel_count": 1, "samples_s16": [1000, -1000, 1000, -1000] },
+  "lookup": { "scope": "prefer_private", "allow_ambiguity": false },
+  "context": { "requested_target": "local", "caller": "capability-smoke" },
+  "governing_spec": "006-runtime-request-execution"
+}

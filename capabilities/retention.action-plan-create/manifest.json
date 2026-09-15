@@ -1,0 +1,30 @@
+{
+  "kind": "capability_package",
+  "schema_version": "1.0.0",
+  "package_id": "retention.action-plan-create",
+  "version": "1.0.0",
+  "summary": "Create a delayed, approval-aware retention action plan without executing it.",
+  "capability_ref": {
+    "id": "retention.action-plan-create",
+    "version": "1.0.0",
+    "contract_path": "contract.json"
+  },
+  "binary": {
+    "format": "wasm",
+    "path": "artifacts/action-plan-create.wasm",
+    "abi_version": "1.0.0",
+    "expected_digest": "fnv1a64:40c8a346ac8bdef4"
+  },
+  "source": {
+    "language": "rust",
+    "path": "src/agent.rs",
+    "entry": "run"
+  },
+  "constraints": {
+    "host_api_access": "none",
+    "network_access": "forbidden",
+    "filesystem_access": "none",
+    "maximum_input_bytes": 4096
+  },
+  "known_compositions": []
+}

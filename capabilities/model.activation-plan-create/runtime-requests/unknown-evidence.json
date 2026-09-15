@@ -1,0 +1,10 @@
+{
+  "kind": "runtime_request",
+  "schema_version": "1.0.0",
+  "request_id": "model-activation-unknown-01",
+  "intent": { "capability_id": "model.activation-plan-create", "capability_version": "1.0.0" },
+  "input": { "model_ref": "model:sha256/abc123", "target": "wasm32-wasip2", "licence_ref": "Apache-2.0", "digest_evidence": "unknown", "signature_evidence": "verified", "licence_evidence": "accepted", "runtime_compatibility": "verified", "memory_required_bytes": 67108864, "policy": { "version": "activation-1", "allowed_targets": ["wasm32-wasip2"], "maximum_memory_bytes": 134217728, "unknown_evidence_action": "review" } },
+  "lookup": { "scope": "prefer_private", "allow_ambiguity": false },
+  "context": { "requested_target": "local", "caller": "capability-smoke" },
+  "governing_spec": "006-runtime-request-execution"
+}

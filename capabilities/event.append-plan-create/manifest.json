@@ -1,0 +1,30 @@
+{
+  "kind": "capability_package",
+  "schema_version": "1.0.0",
+  "package_id": "event.append-plan-create",
+  "version": "1.0.0",
+  "summary": "Create a bounded append request for an opaque immutable event.",
+  "capability_ref": {
+    "id": "event.append-plan-create",
+    "version": "1.0.0",
+    "contract_path": "contract.json"
+  },
+  "binary": {
+    "format": "wasm",
+    "path": "artifacts/append-plan-create.wasm",
+    "abi_version": "1.0.0",
+    "expected_digest": "fnv1a64:1e8e69d1bf980bfa"
+  },
+  "source": {
+    "language": "rust",
+    "path": "src/agent.rs",
+    "entry": "run"
+  },
+  "constraints": {
+    "host_api_access": "none",
+    "network_access": "forbidden",
+    "filesystem_access": "none",
+    "maximum_input_bytes": 32768
+  },
+  "known_compositions": []
+}

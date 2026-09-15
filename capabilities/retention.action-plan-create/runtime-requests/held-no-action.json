@@ -1,0 +1,10 @@
+{
+  "kind": "runtime_request",
+  "schema_version": "1.0.0",
+  "request_id": "retention-plan-held-42",
+  "intent": { "capability_id": "retention.action-plan-create", "capability_version": "1.0.0" },
+  "input": { "asset_ref": "artifact:42", "request_id": "retention-plan-held-42", "retention_state": "held", "evaluation_time_epoch_seconds": 1000, "policy": { "version": "retain-1", "eligible_action": "delete", "grace_period_seconds": 0, "approval_required": false } },
+  "lookup": { "scope": "prefer_private", "allow_ambiguity": false },
+  "context": { "requested_target": "local", "caller": "capability-smoke" },
+  "governing_spec": "006-runtime-request-execution"
+}

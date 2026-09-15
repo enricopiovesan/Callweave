@@ -1,0 +1,16 @@
+{
+  "kind": "runtime_request",
+  "schema_version": "1.0.0",
+  "request_id": "audio-pcm-transform-resample-mono",
+  "intent": { "capability_id": "audio.pcm-transform", "capability_version": "1.0.0" },
+  "input": {
+    "input_sample_rate_hz": 8000,
+    "input_channel_count": 1,
+    "target_sample_rate_hz": 16000,
+    "target_channel_count": 1,
+    "samples_s16": [0, 2000]
+  },
+  "lookup": { "scope": "prefer_private", "allow_ambiguity": false },
+  "context": { "requested_target": "local", "caller": "audio-pcm-transform-smoke" },
+  "governing_spec": "006-runtime-request-execution"
+}

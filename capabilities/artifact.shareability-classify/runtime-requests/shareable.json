@@ -1,0 +1,10 @@
+{
+  "kind": "runtime_request",
+  "schema_version": "1.0.0",
+  "request_id": "artifact-shareability-shareable-01",
+  "intent": { "capability_id": "artifact.shareability-classify", "capability_version": "1.0.0" },
+  "input": { "asset_ref": "artifact:42", "audience": "external-review", "sensitivity_class": "ordinary", "sanitized": true, "consent_granted": true, "policy": { "version": "share-1", "allowed_audiences": ["external-review"], "allowed_sensitivity_classes": ["ordinary"], "require_sanitized": true, "require_consent": true } },
+  "lookup": { "scope": "prefer_private", "allow_ambiguity": false },
+  "context": { "requested_target": "local", "caller": "capability-smoke" },
+  "governing_spec": "006-runtime-request-execution"
+}
