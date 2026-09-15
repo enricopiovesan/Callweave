@@ -118,7 +118,7 @@ function settings() {
 }
 
 function analysis() {
-  return `<main class="analysis-screen"><header>Callweave / Analysis</header><section><h1>We’re preparing<br>your session.</h1><p>Your recording is safely saved on this device. Animal identification will appear only when analysis is connected.</p><div class="analysis-dots" aria-hidden="true">● · ● · ● · ● · ●</div></section><footer><span>Saved locally</span><div><i></i></div><button data-route="day" data-day="${selectedDay ?? ''}">View session</button></footer></main>`;
+  return `<main class="analysis-screen" aria-labelledby="analysis-title"><header>Callweave / Analysis</header><section class="analysis-content"><h1 id="analysis-title">We’re weaving<br>the calls.</h1><p id="analysis-status" aria-live="polite">Preparing the local recording for the analysis capability.</p><div class="analysis-dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></section><footer><div class="analysis-progress-meta"><span>Analysis in progress</span><b>Working locally</b></div><div class="analysis-progress" role="progressbar" aria-label="Analysis in progress" aria-valuetext="Working"><i></i></div><p>Keep Callweave open while this session is processed.</p></footer></main>`;
 }
 
 function setup() {
