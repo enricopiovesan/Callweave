@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://callweave.local/schemas/model-execution-envelope.schema.json",
+  "title": "Portable model execution envelope",
+  "description": "Transport-neutral manifest, request, and response shapes for model.inference-execute. No model weights or host connector details are embedded.",
+  "oneOf": [
+    { "$ref": "#/$defs/manifest" },
+    { "$ref": "#/$defs/request" },
+    { "$ref": "#/$defs/response" }
+  ],
+  "$defs": {
+    "digest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "modelRef": {
+      "type": "object", "additionalProperties": false,
+      "required": ["model_id", "version", "digest"],
+      "properties": { "model_id": { "type": "string", "minLength": 1 }, "version": { "type": "string", "minLength": 1 }, "digest": { "$ref": "#/$defs/digest" } }
+    },
+    "limits": {
+      "type": "object", "additionalProperties": false,
+      "required": ["max_memory_bytes", "max_input_bytes", "max_output_bytes", "max_execution_ms"],
+      "properties": {
+        "max_memory_bytes": { "type": "integer", "minimum": 1 },
+        "max_input_bytes": { "type": "integer", "minimum": 1 },
+        "max_output_bytes": { "type": "integer", "minimum": 1 },
+        "max_execution_ms": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "manifest": {
+      "type": "object", "additionalProperties": false,
+      "required": ["model_id", "version", "digest", "license", "abi_version", "targets", "limits", "input_schema_ref", "output_schema_ref"],
+      "properties": {
+        "model_id": { "type": "string", "minLength": 1 }, "version": { "type": "string", "minLength": 1 }, "digest": { "$ref": "#/$defs/digest" },
+        "license": { "type": "object", "additionalProperties": false, "required": ["spdx_id", "redistributable"], "properties": { "spdx_id": { "type": "string", "minLength": 1 }, "redistributable": { "type": "boolean" } } },
+        "abi_version": { "type": "string", "minLength": 1 }, "targets": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+        "limits": { "$ref": "#/$defs/limits" }, "input_schema_ref": { "type": "string", "minLength": 1 }, "output_schema_ref": { "type": "string", "minLength": 1 },
+        "signature_verified": { "type": "boolean" }
+      }
+    },
+    "request": {
+      "type": "object", "additionalProperties": false,
+      "required": ["request_id", "model_ref", "input_schema_ref", "payload_bytes", "limits"],
+      "properties": {
+        "request_id": { "type": "string", "minLength": 1 }, "model_ref": { "$ref": "#/$defs/modelRef" }, "input_schema_ref": { "type": "string", "minLength": 1 },
+        "payload_bytes": { "type": "array", "items": { "type": "integer", "minimum": 0, "maximum": 255 } },
+        "limits": { "type": "object", "additionalProperties": false, "required": ["timeout_ms"], "properties": { "timeout_ms": { "type": "integer", "minimum": 1 } } }
+      }
+    },
+    "response": {
+      "type": "object", "additionalProperties": false, "required": ["status"],
+      "properties": {
+        "request_id": { "type": ["string", "null"] }, "status": { "enum": ["ok", "invalid_input", "model_unavailable", "model_incompatible", "resource_exhausted", "cancelled", "timeout", "execution_failed"] },
+        "output_schema_ref": { "type": ["string", "null"] }, "output_bytes": { "type": "array", "items": { "type": "integer", "minimum": 0, "maximum": 255 } },
+        "model_ref": { "anyOf": [{ "$ref": "#/$defs/modelRef" }, { "type": "null" }] }, "placement": { "type": "string" }, "trace_id": { "type": ["string", "null"] }, "reason_code": { "type": "string" }
+      }
+    }
+  }
+}
