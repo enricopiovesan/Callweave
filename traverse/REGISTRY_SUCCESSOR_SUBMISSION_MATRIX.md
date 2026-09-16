@@ -39,3 +39,20 @@ packages, runtime fixtures, source, manifests, and bounded WASM artifacts.
 It does not select or download an ML model. The local smoke suites passed
 before publication; Registry CI and the qualified maintainer/security review
 remain the gates for successor activation.
+
+## Publication record
+
+All nine successor PRs were merged and signed:
+
+- [#529](https://github.com/traverse-framework/registry/pull/529) `audio.pcm-transform`
+- [#530](https://github.com/traverse-framework/registry/pull/530) `audio.pcm-window`
+- [#531](https://github.com/traverse-framework/registry/pull/531) `audio.privacy-risk-evaluate`
+- [#532](https://github.com/traverse-framework/registry/pull/532) `audio.wav-pcm16-decode`
+- [#533](https://github.com/traverse-framework/registry/pull/533) `artifact.shareability-classify`
+- [#534](https://github.com/traverse-framework/registry/pull/534) `candidate.policy-evaluate`
+- [#535](https://github.com/traverse-framework/registry/pull/535) `event.append-plan-create`
+- [#536](https://github.com/traverse-framework/registry/pull/536) `model.activation-plan-create`
+- [#537](https://github.com/traverse-framework/registry/pull/537) `retention.action-plan-create`
+- [#539](https://github.com/traverse-framework/registry/pull/539) consolidated CI-generated signatures
+
+Registry main CI run [#35056522316](https://github.com/traverse-framework/registry/actions/runs/35056522316) completed successfully, including capability validation, signing, catalog build, index publication, and deployment.
