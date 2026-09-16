@@ -5,6 +5,7 @@
   "scripts": {
     "model:execution:conformance": "node scripts/model_execution_conformance_smoke.mjs",
     "model:execution:schema": "node scripts/validate_model_execution_schema.mjs",
+    "model:adapter:benchmark": "node scripts/model_adapter_benchmark.mjs",
     "mac-host:run": "bash scripts/run_callweave_mac_host.sh",
     "birdnet:readiness": "node scripts/birdnet-readiness.mjs",
     "perch:readiness": "node scripts/perch-readiness.mjs",
