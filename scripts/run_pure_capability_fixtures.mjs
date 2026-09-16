@@ -5,12 +5,20 @@ import {
   closeDay,
   createDailyCanvasPlan,
   evaluatePrivacyGate,
+  normalizeInferenceEvidence,
   initializeLocation,
   manageKnowledge,
   manageObservation,
   planRecovery,
   resolveDetection,
 } from '../src/business-logic.mjs';
+import {
+  validateModelManifest,
+  validateInferenceRequest,
+  normalizeInferenceResponse,
+  evaluateModelCompatibility,
+  evaluateModelArtifactPolicy,
+} from '../src/model-execution.mjs';
 
 const root = new URL('..', import.meta.url).pathname;
 const fixtureRoot = join(root, 'fixtures', 'pure-capabilities');
@@ -24,6 +32,12 @@ const capabilities = {
   'daily-create': createDailyCanvasPlan,
   'operations-recover': planRecovery,
   'privacy-gate-evaluate': evaluatePrivacyGate,
+  'inference-evidence-normalize': normalizeInferenceEvidence,
+  'model-artifact-manifest-validate': validateModelManifest,
+  'model-inference-request-validate': validateInferenceRequest,
+  'model-inference-response-normalize': normalizeInferenceResponse,
+  'model-compatibility-evaluate': evaluateModelCompatibility,
+  'model-artifact-policy-evaluate': evaluateModelArtifactPolicy,
 };
 
 const project = (value, paths) => Object.fromEntries(paths.map((path) => [path, getPath(value, path)]));

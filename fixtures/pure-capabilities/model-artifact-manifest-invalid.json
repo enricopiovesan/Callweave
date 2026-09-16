@@ -1,0 +1,1 @@
+{"capability":"model-artifact-manifest-validate","input":{"manifest":{"model_id":"demo.animal","version":"1.0.0","digest":"not-a-digest","license":{"spdx_id":"Apache-2.0"},"abi_version":"model-1","targets":[]}},"expect_error":"manifest.digest"}

@@ -1,0 +1,1 @@
+{"capability":"model-compatibility-evaluate","input":{"manifest":{"model_id":"demo.animal","input_schema_ref":"tensor/audio-v1","targets":["native"],"limits":{"max_memory_bytes":1000}},"target":"wasm32-wasi","input_schema_ref":"tensor/text-v1","available_memory_bytes":100},"expect":{"compatible":false,"reasons.0":"target_unsupported"}}

@@ -1,0 +1,1 @@
+{"capability":"model-inference-response-normalize","input":{"request":{},"response":{"status":"ok","output_schema_ref":"scores/v1","output_bytes":[999]}},"expect_error":"output_bytes"}
