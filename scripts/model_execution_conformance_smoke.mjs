@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { executeSyntheticModel } from '../src/model-execution-fixture.mjs';
+import { normalizeInferenceResponse } from '../src/model-execution.mjs';
 
 const manifest = {
   model_id: 'fixture.synthetic-checksum', version: '0.0.1',
@@ -30,4 +31,11 @@ assert.equal(cancelled.retryable, false);
 assert.throws(() => executeSyntheticModel({ request: { ...request, payload_bytes: Array(17).fill(1) }, manifest }), /input exceeds model limit/);
 assert.throws(() => executeSyntheticModel({ request: { ...request, model_ref: { ...request.model_ref, digest: 'sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' } }, manifest }), /model_ref/);
 
-console.log('model_execution_conformance=passed cases=5 cross_target=identical');
+const timeout = normalizeInferenceResponse({ request, response: { status: 'timeout', model_ref: request.model_ref } });
+assert.equal(timeout.retryable, true);
+const invalid = normalizeInferenceResponse({ request, response: { status: 'invalid_input', reason_code: 'schema_mismatch' } });
+assert.equal(invalid.retryable, false);
+const unavailable = normalizeInferenceResponse({ request, response: { status: 'model_unavailable' } });
+assert.equal(unavailable.retryable, true);
+
+console.log('model_execution_conformance=passed cases=8 cross_target=identical');
