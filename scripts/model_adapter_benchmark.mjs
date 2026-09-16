@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
-import { createSyntheticModelAdapter, sha256Digest } from '../src/model-adapter.mjs';
+import { createModelAdapter, createSyntheticModelAdapter, sha256Digest } from '../src/model-adapter.mjs';
 
 const root = path.resolve('sounds samples');
 const manifest = JSON.parse(fs.readFileSync(path.join(root, 'manifest.json'), 'utf8'));
@@ -21,4 +21,9 @@ for (const sample of manifest.samples) {
   assert.equal(response.status, 'ok');
   verified += 1;
 }
-console.log(`model_adapter_benchmark=passed samples=${verified} labels=unverified transport_only=true`);
+let executedAfterAbort = false;
+const guarded = createModelAdapter({ execute: () => { executedAfterAbort = true; return { status: 'ok' }; } });
+const cancelled = await guarded.infer({ request: {}, manifest: {}, signal: { aborted: true } });
+assert.equal(cancelled.status, 'cancelled');
+assert.equal(executedAfterAbort, false);
+console.log(`model_adapter_benchmark=passed samples=${verified} cancellation=guarded labels=unverified transport_only=true`);
