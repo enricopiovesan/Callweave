@@ -21,6 +21,8 @@ production model.
 - Synthetic CPU conformance executor covers success, cancellation, bounds,
   digest mismatch, and native/WASM normalized-output equivalence. It is a test
   fixture only and contains no production model weights.
+- Portable JSON Schema for manifest/request/response envelopes is checked by
+  `npm run model:execution:schema`.
 
 ## Next implementation steps
 
@@ -31,7 +33,9 @@ production model.
 3. ~~Build a tiny synthetic CPU-WASM executor fixture (no ML weights) to test
    request/response conformance and resource failures.~~ **Complete:**
    `npm run model:execution:conformance` passes five cases.
-4. Add cross-target normalized-response tests for browser and native adapters.
+4. Add cross-target normalized-response tests for browser and native adapters
+   once those adapters exist; the synthetic harness already proves normalized
+   output equivalence across CPU/WASM placements.
 5. Create a model-artifact candidate evaluation record for any real model only
    after explicit license, redistribution, digest, ABI, and memory approval.
 6. Publish the pure validators/normalizers to the Registry as generic
