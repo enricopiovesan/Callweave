@@ -18,6 +18,9 @@ production model.
   policy without downloading or activating an artifact.
 - Deterministic happy/unhappy fixtures are integrated into the pure capability
   suite; 24 fixtures and the business-logic smoke suite pass.
+- Synthetic CPU conformance executor covers success, cancellation, bounds,
+  digest mismatch, and native/WASM normalized-output equivalence. It is a test
+  fixture only and contains no production model weights.
 
 ## Next implementation steps
 
@@ -25,8 +28,9 @@ production model.
    envelope using `traverse/MODEL_EXECUTION_SLICE_REQUEST.md`.
 2. Map these pure contracts to the final Traverse WIT/ABI once the runtime
    surface is approved.
-3. Build a tiny synthetic CPU-WASM executor fixture (no ML weights) to test
-   request/response conformance and resource failures.
+3. ~~Build a tiny synthetic CPU-WASM executor fixture (no ML weights) to test
+   request/response conformance and resource failures.~~ **Complete:**
+   `npm run model:execution:conformance` passes five cases.
 4. Add cross-target normalized-response tests for browser and native adapters.
 5. Create a model-artifact candidate evaluation record for any real model only
    after explicit license, redistribution, digest, ABI, and memory approval.

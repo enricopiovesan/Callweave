@@ -3,10 +3,30 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "model:execution:conformance": "node scripts/model_execution_conformance_smoke.mjs",
     "mac-host:run": "bash scripts/run_callweave_mac_host.sh",
     "birdnet:readiness": "node scripts/birdnet-readiness.mjs",
     "perch:readiness": "node scripts/perch-readiness.mjs",
     "analyze:audio": "node scripts/analyze-audio.mjs",
+    "audio-evidence:schema:validate": "node scripts/validate_audio_evidence_schema.mjs",
+    "audio:pcm-transform:build": "bash capabilities/audio.pcm-transform/build-fixture.sh",
+    "audio:pcm-transform:smoke": "node scripts/audio_pcm_transform_smoke.mjs",
+    "audio:pcm-window:build": "bash capabilities/audio.pcm-window/build-fixture.sh",
+    "audio:pcm-window:smoke": "node scripts/audio_pcm_window_smoke.mjs",
+    "audio:wav-pcm16-decode:build": "bash capabilities/audio.wav-pcm16-decode/build-fixture.sh",
+    "audio:wav-pcm16-decode:smoke": "node scripts/audio_wav_pcm16_decode_smoke.mjs",
+    "audio:privacy-risk-evaluate:build": "bash capabilities/audio.privacy-risk-evaluate/build-fixture.sh",
+    "audio:privacy-risk-evaluate:smoke": "node scripts/audio_privacy_risk_evaluate_smoke.mjs",
+    "artifact:shareability-classify:build": "bash capabilities/artifact.shareability-classify/build-fixture.sh",
+    "artifact:shareability-classify:smoke": "node scripts/artifact_shareability_classify_smoke.mjs",
+    "model:activation-plan-create:build": "bash capabilities/model.activation-plan-create/build-fixture.sh",
+    "model:activation-plan-create:smoke": "node scripts/model_activation_plan_create_smoke.mjs",
+    "retention:action-plan-create:build": "bash capabilities/retention.action-plan-create/build-fixture.sh",
+    "retention:action-plan-create:smoke": "node scripts/retention_action_plan_create_smoke.mjs",
+    "candidate:policy-evaluate:build": "bash capabilities/candidate.policy-evaluate/build-fixture.sh",
+    "candidate:policy-evaluate:smoke": "node scripts/candidate_policy_evaluate_smoke.mjs",
+    "event:append-plan-create:build": "bash capabilities/event.append-plan-create/build-fixture.sh",
+    "event:append-plan-create:smoke": "node scripts/event_append_plan_create_smoke.mjs",
     "business-logic:smoke": "node scripts/business-logic-smoke.mjs",
     "audio-source-configure:compatible:smoke": "node scripts/audio-source-configure-compatible-smoke.mjs",
     "model-manage:compatible:smoke": "node scripts/model-manage-compatible-smoke.mjs",
@@ -116,5 +136,9 @@
   "dependencies": {
     "ffmpeg-static": "^5.3.0",
     "onnxruntime-web": "^1.23.2"
+  },
+  "devDependencies": {
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1"
   }
 }
