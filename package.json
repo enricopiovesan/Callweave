@@ -8,6 +8,7 @@
     "model:adapter:benchmark": "node scripts/model_adapter_benchmark.mjs",
     "model:ensemble:smoke": "node scripts/model_ensemble_smoke.mjs",
     "model:package:manifest": "node scripts/model_package_manifest_smoke.mjs",
+    "model:candidates:validate": "node scripts/validate_model_candidates.mjs",
     "mac-host:run": "bash scripts/run_callweave_mac_host.sh",
     "birdnet:readiness": "node scripts/birdnet-readiness.mjs",
     "perch:readiness": "node scripts/perch-readiness.mjs",

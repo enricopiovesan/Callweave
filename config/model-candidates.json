@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0.0",
+  "policy": "evaluation-only-until-explicit-artifact-approval",
+  "candidates": [
+    {
+      "candidate_id": "birdnet",
+      "family": "bird",
+      "source": "https://github.com/birdnet-team/BirdNET-Analyzer",
+      "license_status": "conditional",
+      "commercial_use": "forbidden",
+      "artifact_status": "not_pinned",
+      "deployment_status": "evaluation_only",
+      "notes": "Released model terms are CC BY-NC-SA 4.0; verify exact model release before packaging."
+    },
+    {
+      "candidate_id": "nocturne-v1.2-teacher",
+      "family": "non-bird",
+      "source": "https://huggingface.co/stratus-labs/nocturne-v1.2-teacher",
+      "license_status": "declared",
+      "commercial_use": "conditional",
+      "artifact_status": "not_pinned",
+      "deployment_status": "evaluation_only",
+      "notes": "Broad non-bird research model; validate size, ABI conversion, and field performance."
+    },
+    {
+      "candidate_id": "insectnet-research",
+      "family": "insect",
+      "source": "https://huggingface.co/TheVortexProject/insectnet-research-0.2.0-perch2",
+      "license_status": "conditional",
+      "commercial_use": "forbidden",
+      "artifact_status": "not_pinned",
+      "deployment_status": "review_only",
+      "notes": "Research artifact; model card explicitly reports field limitations."
+    },
+    {
+      "candidate_id": "golden-mammal-custom",
+      "family": "mammal",
+      "source": "https://github.com/microsoft/MegaDetector-Acoustic",
+      "license_status": "to_be_determined",
+      "commercial_use": "unknown",
+      "artifact_status": "training_required",
+      "deployment_status": "not_started",
+      "notes": "Use the MIT-licensed training framework with separately licensed Golden-relevant recordings."
+    }
+  ]
+}
