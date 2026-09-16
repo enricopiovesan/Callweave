@@ -1,0 +1,33 @@
+{
+  "kind": "capability_package",
+  "schema_version": "1.0.0",
+  "package_id": "audio.pcm-window",
+  "version": "1.0.0",
+  "summary": "Extract bounded, deterministic overlapping PCM windows.",
+  "capability_ref": {
+    "id": "audio.pcm-window",
+    "version": "1.0.0",
+    "contract_path": "contract.json"
+  },
+  "binary": {
+    "format": "wasm",
+    "path": "artifacts/pcm-window.wasm",
+    "abi_version": "1.0.0",
+    "expected_digest": "fnv1a64:6a90152a65592098"
+  },
+  "source": {
+    "language": "rust",
+    "path": "src/agent.rs",
+    "entry": "run"
+  },
+  "constraints": {
+    "host_api_access": "none",
+    "network_access": "forbidden",
+    "filesystem_access": "none",
+    "maximum_input_bytes": 4000000,
+    "maximum_pcm_samples": 480000,
+    "maximum_windows": 64,
+    "maximum_output_pcm_samples": 480000
+  },
+  "known_compositions": []
+}

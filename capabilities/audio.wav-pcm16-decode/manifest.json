@@ -1,0 +1,32 @@
+{
+  "kind": "capability_package",
+  "schema_version": "1.0.0",
+  "package_id": "audio.wav-pcm16-decode",
+  "version": "1.0.0",
+  "summary": "Decode bounded RIFF/WAVE integer PCM16 into interleaved samples.",
+  "capability_ref": {
+    "id": "audio.wav-pcm16-decode",
+    "version": "1.0.0",
+    "contract_path": "contract.json"
+  },
+  "binary": {
+    "format": "wasm",
+    "path": "artifacts/wav-pcm16-decode.wasm",
+    "abi_version": "1.0.0",
+    "expected_digest": "fnv1a64:5798957217f1ba3f"
+  },
+  "source": {
+    "language": "rust",
+    "path": "src/agent.rs",
+    "entry": "run"
+  },
+  "constraints": {
+    "host_api_access": "none",
+    "network_access": "forbidden",
+    "filesystem_access": "none",
+    "maximum_input_bytes": 4000000,
+    "maximum_wav_bytes": 2000000,
+    "maximum_pcm_samples": 480000
+  },
+  "known_compositions": []
+}

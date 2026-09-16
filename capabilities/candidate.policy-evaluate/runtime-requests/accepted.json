@@ -1,0 +1,19 @@
+{
+  "kind": "runtime_request",
+  "schema_version": "1.0.0",
+  "request_id": "candidate-policy-evaluate-accepted",
+  "intent": { "capability_id": "candidate.policy-evaluate", "capability_version": "1.0.0" },
+  "input": {
+    "candidate_id": "item:42",
+    "candidate_status": "available",
+    "policy": {
+      "version": "policy-1",
+      "accepted_statuses": ["available", "expected"],
+      "excluded_statuses": ["blocked"],
+      "unlisted_status_action": "review"
+    }
+  },
+  "lookup": { "scope": "prefer_private", "allow_ambiguity": false },
+  "context": { "requested_target": "local", "caller": "candidate-policy-evaluate-smoke" },
+  "governing_spec": "006-runtime-request-execution"
+}

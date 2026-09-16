@@ -1,0 +1,30 @@
+{
+  "kind": "capability_package",
+  "schema_version": "1.0.0",
+  "package_id": "audio.privacy-risk-evaluate",
+  "version": "1.0.0",
+  "summary": "Evaluate supplied bounded privacy-risk evidence against configurable policy.",
+  "capability_ref": {
+    "id": "audio.privacy-risk-evaluate",
+    "version": "1.0.0",
+    "contract_path": "contract.json"
+  },
+  "binary": {
+    "format": "wasm",
+    "path": "artifacts/privacy-risk-evaluate.wasm",
+    "abi_version": "1.0.0",
+    "expected_digest": "fnv1a64:3d768e46c25984bc"
+  },
+  "source": {
+    "language": "rust",
+    "path": "src/agent.rs",
+    "entry": "run"
+  },
+  "constraints": {
+    "host_api_access": "none",
+    "network_access": "forbidden",
+    "filesystem_access": "none",
+    "maximum_input_bytes": 8192
+  },
+  "known_compositions": []
+}

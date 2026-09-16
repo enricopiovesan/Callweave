@@ -1,0 +1,18 @@
+{
+  "kind": "runtime_request",
+  "schema_version": "1.0.0",
+  "request_id": "audio-pcm-window-overlap-mono",
+  "intent": { "capability_id": "audio.pcm-window", "capability_version": "1.0.0" },
+  "input": {
+    "sample_rate_hz": 8000,
+    "channel_count": 1,
+    "source_offset_ms": 1000,
+    "window_duration_ms": 2,
+    "hop_duration_ms": 1,
+    "is_final_chunk": true,
+    "samples_s16": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
+  },
+  "lookup": { "scope": "prefer_private", "allow_ambiguity": false },
+  "context": { "requested_target": "local", "caller": "audio-pcm-window-smoke" },
+  "governing_spec": "006-runtime-request-execution"
+}
