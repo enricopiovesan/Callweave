@@ -1,0 +1,6 @@
+{
+  "record_refs": ["record:example-17"],
+  "transition": {"to": "accepted"},
+  "idempotency_key": "first-key",
+  "idempotency_key": "duplicate-key"
+}

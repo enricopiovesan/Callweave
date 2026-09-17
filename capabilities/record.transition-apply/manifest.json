@@ -1,0 +1,29 @@
+{
+  "kind": "capability_package",
+  "schema_version": "1.0.0",
+  "package_id": "record.transition-apply",
+  "version": "1.0.0",
+  "summary": "Portable WASM package for one mediated append-only record transition.",
+  "capability_ref": {
+    "id": "record.transition-apply",
+    "version": "1.0.0",
+    "contract_path": "contract.json"
+  },
+  "binary": {
+    "format": "wasm",
+    "path": "artifacts/transition-apply.wasm",
+    "abi_version": "1.0.0",
+    "expected_digest": "fnv1a64:7171b74a4a5866c4"
+  },
+  "source": {
+    "language": "rust",
+    "path": "src/agent.rs",
+    "entry": "run"
+  },
+  "constraints": {
+    "host_api_access": "exception_required",
+    "network_access": "forbidden",
+    "filesystem_access": "none"
+  },
+  "known_compositions": []
+}

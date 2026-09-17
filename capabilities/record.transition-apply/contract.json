@@ -1,0 +1,156 @@
+{
+  "kind": "capability_contract",
+  "schema_version": "1.0.0",
+  "id": "record.transition-apply",
+  "namespace": "record",
+  "name": "transition-apply",
+  "version": "1.0.0",
+  "lifecycle": "active",
+  "owner": {
+    "team": "callweave",
+    "contact": "https://github.com/enricopiovesan"
+  },
+  "licensing": {
+    "spdx_expression": "MIT OR Apache-2.0",
+    "commercial_use": "allowed",
+    "redistribution": "allowed",
+    "attribution_required": true,
+    "verification": { "status": "maintainer-declared" },
+    "license_files": ["LICENSE-MIT", "LICENSE-APACHE"],
+    "source_url": "https://github.com/enricopiovesan/Callweave"
+  },
+  "summary": "Apply an idempotent transition to a versioned record through a declared state-store connector.",
+  "description": "A portable WASM capability that shapes and submits one append-only record transition through the generic Traverse state-store connector. It never selects a database, path, host, provider, credential, application, or workflow.",
+  "use_cases": [
+    {
+      "scenario": "As a record operator, I want an accepted transition appended exactly once so that a retry does not create a second history entry.",
+      "input_example": {
+        "record_refs": ["record:example-17"],
+        "transition": { "to": "accepted" },
+        "expected_version": 4,
+        "idempotency_key": "transition-example-17-v4"
+      },
+      "output_example": {
+        "result_ref": "state:example-transition-18",
+        "version": 5,
+        "replay": false,
+        "result_class": "appended"
+      },
+      "happy": true,
+      "persona_ref": "record-operator"
+    },
+    {
+      "scenario": "As a record operator, I want an idempotent replay reported without another state change so that recovery is safe.",
+      "input_example": {
+        "record_refs": ["record:example-17"],
+        "transition": { "to": "accepted" },
+        "expected_version": 4,
+        "idempotency_key": "transition-example-17-v4"
+      },
+      "output_example": {
+        "result_ref": "state:example-transition-18",
+        "version": 5,
+        "replay": true,
+        "result_class": "replayed"
+      },
+      "happy": true,
+      "persona_ref": "record-operator"
+    },
+    {
+      "scenario": "As a record operator, I want an unavailable connector represented by a stable non-secret result so that host details are never exposed.",
+      "input_example": {
+        "record_refs": ["record:example-17"],
+        "transition": { "to": "accepted" },
+        "idempotency_key": "transition-unavailable"
+      },
+      "output_example": {
+        "result_ref": "",
+        "version": 0,
+        "replay": false,
+        "result_class": "connector_unavailable"
+      },
+      "happy": false,
+      "persona_ref": "record-operator"
+    }
+  ],
+  "inputs": {
+    "schema": {
+      "type": "object",
+      "required": ["record_refs", "transition", "idempotency_key"],
+      "properties": {
+        "record_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "transition": { "type": "object" },
+        "expected_version": { "type": "integer", "minimum": 0 },
+        "idempotency_key": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    }
+  },
+  "outputs": {
+    "schema": {
+      "type": "object",
+      "required": ["result_ref", "version", "replay", "result_class"],
+      "properties": {
+        "result_ref": { "type": "string" },
+        "version": { "type": "integer", "minimum": 0 },
+        "replay": { "type": "boolean" },
+        "result_class": {
+          "type": "string",
+          "enum": ["appended", "replayed", "connector_unavailable", "invalid_request"]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "preconditions": [
+    { "id": "record-reference-present", "description": "At least one opaque record reference is supplied." },
+    { "id": "idempotency-key-present", "description": "A non-empty idempotency key is supplied for the requested transition." },
+    { "id": "state-store-activated", "description": "The host has activated a compatible Traverse state-store binding." }
+  ],
+  "postconditions": [
+    { "id": "append-or-stable-result", "description": "The result represents one host append, an idempotent replay, or a stable non-secret inability to submit." },
+    { "id": "no-host-detail-leakage", "description": "No database path, provider, credential, or private configuration is returned." }
+  ],
+  "side_effects": [
+    { "kind": "state_change", "description": "Requests an idempotent append-only transition through the declared state-store connector." }
+  ],
+  "emits": [],
+  "consumes": [],
+  "permissions": [
+    { "id": "record.transition-apply.execute" }
+  ],
+  "execution": {
+    "binary_format": "wasm",
+    "entrypoint": { "kind": "wasi-command", "command": "run" },
+    "preferred_targets": ["local", "browser", "edge", "device"],
+    "constraints": {
+      "host_api_access": "exception_required",
+      "network_access": "forbidden",
+      "filesystem_access": "none"
+    }
+  },
+  "policies": [
+    { "id": "idempotent-transition-policy" },
+    { "id": "host-details-forbidden" }
+  ],
+  "dependencies": [],
+  "connector_requirements": [
+    { "connector_id": "traverse.state-store", "version": "^1.0.0" }
+  ],
+  "provenance": {
+    "source": "greenfield",
+    "author": "Callweave",
+    "created_at": "2026-09-05T00:00:00Z",
+    "spec_ref": "104-mediated-connector-invocation@1.0.0",
+    "adr_refs": ["ADR-0039"],
+    "exception_refs": ["mediated-connector-invoke"]
+  },
+  "evidence": [],
+  "state_schema": null,
+  "service_type": "stateless",
+  "permitted_targets": ["local", "browser", "edge", "device"]
+}

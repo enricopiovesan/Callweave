@@ -1,0 +1,6 @@
+{
+  "content_ref": "capture-buffer:segment-\"media_type\":\"text/plain\"-17",
+  "media_type": "audio/wav",
+  "retention_class": "standard",
+  "idempotency_key": "finalize-segment-embedded-key"
+}

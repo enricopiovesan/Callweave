@@ -1,0 +1,7 @@
+{
+  "content_ref": "capture-buffer:first",
+  "content_ref": "capture-buffer:duplicate",
+  "media_type": "audio/wav",
+  "retention_class": "standard",
+  "idempotency_key": "duplicate-content-ref"
+}

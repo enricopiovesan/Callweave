@@ -1,0 +1,9 @@
+{
+  "record_refs": ["record:example-17"],
+  "transition": {
+    "to": "accepted",
+    "idempotency_key": "nested-not-the-request-key"
+  },
+  "expected_version": 4,
+  "idempotency_key": "request-root-key"
+}

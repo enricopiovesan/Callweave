@@ -1,0 +1,29 @@
+{
+  "kind": "capability_package",
+  "schema_version": "1.0.0",
+  "package_id": "artifact.recording-finalize",
+  "version": "1.0.0",
+  "summary": "Portable WASM package for mediated immutable recording finalization.",
+  "capability_ref": {
+    "id": "artifact.recording-finalize",
+    "version": "1.0.0",
+    "contract_path": "contract.json"
+  },
+  "binary": {
+    "format": "wasm",
+    "path": "artifacts/recording-finalize.wasm",
+    "abi_version": "1.0.0",
+    "expected_digest": "fnv1a64:cb4505ed4f810ff7"
+  },
+  "source": {
+    "language": "rust",
+    "path": "src/agent.rs",
+    "entry": "run"
+  },
+  "constraints": {
+    "host_api_access": "exception_required",
+    "network_access": "forbidden",
+    "filesystem_access": "none"
+  },
+  "known_compositions": []
+}
