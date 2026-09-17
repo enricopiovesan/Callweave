@@ -116,8 +116,12 @@ a.runtime-button { display: inline-flex; align-items: center; text-decoration: n
 @media (max-width:680px) {
   /* Figma uses three equal touch targets.  Grid prevents the inherited desktop
      button width and the former raised-record control from skewing the middle item. */
-  .mobile-nav { display:grid !important; grid-template-columns:repeat(3,minmax(0,1fr)); justify-content:initial; }
-  .mobile-nav .nav-item,.mobile-nav .mobile-listen { width:100% !important; min-width:0; }
+  .mobile-nav { display:grid !important; grid-template-columns:repeat(3,minmax(0,1fr)) !important; justify-content:initial; }
+  .mobile-nav .nav-item,.mobile-nav .mobile-listen { display:flex !important; flex-direction:column; align-items:center; justify-content:center; width:100% !important; min-width:0; position:relative; }
+  .mobile-nav .nav-item:nth-child(1) { grid-column:1; }.mobile-nav .mobile-listen { grid-column:2; }.mobile-nav .nav-item:nth-child(3) { grid-column:3; }
+  /* The active underline must not become a grid row: it was shifting the
+     Sessions icon and label above the other two items. */
+  .mobile-nav .nav-item.is-active:after { position:absolute; bottom:5px; left:50%; margin:0; transform:translateX(-50%); }
   .page.sessions-page { padding-top:42px; }
   .sessions-heading { display:block; }
   .sessions-title-row { display:flex; align-items:center; justify-content:space-between; gap:12px; }
