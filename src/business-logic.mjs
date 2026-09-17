@@ -136,56 +136,6 @@ export function assessCalibration({ cases, policy }) {
   return { policy_version: policy.version, case_count: cases.length, correct_count: correct, accuracy_millis: positives.length ? Math.round(correct * 1000 / positives.length) : null, labeled_positive_count: expected, predicted_positive_count: predicted, unknown_count: cases.filter(item => !item.predicted_taxon).length, policy: 'descriptive_only_no_threshold_selected' };
 }
 
-/**
- * Deterministic quality facts for one bounded PCM window. The capability is
- * taxonomy-neutral: it measures the supplied signal and never names a sound,
- * calls a model, accesses a connector, or persists bytes.
- */
-export function evaluateSignalQuality({ samples, sample_rate_hz, window_start_ms = 0, policy }) {
-  requireValue(policy?.version, 'policy.version');
-  if (!Array.isArray(samples) || samples.length === 0 || samples.length > (policy.max_samples ?? 48000)) throw new Error('bounded samples are required');
-  if (!Number.isInteger(sample_rate_hz) || sample_rate_hz < 1) throw new Error('sample_rate_hz must be positive');
-  if (!Number.isInteger(window_start_ms) || window_start_ms < 0) throw new Error('window_start_ms must be non-negative');
-  if (samples.some(value => !Number.isInteger(value) || value < -32768 || value > 32767)) throw new Error('samples must be signed PCM16');
-  const peak = samples.reduce((m, value) => Math.max(m, Math.abs(value)), 0);
-  const sumSquares = samples.reduce((sum, value) => sum + value * value, 0);
-  const rms = Math.sqrt(sumSquares / samples.length);
-  const rms_milli = Math.round(rms * 1000 / 32768);
-  const peak_milli = Math.round(peak * 1000 / 32768);
-  const clipping_samples = samples.filter(value => Math.abs(value) >= (policy.clip_threshold ?? 32760)).length;
-  const zero_crossings = samples.slice(1).reduce((count, value, index) => count + ((samples[index] < 0 && value >= 0) || (samples[index] >= 0 && value < 0) ? 1 : 0), 0);
-  const clip_ratio_milli = Math.round(clipping_samples * 1000 / samples.length);
-  const quiet = rms_milli < (policy.quiet_rms_milli ?? 5);
-  const clipped = clip_ratio_milli >= (policy.clip_ratio_milli ?? 10);
-  const state = clipped ? 'clipped' : quiet ? 'quiet' : 'active';
-  return { policy_version: policy.version, sample_count: samples.length, sample_rate_hz, window_start_ms, window_end_ms: window_start_ms + Math.round(samples.length * 1000 / sample_rate_hz), rms_milli, peak_milli, clipping_samples, clip_ratio_milli, zero_crossings, state, reason: clipped ? 'clip_ratio_exceeded' : quiet ? 'below_quiet_threshold' : 'signal_present' };
-}
-
-/**
- * Convert ordered quality windows into contiguous, lossless activity
- * intervals. Every input window is represented exactly once; this capability
- * only classifies signal activity and does not infer a species.
- */
-export function classifyActivityIntervals({ windows, policy }) {
-  requireValue(policy?.version, 'policy.version');
-  if (!Array.isArray(windows) || windows.length === 0 || windows.length > (policy.max_windows ?? 4096)) throw new Error('bounded windows are required');
-  const ordered = windows.map((window, index) => {
-    if (!Number.isInteger(window?.start_ms) || !Number.isInteger(window?.end_ms) || window.end_ms <= window.start_ms) throw new Error('invalid window interval');
-    if (!['quiet', 'active', 'clipped'].includes(window.state)) throw new Error('invalid quality state');
-    return { ...window, _index: index };
-  }).sort((a, b) => a.start_ms - b.start_ms || a._index - b._index);
-  const label = window => window.state === 'quiet' ? 'silence' : window.state === 'clipped' ? 'clipped' : (window.background_dominant ? 'background' : 'possible-event');
-  const intervals = [];
-  for (const window of ordered) {
-    const activity = label(window);
-    const previous = intervals.at(-1);
-    if (previous && previous.activity === activity && previous.end_ms === window.start_ms) previous.end_ms = window.end_ms;
-    else intervals.push({ start_ms: window.start_ms, end_ms: window.end_ms, activity, window_count: 1 });
-    if (previous && previous.activity === activity && previous.end_ms === window.end_ms) previous.window_count += 1;
-  }
-  return { policy_version: policy.version, intervals, represented_window_count: ordered.length };
-}
-
 /** Normalize model-independent detection facts into stable evidence records. */
 export function normalizeInferenceEvidence({ detections, source_ref, policy }) {
   requireValue(source_ref, 'source_ref'); requireValue(policy?.version, 'policy.version');

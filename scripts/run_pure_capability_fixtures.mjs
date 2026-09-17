@@ -19,7 +19,6 @@ import {
   evaluateModelCompatibility,
   evaluateModelArtifactPolicy,
 } from '../src/model-execution.mjs';
-import { evaluateSignalQuality, classifyActivityIntervals } from '../src/business-logic.mjs';
 
 const root = new URL('..', import.meta.url).pathname;
 const fixtureRoot = join(root, 'fixtures', 'pure-capabilities');
@@ -39,8 +38,6 @@ const capabilities = {
   'model-inference-response-normalize': normalizeInferenceResponse,
   'model-compatibility-evaluate': evaluateModelCompatibility,
   'model-artifact-policy-evaluate': evaluateModelArtifactPolicy,
-  'audio-signal-quality-evaluate': evaluateSignalQuality,
-  'audio-activity-interval-classify': classifyActivityIntervals,
 };
 
 const project = (value, paths) => Object.fromEntries(paths.map((path) => [path, getPath(value, path)]));
