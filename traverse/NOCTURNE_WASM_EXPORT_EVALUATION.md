@@ -38,6 +38,7 @@ Results:
 - ONNX Runtime CPU probe: passed, output shape `(1, 2196)`, all values finite
 - FP32 ONNX size: approximately 335 MB
 - FP16 ONNX export: passed; ONNX Runtime CPU probe passed; size approximately 168 MB
+- Temporary FP16 probe digest: `70c1325c8a71ae3697a4d314f2bfa8861c169d8494d2e4e03d60a2cf8cf22126`
 - Dynamic INT8 probe: not portable with the tested runtime because quantization
   produced `ConvInteger` nodes with no CPU implementation. Do not publish that
   variant without a different quantization strategy and target-runtime test.
