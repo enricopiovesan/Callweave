@@ -37,6 +37,10 @@ Results:
 - ONNX export (opset 17): passed
 - ONNX Runtime CPU probe: passed, output shape `(1, 2196)`, all values finite
 - FP32 ONNX size: approximately 335 MB
+- FP16 ONNX export: passed; ONNX Runtime CPU probe passed; size approximately 168 MB
+- Dynamic INT8 probe: not portable with the tested runtime because quantization
+  produced `ConvInteger` nodes with no CPU implementation. Do not publish that
+  variant without a different quantization strategy and target-runtime test.
 
 The probe intentionally exports the model stage only. Its input is a normalized
 `[batch, 1024, 128]` log-mel tensor. Audio decoding, resampling, mel extraction,
@@ -48,13 +52,16 @@ the model contract stays reusable across targets.
 The model is technically portable, but the FP32 artifact is too large to treat as
 the default browser/WASM package. The next bounded work item is:
 
-1. export an INT8 (or other supported) ONNX variant with calibration data;
-2. run parity and accuracy checks against the FP32 reference;
-3. benchmark memory, fuel, latency, and cancellation under Traverse's exact-model
+1. evaluate the FP16 candidate first (the only reduced-size variant that passed
+   the current CPU runtime);
+2. if needed, export an INT8 variant using an operator set supported by the target
+   WASM runtime, with calibration data;
+3. run parity and accuracy checks against the FP32 reference;
+4. benchmark memory, fuel, latency, and cancellation under Traverse's exact-model
    execution contract on CPU-WASM;
-4. create a Spec 138 manifest containing the exact digest, schema/ABI versions,
+5. create a Spec 138 manifest containing the exact digest, schema/ABI versions,
    limits, license, attribution, and offline policy;
-5. publish only after the artifact and rights review is approved.
+6. publish only after the artifact and rights review is approved.
 
 Until those steps pass, keep Nocturne marked `evaluation-only` and do not add its
 weights or generated ONNX file to Git.
