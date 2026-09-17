@@ -1,0 +1,28 @@
+{
+  "kind": "capability_package",
+  "schema_version": "1.0.0",
+  "package_id": "audio.signal-quality-evaluate",
+  "version": "1.0.0",
+  "summary": "Portable WASM PCM16 quality measurement.",
+  "capability_ref": {
+    "id": "audio.signal-quality-evaluate",
+    "version": "1.0.0",
+    "contract_path": "contract.json"
+  },
+  "binary": {
+    "format": "wasm",
+    "path": "artifacts/signal-quality-evaluate.wasm",
+    "abi_version": "1.0.0",
+    "expected_digest": "sha256:9b15887c90f8bb93a2bbdfc87c5ea89f5e03f8c9de3e1c3dd5c2071dcd0236af"
+  },
+  "source": {
+    "language": "rust",
+    "path": "src/agent.rs",
+    "entry": "run"
+  },
+  "constraints": {
+    "host_api_access": "none",
+    "network_access": "forbidden",
+    "filesystem_access": "none"
+  }
+}
