@@ -64,6 +64,12 @@ resolve before any promotion are exact preprocessing parity with the training
 code, clip/window selection, and domain mismatch between web audio and field
 recordings.
 
+The candidate-label check also found that `Ursus arctos` (grizzly bear) is absent
+from the 2,196-label vocabulary. On the available first windows, sigmoid scores
+for `Cervus canadensis`, `Ursus americanus`, and `Puma concolor` were approximately
+0.051, 0.00016, and 0.017 respectively. These observations make Nocturne a useful
+non-bird research baseline, not a complete mammal detector for Callweave.
+
 The model is technically portable, but the FP32 artifact is too large to treat as
 the default browser/WASM package. The next bounded work item is:
 
