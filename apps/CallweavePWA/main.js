@@ -58,12 +58,12 @@ function shell(content) {
 
 function listeningSession() {
   return `<main class="listening-session" aria-labelledby="session-title">
-    <header class="session-head"><span class="listening-chip"><i></i>Listening</span><div class="session-wordmark">Callweave</div></header>
+    <header class="session-head"><span class="listening-chip"><i></i>Listening</span><div class="session-wordmark">CallWeave</div></header>
     <section class="session-center">
       <h1 id="session-elapsed" class="session-elapsed">00:00</h1>
       <p class="session-place">${place()}</p>
       <div class="session-wave" aria-label="Live microphone level">${bars(15)}</div>
-      <p class="session-copy">Keep this browser open. Callweave is capturing nearby calls in high fidelity.</p>
+      <p class="session-copy">Keep the phone still. CallWeave is capturing nearby calls in high fidelity.</p>
     </section>
     <footer class="session-footer"><button class="stop-listening" type="button" data-action="stop-listening" aria-label="Stop recording"><span></span></button><b>Stop recording</b></footer>
   </main>`;
