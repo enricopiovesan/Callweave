@@ -1,5 +1,8 @@
 import { inputLevel, isRecording, microphoneStatus, recordingAvailability, startRecording, stopRecording } from './web-recording.js';
 import { listLocalRecordings, saveLocalRecording } from './local-recordings.js';
+import { TraverseRuntimeClient, runtimeConfigFromHost } from './runtime-client.js';
+import { commandResultView, runtimeEventView } from './runtime-events.js';
+import { captureRequestPayload, nativeHostFromBridge } from './native-host.js';
 
 const app = document.querySelector('#app');
 let placeName = localStorage.getItem('callweave-place-name') || 'Golden, BC';
@@ -20,6 +23,10 @@ let selectedFinding = null;
 let installPrompt = null;
 let sessionStartedAt = null;
 let sessionTicker = null;
+let runtimeClient = null;
+let runtimeSession = null;
+let runtimeSubscription = null;
+let runtimeState = null;
 
 function place() {
   return placeName.replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[character]);
@@ -216,6 +223,16 @@ async function startListeningFromUserAction() {
   button.disabled = true;
   button.textContent = 'Starting…';
   try {
+    const plan = await requestCapturePlan();
+    // When a Traverse host is present, it owns the opaque request payload and
+    // the state transition.  A browser adapter must wait for the machine's
+    // declared capture plan; it must not fabricate one from UI values.
+    if (plan && plan.state !== 'capture_planned') {
+      if (target) target.textContent = 'Preparing this listening session…';
+      button.disabled = false;
+      button.textContent = 'Start listening';
+      return;
+    }
     await startRecording();
     sessionStartedAt = Date.now();
     route = 'session';
@@ -225,6 +242,57 @@ async function startListeningFromUserAction() {
     button.textContent = 'Start listening';
     if (target) target.textContent = microphoneErrorMessage(error);
   }
+}
+
+async function connectTraverseRuntime() {
+  const config = runtimeConfigFromHost();
+  if (!config) return;
+  try {
+    runtimeClient = new TraverseRuntimeClient(config);
+    const health = await runtimeClient.health();
+    if (health.status !== 'connected') runtimeClient = null;
+  } catch {
+    runtimeClient = null;
+  }
+}
+
+async function requestCapturePlan() {
+  if (!runtimeClient) return null;
+  const payload = await captureRequestPayload(nativeHostFromBridge());
+  if (!payload) {
+    const error = new Error('This device has not provided a recording request to Callweave yet.');
+    error.code = 'capture_request_unavailable';
+    throw error;
+  }
+  const accepted = commandResultView(await runtimeClient.dispatchCommand({
+    command: 'request_capture', payload, sessionId: runtimeSession?.sessionId,
+  }));
+  runtimeSession = accepted;
+  runtimeState = accepted.state;
+  renderRuntimeState();
+  runtimeSubscription?.close?.();
+  if (accepted.executionId) {
+    runtimeSubscription = runtimeClient.subscribe({
+      executionId: accepted.executionId,
+      onMessage: event => { runtimeState = runtimeEventView(event).state; renderRuntimeState(); },
+      onError: () => { runtimeSubscription = null; },
+      onClose: () => { runtimeSubscription = null; },
+    });
+  }
+  return accepted;
+}
+
+function renderRuntimeState() {
+  const target = document.querySelector('#runtime-status') ?? document.querySelector('#listening-status');
+  if (!target || !runtimeState) return;
+  const copy = {
+    planning: 'Preparing this listening session…',
+    capture_planned: 'Listening is ready on this device.',
+    request_rejected: 'This listening session could not be prepared. Try again.',
+  }[runtimeState];
+  if (!copy) return;
+  target.hidden = false;
+  target.textContent = copy;
 }
 
 async function stopListeningFromUserAction() {
@@ -253,6 +321,7 @@ function microphoneErrorMessage(error) {
   if (error?.name === 'NotFoundError') return 'No microphone is available. Connect or select one, then try again.';
   if (error?.name === 'NotReadableError') return 'Your microphone is being used by another app. Close that app, then try again.';
   if (error?.message === 'recording_unavailable') return 'This browser cannot record audio here. Use a current browser over HTTPS or localhost.';
+  if (error?.code === 'capture_request_unavailable') return error.message;
   return 'Listening could not start. Check your microphone and try again.';
 }
 
@@ -296,3 +365,5 @@ function appendListeningMessage(message) {
 listLocalRecordings()
   .then(items => { recordings = items; render(); })
   .catch(() => { /* The app stays usable if private browser storage is unavailable. */ });
+
+connectTraverseRuntime();
