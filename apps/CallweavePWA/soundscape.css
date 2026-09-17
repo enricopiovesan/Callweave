@@ -82,3 +82,47 @@ a.runtime-button { display: inline-flex; align-items: center; text-decoration: n
   .sessions-heading h1 { font-size:2.65rem; }.sessions-heading span { padding:.36rem .6rem; font-size:.65rem; }.sessions-subtitle { margin:1rem 0 1.4rem; line-height:1.25; }.sessions-list { gap:.65rem; }.session-card { min-height:6.55rem; padding:.95rem 2.75rem .9rem .95rem; border-radius:1rem; }.sessions-start { position:static; width:100%; margin-top:1rem; min-height:3.25rem; }
   .listening-session { padding:1.5rem; background:#121311; }.session-head { align-items:center; }.listening-chip { display:inline-flex; align-items:center; gap:.42rem; padding:.38rem .65rem; color:#fff; border-radius:99px; background:#2b2c29; font-size:.65rem; font-weight:850; letter-spacing:.04em; text-transform:uppercase; }.listening-chip i { width:.42rem; height:.42rem; border-radius:50%; background:#e16b5b; }.session-wordmark { font-size:.78rem; font-weight:800; }.session-center { padding:0 0 2rem; }.session-elapsed { margin:0; color:#fff; font:850 3.15rem/.9 ui-sans-serif,system-ui,sans-serif; letter-spacing:-.07em; }.session-place { margin:.6rem 0 4rem; color:#969792; font-size:.88rem; }.session-wave { display:flex; align-items:center; justify-content:center; gap:.38rem; height:4.7rem; }.session-wave i { display:block; width:.43rem; height:var(--h); min-height:.55rem; max-height:4rem; border-radius:99px; background:#fff; }.session-wave i:nth-child(3n) { background:#50683c; }.session-copy { margin:4.1rem 0 0; padding:1rem; color:#bbbcb7; background:#242521; border-radius:1rem; font-size:.78rem; }.session-footer { display:grid; justify-items:center; gap:.6rem; }.stop-listening { display:grid; width:4.8rem; min-width:0; height:4.8rem; place-items:center; padding:0; color:#fff; border:4px solid #fff; border-radius:50%; background:#50683c; }.stop-listening span { width:1.3rem; height:1.3rem; border-radius:50%; background:#50683c; }.session-footer b { font-size:.78rem; }
 }
+
+/* Figma 2026-09 desktop/mobile alignment.  The shell is intentionally only
+   presentational; session data and recording state remain supplied elsewhere. */
+@media (min-width:681px) {
+  .app-shell { min-height:100dvh; display:grid; grid-template-columns:260px minmax(0,1fr); padding:0; background:#f4f4f2; }
+  .rail { position:sticky; top:0; display:flex; width:auto; height:100dvh; padding:30px 22px; flex-direction:column; border-right:1px solid #deded9; background:#f8f8f6; }
+  .rail .wordmark { padding:0 12px; color:#10110f; font-size:17px; }
+  .rail nav { display:flex; flex:1; flex-direction:column; gap:7px; margin-top:44px; }
+  .rail .nav-item,.rail .rail-listen { display:flex; align-items:center; justify-content:flex-start; width:100%; min-height:44px; padding:0 13px; gap:12px; color:#222; border-radius:10px; background:transparent; font-size:14px; font-weight:650; }
+  .rail .nav-item svg,.rail .rail-listen svg { width:18px; height:18px; }
+  .rail .nav-item.is-active { color:#10110f; background:#e5eadf; }
+  .rail .rail-listen { color:#fff; background:#10110f; border:1px solid #10110f; }
+  .rail-spacer { flex:1; }
+  .main { min-width:0; }
+  .page.sessions-page { max-width:none; min-height:100dvh; padding:58px 70px 76px; }
+  .sessions-heading { align-items:flex-start; }
+  .sessions-title-row { display:flex; align-items:center; gap:18px; }
+  .sessions-heading h1,.settings-heading h1,.detail-heading h1 { color:#10110f; font:500 clamp(52px,5vw,72px)/.94 Georgia, 'Times New Roman', serif; letter-spacing:-.065em; }
+  .sessions-heading span { padding:8px 13px; background:#50683c; font-size:12px; }
+  .sessions-subtitle { max-width:380px; margin:14px 0 0; color:#74746f; font-size:15px; line-height:1.35; }
+  .sessions-start { position:static; display:inline-flex; align-items:center; gap:8px; width:auto; min-height:42px; margin:4px 0 0; padding:0 18px; background:#10110f; font-size:13px; }
+  .sessions-start svg { width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.8; }
+  .recent-label { margin:66px 0 18px; color:#73736e; font-size:11px; font-weight:850; letter-spacing:.12em; text-transform:uppercase; }
+  .sessions-list { grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+  .session-card { min-height:150px; padding:22px 44px 22px 22px; border-radius:16px; box-shadow:0 4px 18px rgba(16,17,15,.08); }
+  .session-card span { font-size:12px; }.session-card b { font-size:16px; }.session-card small { font-size:12px; }.session-card i { top:20px; right:22px; }
+  .session-empty { grid-column:1/-1; min-height:150px; place-content:center; border-radius:16px; }
+  .settings-page,.detail-page { max-width:760px; padding:58px 70px; }
+}
+
+@media (max-width:680px) {
+  .page.sessions-page { padding-top:42px; }
+  .sessions-heading { display:block; }
+  .sessions-title-row { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .sessions-heading h1,.settings-heading h1,.detail-heading h1 { color:#10110f; font-family:Georgia, 'Times New Roman', serif; font-weight:500; letter-spacing:-.065em; }
+  .sessions-heading h1 { font-size:46px; }
+  .sessions-subtitle { max-width:265px; margin:13px 0 17px; font-size:13px; }
+  .recent-label { display:none; }
+  .sessions-list { gap:11px; }
+  .session-card { min-height:102px; padding:16px 38px 15px 17px; border-radius:15px; }
+  .sessions-start { display:flex; align-items:center; justify-content:center; gap:7px; min-height:51px; margin-top:18px; }
+  .sessions-start svg { width:16px; height:16px; fill:none; stroke:currentColor; }
+  .analysis-screen h1 { font-family:ui-sans-serif,system-ui,sans-serif; letter-spacing:-.055em; }
+}

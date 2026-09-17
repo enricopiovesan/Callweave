@@ -61,9 +61,9 @@ struct ContentView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
-            .padding(22)
-            .frame(width: 160)
-            .background(.white)
+            .padding(24)
+            .frame(width: 220)
+            .background(Color.white.opacity(0.72))
             Divider()
             Group {
                 switch route {
@@ -73,27 +73,33 @@ struct ContentView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .frame(minWidth: 760, minHeight: 560)
+        .frame(minWidth: 900, minHeight: 620)
         .foregroundStyle(CallweaveTheme.ink)
         .background(CallweaveTheme.canvas)
         .tint(CallweaveTheme.olive)
     }
 
     private var listeningHome: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            Text("Sessions")
-                .font(.system(size: 52, weight: .bold, design: .default))
-                .tracking(-1.5)
-            Text("Your field recordings, woven into wildlife observations.")
-                .font(.body)
-                .foregroundStyle(.secondary)
-
-            Button { startOrRequestPermission() } label: {
-                Text(host.availability == .permissionRequired ? "Allow microphone" : "Start listening")
-                    .fontWeight(.bold).frame(maxWidth: .infinity).padding(.vertical, 11)
+        VStack(alignment: .leading, spacing: 0) {
+            HStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack(spacing: 14) {
+                        Text("Sessions").font(.system(size: 56, weight: .regular, design: .serif)).tracking(-2.5)
+                        Text("\(host.events.filter { $0.kind == .stopped }.count) logs")
+                            .font(.caption.weight(.bold)).padding(.horizontal, 11).padding(.vertical, 7)
+                            .foregroundStyle(.white).background(CallweaveTheme.olive, in: Capsule())
+                    }
+                    Text("Your field recordings, woven into wildlife observations.")
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                Button { startOrRequestPermission() } label: {
+                    Label(host.availability == .permissionRequired ? "Allow microphone" : "Start listening", systemImage: "waveform")
+                        .fontWeight(.semibold).padding(.horizontal, 15).padding(.vertical, 10)
+                }
+                .buttonStyle(.plain).foregroundStyle(.white).background(CallweaveTheme.ink, in: Capsule())
+                .disabled(host.availability != .ready && host.availability != .permissionRequired)
             }
-            .buttonStyle(.plain).foregroundStyle(.white).background(CallweaveTheme.ink, in: Capsule())
-            .disabled(host.availability != .ready && host.availability != .permissionRequired)
 
             if let diagnostic = host.diagnosticMessage {
                 Text(diagnostic)
@@ -102,18 +108,24 @@ struct ContentView: View {
                     .textSelection(.enabled)
             }
 
-            if !host.events.filter({ $0.kind == .stopped }).isEmpty {
-                Text("Recent sessions").font(.headline).padding(.top, 4)
-                List(host.events.filter { $0.kind == .stopped }) { event in
-                    Button { selectedSession = event } label: {
-                        HStack { VStack(alignment: .leading, spacing: 5) { Text(event.occurredAt.formatted(date: .abbreviated, time: .shortened)).fontWeight(.bold); Text("Golden, BC · Saved on this Mac").font(.caption).foregroundStyle(.secondary) }; Spacer(); Image(systemName: "arrow.up.right").foregroundStyle(.secondary) }
-                        .padding(13).background(.white, in: RoundedRectangle(cornerRadius: 14))
-                    }.buttonStyle(.plain).listRowBackground(CallweaveTheme.canvas)
-                }.listStyle(.plain).frame(minHeight: 130)
+            Text("RECENT RECORDINGS").font(.caption.weight(.bold)).tracking(1.2).foregroundStyle(.secondary).padding(.top, 52).padding(.bottom, 15)
+            let sessions = host.events.filter { $0.kind == .stopped }
+            if sessions.isEmpty {
+                VStack(alignment: .leading, spacing: 8) { Text("Your first session starts here.").font(.headline); Text("Start listening to create a private recording at this place.").foregroundStyle(.secondary) }
+                    .frame(maxWidth: .infinity, minHeight: 140, alignment: .leading).padding(22).background(.white, in: RoundedRectangle(cornerRadius: 16))
+            } else {
+                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
+                    ForEach(sessions) { event in
+                        Button { selectedSession = event } label: {
+                            VStack(alignment: .leading, spacing: 10) { HStack { Text(event.occurredAt.formatted(date: .abbreviated, time: .shortened)).font(.caption.weight(.semibold)); Spacer(); Image(systemName: "arrow.up.right").font(.caption) }; Text("Golden, BC").font(.headline); Text("Saved locally").font(.caption).foregroundStyle(.secondary); Spacer() }
+                                .frame(maxWidth: .infinity, minHeight: 116, alignment: .leading).padding(18).background(.white, in: RoundedRectangle(cornerRadius: 16))
+                        }.buttonStyle(.plain)
+                    }
+                }
             }
             Spacer()
         }
-        .padding(42)
+        .padding(52)
         .sheet(item: $selectedSession) { session in ArchiveSessionView(host: host, session: session) }
     }
 
@@ -124,7 +136,7 @@ struct ContentView: View {
 
     private var settings: some View {
         VStack(alignment: .leading, spacing: 22) {
-            Text("Settings").font(.system(size: 52, weight: .bold)).tracking(-1.5)
+            Text("Settings").font(.system(size: 56, weight: .regular, design: .serif)).tracking(-2.5)
             VStack(alignment: .leading, spacing: 15) {
                 setting("Microphone", host.availability == .ready ? "Connected" : "Needs permission")
                 setting("Current location", "Golden, BC")

@@ -50,7 +50,7 @@ function listeningNavItem() {
 function shell(content) {
   return `<div class="app-shell">
     <header class="mobile-head"><div class="wordmark"><i></i>Callweave</div><button class="place-button" data-route="settings">${place()}</button></header>
-    <aside class="rail"><div class="wordmark"><i></i><b>Callweave</b></div><nav><button class="rail-listen runtime-button" type="button" data-action="start-listening">${icon('listen')}<span>Listen</span></button>${navItem('today','Sessions')}<div class="rail-spacer"></div>${navItem('settings','Settings')}</nav></aside>
+    <aside class="rail"><div class="wordmark"><i></i><b>Callweave</b></div><nav>${navItem('today','Sessions')}<button class="rail-listen runtime-button" type="button" data-action="start-listening">${icon('listen')}<span>Listen now</span></button><div class="rail-spacer"></div>${navItem('settings','Settings')}</nav></aside>
     <main class="main">${content}</main>
     <nav class="mobile-nav">${navItem('today','Sessions')}${listeningNavItem()}${navItem('settings','Settings')}</nav>
   </div>`;
@@ -82,8 +82,8 @@ function welcomePrivate() {
 }
 
 function today() {
-  const cards = recordings.length ? recordings.map(recording => `<button class="session-card" data-day="${recording.id}" data-route="day"><span>${recording.day} · ${recording.time}</span><b>${place()}</b><small>${formatDuration(recording.durationSeconds)} · ${recording.observations?.length ?? 0} observations</small><i>↗</i></button>`).join('') : `<section class="session-empty"><b>Your first session starts here.</b><span>Listen to the sounds around this place and keep the recording private.</span></section>`;
-  return shell(`<section class="page sessions-page"><header class="sessions-heading"><h1>Sessions</h1><span>${recordings.length} logs</span></header><p class="sessions-subtitle">Your field recordings, woven into wildlife observations.</p><div class="sessions-list">${cards}</div><p id="listening-status" class="runtime-status" aria-live="polite" hidden></p><button id="home-start-listening" class="sessions-start" type="button" data-action="start-listening">Start listening</button></section>`);
+  const cards = recordings.length ? recordings.map(recording => `<button class="session-card" data-day="${recording.id}" data-route="day"><span>${recording.day} · ${recording.time}</span><b>${place()}</b><small>${formatDuration(recording.durationSeconds)} · ${recording.observations?.length ?? 0} animals</small><i>↗</i></button>`).join('') : `<section class="session-empty"><b>Your first session starts here.</b><span>Start listening to create a private field recording at this place.</span></section>`;
+  return shell(`<section class="page sessions-page"><header class="sessions-heading"><div><div class="sessions-title-row"><h1>Sessions</h1><span>${recordings.length} logs</span></div><p class="sessions-subtitle">Your field recordings, woven into wildlife observations.</p></div><button id="home-start-listening" class="sessions-start" type="button" data-action="start-listening">${icon('listen')}Start listening</button></header><h2 class="recent-label">Recent recordings</h2><div class="sessions-list">${cards}</div><p id="listening-status" class="runtime-status" aria-live="polite" hidden></p></section>`);
 }
 
 function archive() {
