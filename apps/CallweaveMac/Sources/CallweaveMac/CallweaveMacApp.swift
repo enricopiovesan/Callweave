@@ -38,28 +38,17 @@ struct ContentView: View {
                 Label("Callweave", systemImage: "waveform")
                     .font(.headline)
                     .padding(.bottom, 28)
+                Text("LIBRARY").font(.caption2.weight(.bold)).foregroundStyle(.secondary).padding(.horizontal, 12).padding(.bottom, 2)
+                routeButton(.today)
                 Button { host.start() } label: {
                     Label("Listen", systemImage: "waveform")
                         .font(.system(size: 14, weight: .semibold))
-                        .frame(maxWidth: .infinity, minHeight: 42, alignment: .leading)
+                        .frame(maxWidth: .infinity, minHeight: 38, alignment: .leading)
                         .padding(.horizontal, 12)
                 }
-                .buttonStyle(.plain)
-                .foregroundStyle(.white)
-                .background(host.availability == .ready ? CallweaveTheme.ink : CallweaveTheme.olive.opacity(0.42), in: RoundedRectangle(cornerRadius: 9))
-                .disabled(host.availability != .ready)
-                .padding(.horizontal, 10)
-                ForEach(Route.allCases) { item in
-                    Button { route = item } label: {
-                        Label(item.rawValue, systemImage: item.symbol)
-                            .font(.system(size: 14, weight: .semibold))
-                            .frame(maxWidth: .infinity, minHeight: 42, alignment: .leading)
-                            .padding(.horizontal, 12)
-                    }
-                    .buttonStyle(.plain)
-                    .padding(.horizontal, 10)
-                    .background(route == item ? CallweaveTheme.olive.opacity(0.13) : .clear, in: RoundedRectangle(cornerRadius: 9))
-                }
+                .buttonStyle(.plain).padding(.horizontal, 10).disabled(host.availability != .ready)
+                Text("APPEARANCE").font(.caption2.weight(.bold)).foregroundStyle(.secondary).padding(.horizontal, 12).padding(.top, 16).padding(.bottom, 2)
+                routeButton(.settings)
                 Spacer()
                 Text("Golden, BC")
                     .font(.caption)
@@ -70,9 +59,13 @@ struct ContentView: View {
             .background(Color.white.opacity(0.72))
             Divider()
             Group {
-                switch route {
-                case .today: listeningHome
-                case .settings: settings
+                if let session = selectedSession {
+                    SessionDetailView(host: host, session: session) { selectedSession = nil }
+                } else {
+                    switch route {
+                    case .today: listeningHome
+                    case .settings: settings
+                    }
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -81,6 +74,18 @@ struct ContentView: View {
         .foregroundStyle(CallweaveTheme.ink)
         .background(CallweaveTheme.canvas)
         .tint(CallweaveTheme.olive)
+    }
+
+    @ViewBuilder private func routeButton(_ item: Route) -> some View {
+        Button { route = item; selectedSession = nil } label: {
+            Label(item.rawValue, systemImage: item.symbol)
+                .font(.system(size: 14, weight: .semibold))
+                .frame(maxWidth: .infinity, minHeight: 38, alignment: .leading)
+                .padding(.horizontal, 12)
+        }
+        .buttonStyle(.plain)
+        .padding(.horizontal, 10)
+        .background(route == item ? CallweaveTheme.olive.opacity(0.13) : .clear, in: RoundedRectangle(cornerRadius: 9))
     }
 
     private var listeningHome: some View {
@@ -101,7 +106,7 @@ struct ContentView: View {
                     Label(host.availability == .permissionRequired ? "Allow microphone" : "Start listening", systemImage: "waveform")
                         .fontWeight(.semibold).padding(.horizontal, 15).padding(.vertical, 10)
                 }
-                .buttonStyle(.plain).foregroundStyle(.white).background(CallweaveTheme.ink, in: Capsule())
+                .buttonStyle(.plain).foregroundStyle(.white).background(CallweaveTheme.olive, in: Capsule())
                 .disabled(host.availability != .ready && host.availability != .permissionRequired)
             }
 
@@ -130,7 +135,6 @@ struct ContentView: View {
             Spacer()
         }
         .padding(52)
-        .sheet(item: $selectedSession) { session in ArchiveSessionView(host: host, session: session) }
     }
 
     private func startOrRequestPermission() {
@@ -158,19 +162,20 @@ struct ContentView: View {
     }
 }
 
-private struct ArchiveSessionView: View {
+private struct SessionDetailView: View {
     @ObservedObject var host: RecordingHost
     let session: RecordingHost.Event
-    @Environment(\.dismiss) private var dismiss
+    let onBack: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 22) {
             HStack {
-                Button("Close") { dismiss() }
+                Button { onBack() } label: { Label("Sessions", systemImage: "chevron.left") }
+                    .buttonStyle(.plain)
                 Spacer()
             }
-            Text("Listening session")
-                .font(.system(size: 40, weight: .bold))
+            Text("Session")
+                .font(.system(size: 48, weight: .regular, design: .serif))
             Text(session.occurredAt.formatted(date: .complete, time: .shortened))
                 .foregroundStyle(.secondary)
             VStack(alignment: .leading, spacing: 10) {
@@ -193,8 +198,7 @@ private struct ArchiveSessionView: View {
             .background(.quaternary, in: RoundedRectangle(cornerRadius: 14))
             Spacer()
         }
-        .padding(32)
-        .frame(minWidth: 460, minHeight: 360)
+        .padding(52)
     }
 }
 
