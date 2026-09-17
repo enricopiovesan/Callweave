@@ -50,6 +50,20 @@ the model contract stays reusable across targets.
 
 ## Decision and next work
 
+## Initial real-audio probe (not an accuracy claim)
+
+The four user-supplied animal clips were decoded with the existing project FFmpeg
+path and passed through a developer mel implementation and the strict PyTorch
+checkpoint. This is a pipeline smoke test only; the files are marked
+`user_supplied_unverified` in the sample manifest.
+
+The expected labels were not recovered in the first ten predictions for the bear,
+cougar, and elk clips (the elk clip's top result was `Vulpes vulpes`). This is a
+calibration failure, not evidence that those animals are absent. Likely causes to
+resolve before any promotion are exact preprocessing parity with the training
+code, clip/window selection, and domain mismatch between web audio and field
+recordings.
+
 The model is technically portable, but the FP32 artifact is too large to treat as
 the default browser/WASM package. The next bounded work item is:
 
