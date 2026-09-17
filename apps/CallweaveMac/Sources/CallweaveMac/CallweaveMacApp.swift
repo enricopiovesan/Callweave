@@ -40,21 +40,25 @@ struct ContentView: View {
                     .padding(.bottom, 28)
                 Button { host.start() } label: {
                     Label("Listen", systemImage: "waveform")
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.vertical, 8)
+                        .font(.system(size: 14, weight: .semibold))
+                        .frame(maxWidth: .infinity, minHeight: 42, alignment: .leading)
+                        .padding(.horizontal, 12)
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.plain)
+                .foregroundStyle(.white)
+                .background(host.availability == .ready ? CallweaveTheme.ink : CallweaveTheme.olive.opacity(0.42), in: RoundedRectangle(cornerRadius: 9))
                 .disabled(host.availability != .ready)
                 .padding(.horizontal, 10)
                 ForEach(Route.allCases) { item in
                     Button { route = item } label: {
                         Label(item.rawValue, systemImage: item.symbol)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.vertical, 8)
+                            .font(.system(size: 14, weight: .semibold))
+                            .frame(maxWidth: .infinity, minHeight: 42, alignment: .leading)
+                            .padding(.horizontal, 12)
                     }
                     .buttonStyle(.plain)
                     .padding(.horizontal, 10)
-                    .background(route == item ? Color.green.opacity(0.14) : .clear, in: RoundedRectangle(cornerRadius: 8))
+                    .background(route == item ? CallweaveTheme.olive.opacity(0.13) : .clear, in: RoundedRectangle(cornerRadius: 9))
                 }
                 Spacer()
                 Text("Golden, BC")
