@@ -65,8 +65,8 @@ The application manifest references only:
 3. Run CPU-WASM conformance, resource-limit, sandbox, and cross-target tests.
 4. Run the model-specific benchmark and attach the report.
 5. Open a Registry PR for the model package/reference using exact digests.
-6. Declare capability/artifact licensing and usage rights using the Registry
-   licensing metadata policy once approved.
+6. Declare capability/artifact licensing and usage rights using Registry Spec
+   025 (implemented in Registry 0.23.0).
 7. Pass Registry validation, spec alignment, governance, CLA, signing, and
    publication checks.
 8. After merge, verify the signed artifact and generated index entry.
@@ -89,12 +89,11 @@ The application manifest references only:
 ## Current execution order
 
 1. Keep `fixture.echo` as the runtime conformance artifact.
-2. Complete the Registry licensing metadata policy.
-3. Evaluate BirdNET as the first real bird specialist.
-4. Evaluate Nocturne as a broad non-bird research baseline.
-5. Assemble licensed Golden mammal data and train a compact specialist.
-6. Evaluate amphibian and insect specialists independently.
-7. Publish only candidates that pass all selection gates.
+2. Evaluate BirdNET as the first real bird specialist.
+3. Evaluate Nocturne as a broad non-bird research baseline.
+4. Assemble licensed Golden mammal data and train a compact specialist.
+5. Evaluate amphibian and insect specialists independently.
+6. Publish only candidates that pass all selection gates.
 
 ## Non-goals
 
