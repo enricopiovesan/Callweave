@@ -2,11 +2,11 @@
   "kind": "capability_package",
   "schema_version": "1.0.0",
   "package_id": "artifact.recording-finalize",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "summary": "Portable WASM package for mediated immutable recording finalization.",
   "capability_ref": {
     "id": "artifact.recording-finalize",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "contract_path": "contract.json"
   },
   "binary": {

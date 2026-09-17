@@ -2,11 +2,11 @@
   "kind": "capability_package",
   "schema_version": "1.0.0",
   "package_id": "record.transition-apply",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "summary": "Portable WASM package for one mediated append-only record transition.",
   "capability_ref": {
     "id": "record.transition-apply",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "contract_path": "contract.json"
   },
   "binary": {

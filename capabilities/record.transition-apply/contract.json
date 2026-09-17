@@ -4,7 +4,7 @@
   "id": "record.transition-apply",
   "namespace": "record",
   "name": "transition-apply",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "lifecycle": "active",
   "owner": {
     "team": "callweave",
