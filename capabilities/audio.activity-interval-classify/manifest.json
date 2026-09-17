@@ -1,0 +1,28 @@
+{
+  "kind": "capability_package",
+  "schema_version": "1.0.0",
+  "package_id": "audio.activity-interval-classify",
+  "version": "1.0.0",
+  "summary": "Portable WASM activity interval classifier.",
+  "capability_ref": {
+    "id": "audio.activity-interval-classify",
+    "version": "1.0.0",
+    "contract_path": "contract.json"
+  },
+  "binary": {
+    "format": "wasm",
+    "path": "artifacts/activity-interval-classify.wasm",
+    "abi_version": "1.0.0",
+    "expected_digest": "sha256:946cf616601fc19f706aaee603367fa4c3be9fac5f7ab8367b5f00e2f1cdb084"
+  },
+  "source": {
+    "language": "rust",
+    "path": "src/agent.rs",
+    "entry": "run"
+  },
+  "constraints": {
+    "host_api_access": "none",
+    "network_access": "forbidden",
+    "filesystem_access": "none"
+  }
+}
