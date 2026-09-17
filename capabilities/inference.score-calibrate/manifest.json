@@ -1,0 +1,28 @@
+{
+  "kind": "capability_package",
+  "schema_version": "1.0.0",
+  "package_id": "inference.score-calibrate",
+  "version": "1.0.0",
+  "summary": "Portable WASM score calibration.",
+  "capability_ref": {
+    "id": "inference.score-calibrate",
+    "version": "1.0.0",
+    "contract_path": "contract.json"
+  },
+  "binary": {
+    "format": "wasm",
+    "path": "artifacts/score-calibrate.wasm",
+    "abi_version": "1.0.0",
+    "expected_digest": "sha256:42f7817e369a811b3761315dd574f31b2020e5a9e2dab0307c24c59ae3b28539"
+  },
+  "source": {
+    "language": "rust",
+    "path": "src/agent.rs",
+    "entry": "run"
+  },
+  "constraints": {
+    "host_api_access": "none",
+    "network_access": "forbidden",
+    "filesystem_access": "none"
+  }
+}
