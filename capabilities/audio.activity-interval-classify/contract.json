@@ -1,7 +1,7 @@
 {
   "kind":"capability_contract","schema_version":"1.0.0","id":"audio.activity-interval-classify","namespace":"audio","name":"activity-interval-classify","version":"1.0.0","lifecycle":"experimental",
   "owner":{"team":"callweave","contact":"https://github.com/enricopiovesan"},
-  "authoring":{"method":"llm-assisted","source_revision":"pending-public-revision","test_evidence":"Callweave pure capability fixtures (lossless intervals, contiguous merge, invalid interval)","review":{"decision":"pending-qualified-review","pr":"pending","reviewer":"traverse-registry-maintainer"}},
+  "authoring":{"method":"llm-assisted","source_revision":"35937ca","test_evidence":"Callweave WASM build and direct WASI smoke test","review":{"decision":"pending-qualified-review","pr":"pending","reviewer":"traverse-registry-maintainer"}},
   "summary":"Classify ordered quality windows into contiguous generic activity intervals.",
   "description":"Pure, taxonomy-neutral interval classification over quality facts. It preserves every input window exactly once and labels silence, background, possible-event, or clipped activity without naming a species or invoking a model.",
   "use_cases":[

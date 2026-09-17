@@ -1,7 +1,7 @@
 {
   "kind":"capability_contract","schema_version":"1.0.0","id":"audio.signal-quality-evaluate","namespace":"audio","name":"signal-quality-evaluate","version":"1.0.0","lifecycle":"experimental",
   "owner":{"team":"callweave","contact":"https://github.com/enricopiovesan"},
-  "authoring":{"method":"llm-assisted","source_revision":"pending-public-revision","test_evidence":"Callweave pure capability fixtures (active, clipped, malformed PCM16)","review":{"decision":"pending-qualified-review","pr":"pending","reviewer":"traverse-registry-maintainer"}},
+  "authoring":{"method":"llm-assisted","source_revision":"358857b","test_evidence":"Callweave WASM build and direct WASI smoke test","review":{"decision":"pending-qualified-review","pr":"pending","reviewer":"traverse-registry-maintainer"}},
   "summary":"Measure deterministic quality facts for one bounded PCM16 window.",
   "description":"Taxonomy-neutral signal measurement over supplied signed PCM16 samples. It computes RMS, peak, clipping, zero crossings, and a quality state without accessing a device, model, location, network, filesystem, or application workflow.",
   "use_cases":[
