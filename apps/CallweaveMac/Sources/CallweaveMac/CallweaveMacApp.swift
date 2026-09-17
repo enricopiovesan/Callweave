@@ -229,6 +229,7 @@ private struct ListeningSessionView: View {
                 HStack {
                     Spacer()
                     Button { host.stop() } label: { Circle().fill(CallweaveTheme.olive).frame(width: 70, height: 70).overlay(Circle().stroke(.white, lineWidth: 4)) }
+                        .buttonStyle(.plain)
                     Spacer()
                 }
                 .padding(32)
