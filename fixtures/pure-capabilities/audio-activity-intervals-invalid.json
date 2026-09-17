@@ -1,0 +1,5 @@
+{
+  "capability": "audio-activity-interval-classify",
+  "input": {"policy":{"version":"activity-1"},"windows":[{"start_ms":1000,"end_ms":0,"state":"quiet"}]},
+  "expect_error": "invalid window interval"
+}

@@ -1,0 +1,5 @@
+{
+  "capability": "audio-signal-quality-evaluate",
+  "input": {"samples":[0,40000],"sample_rate_hz":1000,"policy":{"version":"quality-1"}},
+  "expect_error": "samples must be signed PCM16"
+}
