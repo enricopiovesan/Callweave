@@ -1,0 +1,21 @@
+{
+  "connectors": [],
+  "artifacts": [
+    {
+      "contract_reference": "doc-approval.analyze@1.0.0",
+      "placement_target": "local",
+      "config_refs": [],
+      "candidates": [
+        {
+          "package_id": "doc-approval.analyze",
+          "package_version": "1.0.0",
+          "digest": "sha256:00d5abd218395f58fe876dc513bae1ac387f9aad60be39bfd08eb8952de50607",
+          "abi": "wasi-preview1",
+          "lifecycle": "active",
+          "placement": ["local"],
+          "execution_constraints": "verified Registry artifact activation evidence"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "app_id": "callweave.pwa",
+  "version": "0.2.0",
+  "schema_version": "1.0.0",
+  "workspace_defaults": {
+    "workspace_id": "callweave-pwa-absolute-local",
+    "registry_scope": "public"
+  },
+  "components": [
+    {
+      "component_id": "callweave.pwa.inference-request-prepare-component",
+      "version": "1.0.0",
+      "digest": "sha256:c3a9bf255f406ccf97fe08a5a0d096041939a7569938a29ef012235c2f6f7618",
+      "manifest_path": "components/inference-request-prepare/component.manifest.json"
+    }
+  ],
+  "workflows": [],
+  "connector_bindings": [{
+    "connector_id": "traverse.audio-input",
+    "version_range": "=1.0.0",
+    "config_ref": "host-managed-audio-input"
+  }],
+  "model_dependencies": [],
+  "config_schema": {
+    "type": "object",
+    "required": ["workspace_id"],
+    "properties": {
+      "workspace_id": { "type": "string" }
+    },
+    "additionalProperties": false
+  },
+  "default_config": {
+    "workspace_id": "callweave-pwa-absolute-local"
+  },
+  "placement_policy": {
+    "preferred_targets": ["local"],
+    "allow_fallback": false
+  },
+  "state_machine": {
+    "initial_state": "idle",
+    "states": [
+      { "id": "idle", "transitions": [{ "on": "request_permission", "to": "requesting_permission" }] },
+      {
+        "id": "requesting_permission",
+        "invoke": { "host_connector": "audio.permission.request" },
+        "transitions": [
+          { "on": "host_connector_succeeded", "to": "ready" },
+          { "on": "host_connector_failed", "to": "failed" },
+          { "on": "host_connector_cancelled", "to": "failed" },
+          { "on": "host_connector_timeout", "to": "failed" }
+        ]
+      },
+      { "id": "ready", "transitions": [{ "on": "start_listening", "to": "capturing" }] },
+      {
+        "id": "capturing",
+        "invoke": { "host_connector": "audio.capture" },
+        "transitions": [
+          { "on": "host_connector_succeeded", "to": "recorded" },
+          { "on": "host_connector_failed", "to": "failed" },
+          { "on": "host_connector_cancelled", "to": "failed" },
+          { "on": "host_connector_timeout", "to": "failed" }
+        ]
+      },
+      { "id": "recorded", "transitions": [{ "on": "analyze", "to": "model_unavailable" }] },
+      { "id": "model_unavailable", "transitions": [{ "on": "reset", "to": "idle" }] },
+      { "id": "failed", "transitions": [{ "on": "reset", "to": "idle" }] }
+    ]
+  },
+  "public_surfaces": ["browser"]
+}
