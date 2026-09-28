@@ -1,5 +1,6 @@
-import { inputLevel, isRecording, microphoneStatus, recordingAvailability, startRecording, stopRecording } from './web-recording.js';
+import { inputLevel, microphoneStatus } from './web-recording.js';
 import { listLocalRecordings, saveLocalRecording } from './local-recordings.js';
+import { CallweaveEmbeddedRuntime } from './embedded-runtime.js';
 
 const app = document.querySelector('#app');
 let placeName = localStorage.getItem('callweave-place-name') || 'Golden, BC';
@@ -20,6 +21,10 @@ let selectedFinding = null;
 let installPrompt = null;
 let sessionStartedAt = null;
 let sessionTicker = null;
+let runtimeState = null;
+let startAfterPermission = false;
+let analysisCommandScheduled = false;
+const embeddedRuntime = new CallweaveEmbeddedRuntime({ onEvent: handleRuntimeEvent, onRecordingSaved: handleRecordingSaved });
 
 function place() {
   return placeName.replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[character]);
@@ -50,7 +55,7 @@ function listeningNavItem() {
 function shell(content) {
   return `<div class="app-shell">
     <header class="mobile-head"><div class="wordmark"><i></i>Callweave</div><button class="place-button" data-route="settings">${place()}</button></header>
-    <aside class="rail"><div class="wordmark"><i></i><b>Callweave</b></div><nav><button class="rail-listen runtime-button" type="button" data-action="start-listening">${icon('listen')}<span>Listen</span></button>${navItem('today','Sessions')}<div class="rail-spacer"></div>${navItem('settings','Settings')}</nav></aside>
+    <aside class="rail"><div class="wordmark"><i></i><b>Callweave</b></div><nav>${navItem('today','Sessions')}<button class="rail-listen runtime-button" type="button" data-action="start-listening">${icon('listen')}<span>Listen now</span></button><div class="rail-spacer"></div>${navItem('settings','Settings')}</nav></aside>
     <main class="main">${content}</main>
     <nav class="mobile-nav">${navItem('today','Sessions')}${listeningNavItem()}${navItem('settings','Settings')}</nav>
   </div>`;
@@ -58,12 +63,12 @@ function shell(content) {
 
 function listeningSession() {
   return `<main class="listening-session" aria-labelledby="session-title">
-    <header class="session-head"><span class="listening-chip"><i></i>Listening</span><div class="session-wordmark">Callweave</div></header>
+    <header class="session-head"><span class="listening-chip"><i></i>Listening</span><div class="session-wordmark">CallWeave</div></header>
     <section class="session-center">
       <h1 id="session-elapsed" class="session-elapsed">00:00</h1>
       <p class="session-place">${place()}</p>
       <div class="session-wave" aria-label="Live microphone level">${bars(15)}</div>
-      <p class="session-copy">Keep this browser open. Callweave is capturing nearby calls in high fidelity.</p>
+      <p class="session-copy">Keep the phone still. CallWeave is capturing nearby calls in high fidelity.</p>
     </section>
     <footer class="session-footer"><button class="stop-listening" type="button" data-action="stop-listening" aria-label="Stop recording"><span></span></button><b>Stop recording</b></footer>
   </main>`;
@@ -82,8 +87,8 @@ function welcomePrivate() {
 }
 
 function today() {
-  const cards = recordings.length ? recordings.map(recording => `<button class="session-card" data-day="${recording.id}" data-route="day"><span>${recording.day} · ${recording.time}</span><b>${place()}</b><small>${formatDuration(recording.durationSeconds)} · ${recording.observations?.length ?? 0} observations</small><i>↗</i></button>`).join('') : `<section class="session-empty"><b>Your first session starts here.</b><span>Listen to the sounds around this place and keep the recording private.</span></section>`;
-  return shell(`<section class="page sessions-page"><header class="sessions-heading"><h1>Sessions</h1><span>${recordings.length} logs</span></header><p class="sessions-subtitle">Your field recordings, woven into wildlife observations.</p><div class="sessions-list">${cards}</div><p id="listening-status" class="runtime-status" aria-live="polite" hidden></p><button id="home-start-listening" class="sessions-start" type="button" data-action="start-listening">Start listening</button></section>`);
+  const cards = recordings.length ? recordings.map(recording => `<button class="session-card" data-day="${recording.id}" data-route="day"><span>${recording.day} · ${recording.time}</span><b>${place()}</b><small>${formatDuration(recording.durationSeconds)} · ${recording.observations?.length ?? 0} animals</small><i>↗</i></button>`).join('') : `<section class="session-empty"><b>Your first session starts here.</b><span>Start listening to create a private field recording at this place.</span></section>`;
+  return shell(`<section class="page sessions-page"><header class="sessions-heading"><div><div class="sessions-title-row"><h1>Sessions</h1><span>${recordings.length} logs</span></div><p class="sessions-subtitle">Your field recordings, woven into wildlife observations.</p></div><button id="home-start-listening" class="sessions-start" type="button" data-action="start-listening">${icon('listen')}Start listening</button></header><h2 class="recent-label">Recent recordings</h2><div class="sessions-list">${cards}</div><p id="listening-status" class="runtime-status" aria-live="polite" hidden></p></section>`);
 }
 
 function archive() {
@@ -99,7 +104,7 @@ function day() {
   const observations = recording.observations ?? [];
   const findings = observations.length
     ? `<div class="observation-list">${observations.map(item => `<div><span></span><strong>${escape(item.label)}</strong><small>Noted by you</small></div>`).join('')}</div>`
-    : `<p class="honest-empty">No animals have been identified yet. Add what you heard below.</p>`;
+    : `<p class="honest-empty">${recording.analysisStatus === 'model_unavailable' ? 'Wildlife analysis is not available on this device because no verified model has been provisioned. You can still add what you heard below.' : 'No animals have been identified yet. Add what you heard below.'}</p>`;
   return shell(`<section class="page detail-page"><button class="back-link" data-route="today">← Sessions</button><header class="detail-heading"><p>Session</p><h1>${place()}</h1><span>${recording.day} · ${recording.time} · ${formatDuration(recording.durationSeconds)}</span></header><section class="day-summary"><div class="summary-wave">${bars(27)}</div>${audio}</section><section class="observation-section"><div class="observation-heading"><p>Recognized · ${observations.length}</p><button class="text-link" type="button" data-action="focus-observation">＋ Add animal</button></div>${findings}<form id="observation-form" class="observation-form" data-recording-id="${recording.id}"><label for="observation-name">What else did you hear?</label><div><input id="observation-name" name="observation" maxlength="60" placeholder="Search or enter an animal" required><button class="runtime-button" type="submit">Add</button></div></form></section></section>`);
 }
 
@@ -114,11 +119,11 @@ function finding() {
 }
 
 function settings() {
-  return shell(`<section class="page settings-page"><header class="settings-heading"><h1>Settings</h1></header><section class="settings-tile"><p>⌁ &nbsp; Microphone <b>›</b></p><strong id="mic-heading">Checking microphone</strong><small id="mic-status" aria-live="polite">Checking browser permission and available inputs…</small><button class="text-link" type="button" data-action="refresh-microphone">Refresh microphone</button></section><section class="settings-tile"><p>⌖ &nbsp; Location <b>›</b></p><form id="place-form" class="place-form"><label for="place-name">Current place</label><div><input id="place-name" name="placeName" value="${place()}" maxlength="60" required><button class="runtime-button" type="submit">Save</button></div></form><small>This label remains on this device.</small></section><section class="privacy-setting"><div><strong>Private recordings</strong><small>Audio and your notes stay on this device.</small></div><span aria-hidden="true"></span></section></section>`);
+  return shell(`<section class="page settings-page"><header class="settings-heading"><h1>Settings</h1></header><div class="settings-grid"><section class="settings-tile"><p>⌁ &nbsp; Microphone input <b>›</b></p><strong id="mic-heading">Checking microphone</strong><small id="mic-status" aria-live="polite">Checking browser permission and available inputs…</small><button class="text-link" type="button" data-action="refresh-microphone">Refresh microphone</button></section><section class="settings-tile"><p>⌖ &nbsp; Location permissions <b>›</b></p><strong>While using the app</strong><small>Used to improve nearby species suggestions and label your sessions.</small></section></div><div class="settings-grid settings-grid-secondary"><section class="settings-tile companion-tile"><p>Callweave goes with you</p><small>Web Dashboard · Native iOS · Apple Watch Node · Native Android (Beta)</small></section><section class="privacy-setting"><div><strong>Precise location active</strong><small>High-fidelity recommendations for back-country sessions.</small></div><span aria-hidden="true"></span></section></div><section class="settings-tile location-editor"><p>Current place <b>⌖</b></p><form id="place-form" class="place-form"><div><input id="place-name" name="placeName" value="${place()}" maxlength="60" required><button class="runtime-button" type="submit">Save</button></div></form><small>This label remains on this device.</small></section></section>`);
 }
 
 function analysis() {
-  return `<main class="analysis-screen" aria-labelledby="analysis-title"><header>Callweave / Analysis</header><section class="analysis-content"><h1 id="analysis-title">We’re weaving<br>the calls.</h1><p id="analysis-status" aria-live="polite">Your recording is saved. Waiting for the local analysis capability to begin.</p><div class="analysis-dots" aria-label="Analysis waiting"><i></i><i></i><i></i><i class="is-current"></i><i></i><i></i><i></i></div></section><footer><div class="analysis-progress-meta"><span>Analysis waiting</span><b>Recording saved</b></div><div class="analysis-progress" role="progressbar" aria-label="Analysis waiting" aria-valuetext="Waiting for analysis capability"></div><p>Results will appear here only when the analyzer returns them.</p></footer></main>`;
+  return `<main class="analysis-screen" aria-labelledby="analysis-title"><header>Callweave / Analysis</header><section class="analysis-content"><h1 id="analysis-title">We’re weaving<br>the calls.</h1><p id="analysis-status" aria-live="polite">Checking whether a verified wildlife model is available on this device.</p><div class="analysis-dots" aria-label="Checking analysis availability"><i></i><i></i><i></i><i class="is-current"></i><i></i><i></i><i></i></div></section><footer><div class="analysis-progress-meta"><span>Checking analysis</span><b>Working locally</b></div><div class="analysis-progress is-indeterminate" role="progressbar" aria-label="Checking analysis availability" aria-valuetext="Checking local model availability"></div><p>Callweave will open the session when the runtime returns its outcome.</p></footer></main>`;
 }
 
 function setup() {
@@ -153,7 +158,8 @@ function render() {
 document.addEventListener('click', event => {
   const routeButton = event.target.closest('[data-route]');
   if (routeButton) { if (routeButton.dataset.day) selectedDay = routeButton.dataset.day; if (routeButton.dataset.finding) selectedFinding = routeButton.dataset.finding; route = routeButton.dataset.route; render(); return; }
-  if (event.target.closest('[data-action="start-listening"]')) { startListeningFromUserAction(); return; }
+  const startControl = event.target.closest('[data-action="start-listening"]');
+  if (startControl) { startListeningFromUserAction(startControl); return; }
   if (event.target.closest('[data-action="stop-listening"]')) { stopListeningFromUserAction(); return; }
   if (event.target.closest('[data-action="refresh-microphone"]')) { refreshMicrophoneStatus('#mic-status'); return; }
   if (event.target.closest('[data-action="focus-observation"]')) { document.querySelector('#observation-name')?.focus(); return; }
@@ -205,47 +211,97 @@ async function requestInstallation() {
   await prompt.prompt();
 }
 
-async function startListeningFromUserAction() {
+async function startListeningFromUserAction(control) {
   const target = document.querySelector('#runtime-status') ?? document.querySelector('#listening-status');
-  const button = document.querySelector('#capture-plan') ?? document.querySelector('[data-action="start-listening"]');
+  const button = control ?? document.querySelector('#capture-plan') ?? document.querySelector('[data-action="start-listening"]');
   if (!button) return;
   if (target) {
     target.hidden = false;
     target.textContent = 'Starting listening…';
   }
   button.disabled = true;
-  button.textContent = 'Starting…';
   try {
-    await startRecording();
-    sessionStartedAt = Date.now();
-    route = 'session';
-    render();
+    // A completed runtime session is immutable. Start the next foreground
+    // recording with a new local Traverse session.
+    if (['model_unavailable', 'failed', 'results'].includes(runtimeState)) {
+      embeddedRuntime.resetSession();
+      runtimeState = null;
+    }
+    if (runtimeState === 'ready') {
+      await embeddedRuntime.send('start_listening');
+    } else {
+      startAfterPermission = true;
+      await embeddedRuntime.send('request_permission');
+    }
   } catch (error) {
     button.disabled = false;
-    button.textContent = 'Start listening';
     if (target) target.textContent = microphoneErrorMessage(error);
+    // Keep icons and labels defined by the responsive shell intact.
+    render();
+    setRuntimeStatus(microphoneErrorMessage(error));
   }
 }
 
 async function stopListeningFromUserAction() {
-  const startedAt = sessionStartedAt;
-  const stopped = await stopRecording();
-  if (startedAt && stopped.blob?.size) {
-    const recording = {
-      id: crypto.randomUUID(),
-      startedAt,
-      day: formatDay(startedAt),
-      time: formatTime(startedAt),
-      durationSeconds: Math.max(1, Math.round((Date.now() - startedAt) / 1000)),
-      audio: stopped.blob,
-    };
-    await saveLocalRecording(recording);
-    recordings = [recording, ...recordings];
-    selectedDay = recording.id;
+  await embeddedRuntime.stop();
+}
+
+function handleRecordingSaved(recording) {
+  recordings = [recording, ...recordings];
+  selectedDay = recording.id;
+}
+
+function handleRuntimeEvent(event) {
+  if (event.event_type !== 'state_changed') return;
+  runtimeState = event.data?.state ?? null;
+  if (runtimeState === 'requesting_permission') setRuntimeStatus('Allowing microphone access…');
+  if (runtimeState === 'ready') {
+    if (startAfterPermission) {
+      startAfterPermission = false;
+      void embeddedRuntime.send('start_listening').catch(error => setRuntimeStatus(microphoneErrorMessage(error)));
+      return;
+    }
+    render();
+    setRuntimeStatus('Microphone is ready. Start listening when you are.');
+    return;
   }
-  sessionStartedAt = null;
-  route = 'analysis';
-  render();
+  if (runtimeState === 'recorded') {
+    sessionStartedAt = null;
+    route = 'analysis';
+    render();
+    if (!analysisCommandScheduled) {
+      analysisCommandScheduled = true;
+      setTimeout(() => {
+        analysisCommandScheduled = false;
+        void embeddedRuntime.send('analyze').catch(error => setRuntimeStatus(microphoneErrorMessage(error)));
+      // Keep the transition visible while the runtime owns the subsequent
+      // analysis command and its terminal outcome.
+      }, 1400);
+    }
+    return;
+  }
+  if (runtimeState === 'capturing') { sessionStartedAt = Date.now(); route = 'session'; render(); }
+  if (runtimeState === 'analyzing') { sessionStartedAt = null; route = 'analysis'; render(); }
+  if (runtimeState === 'model_unavailable') {
+    sessionStartedAt = null;
+    const recording = recordings.find(item => item.id === selectedDay);
+    if (recording) {
+      const updated = { ...recording, analysisStatus: 'model_unavailable' };
+      recordings = recordings.map(item => item.id === selectedDay ? updated : item);
+      void saveLocalRecording(updated);
+    }
+    route = 'day';
+    render();
+  }
+  if (runtimeState === 'results') { route = 'day'; render(); }
+  if (runtimeState === 'failed') { sessionStartedAt = null; route = 'today'; render(); const target = document.querySelector('#listening-status'); if (target) { target.hidden = false; target.textContent = 'Listening could not complete on this device.'; } }
+}
+
+function setRuntimeStatus(message) {
+  const target = document.querySelector('#runtime-status') ?? document.querySelector('#listening-status');
+  if (!target) return;
+  target.hidden = false;
+  target.textContent = message;
 }
 
 function microphoneErrorMessage(error) {
@@ -253,6 +309,7 @@ function microphoneErrorMessage(error) {
   if (error?.name === 'NotFoundError') return 'No microphone is available. Connect or select one, then try again.';
   if (error?.name === 'NotReadableError') return 'Your microphone is being used by another app. Close that app, then try again.';
   if (error?.message === 'recording_unavailable') return 'This browser cannot record audio here. Use a current browser over HTTPS or localhost.';
+  if (error?.code === 'capture_request_unavailable') return error.message;
   return 'Listening could not start. Check your microphone and try again.';
 }
 
