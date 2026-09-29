@@ -11,6 +11,17 @@ surfaces. Today it can run the browser-safe checks directly:
 The other checks remain Node-only because they depend on local file-system
 scripts rather than browser-safe modules.
 
+## Model binding
+
+The browser app is model-neutral until Traverse supplies a signed exact-ref
+package. Application model pins use the Spec 044/138 shape validated by
+`src/model-dependency.mjs`: model ID, version, manifest digest, `wasm-cpu`
+target, offline policy, and license/commercial-use rights. The browser must
+not infer an animal from a recording when no verified package is installed.
+
+See [`MODEL_LICENSING.md`](../../MODEL_LICENSING.md) for the user-facing
+license and attribution policy.
+
 ## Run
 
 Serve the repository root and open:

@@ -1,0 +1,12 @@
+{
+  "model_id": "fixture.classifier",
+  "version": "1.0.0",
+  "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "offline_allowed": true,
+  "target": "wasm-cpu",
+  "rights": {
+    "license_id": "Apache-2.0",
+    "commercial_use": "allowed"
+  },
+  "key_id": "ed25519:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+}
