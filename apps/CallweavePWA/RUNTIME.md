@@ -1,6 +1,6 @@
 # Callweave PWA runtime boundary
 
-Callweave embeds Traverse 0.13.0 directly in the browser. The UI dispatches
+Callweave embeds Traverse 0.14.0 directly in the browser. The UI dispatches
 runtime-declared commands and renders ordered runtime events; it does not own a
 recording state machine, transition, policy, or analysis result.
 
