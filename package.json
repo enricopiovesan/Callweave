@@ -14,6 +14,7 @@
     "mac-host:run": "bash scripts/run_callweave_mac_host.sh",
     "birdnet:readiness": "node scripts/birdnet-readiness.mjs",
     "perch:readiness": "node scripts/perch-readiness.mjs",
+    "yamnet:evaluate": "node scripts/yamnet-evaluate.mjs",
     "analyze:audio": "node scripts/analyze-audio.mjs",
     "audio-evidence:schema:validate": "node scripts/validate_audio_evidence_schema.mjs",
     "audio:pcm-transform:build": "bash capabilities/audio.pcm-transform/build-fixture.sh",
