@@ -41,6 +41,16 @@
       "artifact_status": "training_required",
       "deployment_status": "not_started",
       "notes": "Use the MIT-licensed training framework with separately licensed Golden-relevant recordings."
+    },
+    {
+      "candidate_id": "yamnet-onnx",
+      "family": "broad-sound-event",
+      "source": "https://huggingface.co/audiomagic/yamnet-onnx",
+      "license_status": "declared",
+      "commercial_use": "allowed",
+      "artifact_status": "evaluation_artifact_pinned",
+      "deployment_status": "evaluation_only",
+      "notes": "Apache-2.0 model with AudioSet CC-BY-4.0 labels; broad event gate, not species identification."
     }
   ]
 }

@@ -1,0 +1,22 @@
+{
+  "model_id": "audio.yamnet.event-gate",
+  "version": "1.0.0-onnx-evaluation",
+  "source_url": "https://huggingface.co/audiomagic/yamnet-onnx",
+  "source_revision": "f25b741",
+  "upstream_source": "https://tfhub.dev/google/yamnet/1",
+  "artifact": {
+    "file": "yamnet.onnx",
+    "sha256": "d3835ffbbd4a1bb3e777f0ca217b5007907f5171dd5d17c4236b95b2af8f908e"
+  },
+  "license": {
+    "model": "Apache-2.0",
+    "ontology": "CC-BY-4.0",
+    "commercial_use": "allowed",
+    "redistribution": "allowed",
+    "attribution_required": true
+  },
+  "target": "onnx-evaluation-only",
+  "role": "broad-sound-event-gate",
+  "status": "evaluation-only",
+  "production_pin": false
+}
