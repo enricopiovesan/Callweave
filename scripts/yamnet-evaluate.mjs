@@ -4,6 +4,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { basename, resolve } from 'node:path';
 import { spawn } from 'node:child_process';
 import ffmpegPath from 'ffmpeg-static';
+import { classifyBroadEvent } from '../src/broad-event-gate.mjs';
 
 const args = process.argv.slice(2);
 if (args.includes('--help') || args.includes('-h') || args.length === 0) {
@@ -16,13 +17,16 @@ if (args.includes('--help') || args.includes('-h') || args.length === 0) {
 const maxFlag = args.indexOf('--max-seconds');
 const maxSeconds = maxFlag >= 0 ? Number(args[maxFlag + 1]) : 600;
 if (!Number.isFinite(maxSeconds) || maxSeconds <= 0) throw new Error('--max-seconds must be positive');
-const positional = args.filter((value, index) => index !== maxFlag && index !== maxFlag + 1);
+const positional = maxFlag >= 0
+  ? args.filter((value, index) => index !== maxFlag && index !== maxFlag + 1)
+  : args;
 const [audioArgument, outputArgument = 'output/yamnet'] = positional;
 const root = resolve('.');
 const audioPath = resolve(audioArgument);
 const outputDirectory = resolve(outputArgument);
 const modelPath = resolve(root, 'artifacts/model-candidates/yamnet-onnx-v1/yamnet.onnx');
 const labelsPath = resolve(root, 'artifacts/model-candidates/yamnet-onnx-v1/yamnet_class_map.csv');
+const gateConfigPath = resolve(root, 'config/broad-event-gate.json');
 const expectedSha256 = 'd3835ffbbd4a1bb3e777f0ca217b5007907f5171dd5d17c4236b95b2af8f908e';
 
 function decode16k() {
@@ -61,6 +65,7 @@ const modelSha256 = createHash('sha256').update(modelBytes).digest('hex');
 if (modelSha256 !== expectedSha256) throw new Error(`YAMNet digest mismatch: expected ${expectedSha256}, got ${modelSha256}`);
 const labels = parseLabels(await readFile(labelsPath, 'utf8'));
 if (labels.length !== 521) throw new Error(`Expected 521 YAMNet labels, got ${labels.length}`);
+const gateConfig = JSON.parse(await readFile(gateConfigPath, 'utf8'));
 
 const samples = await decode16k();
 const session = await ort.InferenceSession.create(modelPath, { executionProviders: ['wasm'] });
@@ -86,6 +91,12 @@ const animalRelated = aggregate
   .filter(item => /animal|bird|mammal|insect|frog|toad|reptile|amphibian|wildlife|elk|bear|fox|coyote|deer|moose|wolf|cat|dog/i.test(item.display_name))
   .sort((a, b) => b.mean_score - a.mean_score)
   .slice(0, 20);
+const broadEventGate = classifyBroadEvent({
+  evidence: { labels: meanTop.map(item => ({ display_name: item.display_name, mean_score: item.mean_score })) },
+  rules: gateConfig.rules,
+  threshold: gateConfig.threshold,
+  minimumMargin: gateConfig.minimum_margin,
+});
 const report = {
   schema_version: '1.0.0',
   kind: 'yamnet_broad_sound_event_evidence',
@@ -93,7 +104,8 @@ const report = {
   source: { filename: basename(audioPath), sample_rate_hz: 16000, samples: samples.length, duration_seconds: samples.length / 16000, max_seconds: maxSeconds, truncated: samples.length >= maxSeconds * 16000, rms: rms(samples) },
   model: { model_id: 'audio.yamnet.event-gate', version: '1.0.0-onnx-evaluation', artifact_sha256: `sha256:${modelSha256}`, license: 'Apache-2.0', ontology_license: 'CC-BY-4.0', target: 'onnx-evaluation-only' },
   output: { frame_count: frameCount, frame_seconds: 0.96, hop_seconds: 0.48, top, mean_top: meanTop, animal_related: animalRelated },
-  classification: { status: 'evidence_only', species_identification: false, next_stage: 'configured_specialist_model' },
+  routing: broadEventGate,
+  classification: { status: 'evidence_only', species_identification: false, next_stage: broadEventGate.status === 'route' ? `${broadEventGate.event_family}_specialist` : 'unknown_review' },
 };
 await mkdir(outputDirectory, { recursive: true });
 const stem = basename(audioPath).replace(/\.[^.]+$/, '');
