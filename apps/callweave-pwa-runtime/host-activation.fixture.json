@@ -1,15 +1,24 @@
 {
-  "connectors": [],
+  "connectors": [
+    {
+      "connector_id": "traverse.audio-input",
+      "installed_version": "1.0.0",
+      "placement_target": "browser",
+      "config": {
+        "authority_ref": "host-managed-audio-input"
+      }
+    }
+  ],
   "artifacts": [
     {
-      "contract_reference": "core.create-audio-capture-request-plan@1.0.0",
+      "contract_reference": "doc-approval.analyze@1.0.0",
       "placement_target": "local",
       "config_refs": [],
       "candidates": [
         {
-          "package_id": "core.create-audio-capture-request-plan",
+          "package_id": "doc-approval.analyze",
           "package_version": "1.0.0",
-          "digest": "sha256:10fcd7c6e53d0f16cf396b2601864c85436d686e79dee4ae8ffec50b083a6baf",
+          "digest": "sha256:00d5abd218395f58fe876dc513bae1ac387f9aad60be39bfd08eb8952de50607",
           "abi": "wasi-preview1",
           "lifecycle": "active",
           "placement": ["local"],
