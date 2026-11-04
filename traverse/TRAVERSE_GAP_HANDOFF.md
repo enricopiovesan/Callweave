@@ -6,7 +6,7 @@
 
 ## Executive summary
 
-Callweave's business-logic capabilities, Registry references, model-package metadata, and browser runtime preparation are in place. The remaining blocker is not capability discovery or Registry publication. It is the final Traverse application-manifest and runtime path needed to execute mediated host connectors through the same typed application surface used by `traverse-cli app validate`, `activate`, and `register`.
+Callweave's business-logic capabilities, Registry references, model-package metadata, and browser runtime preparation are in place. The typed application-manifest/runtime gap is resolved by Traverse #1772 / PR #1788 and Registry 0.31.0. The current remaining blocker is connector catalog registration for `traverse.audio-input`, tracked in Traverse #1791.
 
 Callweave must remain a presentation-only app. Audio/device access belongs to a declared, bounded host connector; business logic and model execution remain Traverse-owned WASM capabilities.
 
@@ -20,9 +20,9 @@ Callweave must remain a presentation-only app. Audio/device access belongs to a 
 - The application manifest declares mediated connector usage rather than embedding microphone/device code in a capability.
 - Model licensing and attribution are represented in the model package/app documentation; no private signing key is stored in the repository.
 
-## Reproduced blocker
+## Resolved parser blocker
 
-`traverse-cli app validate` and `traverse-cli app activate` fail on a valid host-connector state-machine invoke before activation:
+Before Traverse #1772, `traverse-cli app validate` and `traverse-cli app activate` failed on a valid host-connector state-machine invoke before activation:
 
 ```text
 manifest_parse_failed: failed to parse application manifest
@@ -41,9 +41,11 @@ Expected valid shape:
 }
 ```
 
-## Required Traverse change
+## Current required Traverse change
 
-Add a typed application-manifest invoke union that accepts exactly one of:
+The typed invoke union is now released. Traverse must now register the existing `traverse.audio-input@1.0.0` contract in the activation reference catalog so a declared binding can be validated and activated.
+
+The released typed invoke union accepts exactly one of:
 
 ```json
 { "capability_id": "core.prepare-inference-request", "input_from": "capture" }
@@ -70,9 +72,10 @@ The normalized representation must be shared by CLI validation/activation/regist
 
 ## Ticket
 
-The missing project ticket is now filed and attached to Traverse Project 1:
+The parser ticket is complete. The remaining project ticket is filed and attached to Traverse Project 1:
 
-- [Traverse #1772 — Support host-connector invokes in application manifests and CLI activation](https://github.com/traverse-framework/traverse/issues/1772)
+- [Traverse #1791 — Register `traverse.audio-input` in the activation reference connector catalog](https://github.com/traverse-framework/traverse/issues/1791)
+- [Traverse #1772 — Support host-connector invokes in application manifests and CLI activation](https://github.com/traverse-framework/traverse/issues/1772) — complete
 - [Traverse Project 1](https://github.com/orgs/traverse-framework/projects/1)
 
 The ticket contains the complete acceptance criteria, test matrix, portability requirements, and Definition of Done.
@@ -128,4 +131,4 @@ Please confirm:
 4. The exact normalized manifest shape downstream apps should pin.
 5. The conformance command or fixture Callweave should run against the released artifact.
 
-Until this is released, Callweave can continue validating and preparing artifacts, but cannot honestly claim end-to-end application activation through the public Traverse CLI path.
+Until #1791 is released, Callweave can prepare the signed Registry artifact and host activation input, but cannot claim end-to-end activation because the Traverse reference catalog rejects the declared audio connector.
