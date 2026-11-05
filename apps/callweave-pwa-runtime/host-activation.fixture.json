@@ -11,18 +11,18 @@
   ],
   "artifacts": [
     {
-      "contract_reference": "doc-approval.analyze@1.0.0",
+      "contract_reference": "core.prepare-inference-request@1.0.0",
       "placement_target": "local",
       "config_refs": [],
       "candidates": [
         {
-          "package_id": "doc-approval.analyze",
+          "package_id": "core.prepare-inference-request",
           "package_version": "1.0.0",
-          "digest": "sha256:00d5abd218395f58fe876dc513bae1ac387f9aad60be39bfd08eb8952de50607",
-          "abi": "wasi-preview1",
+          "digest": "sha256:4a02e6eaffdb02d8b926d6fbe55aa0eae2de26e8957793481bb96bdfec4f8d39",
+          "abi": "wasm/wasi-command",
           "lifecycle": "active",
-          "placement": ["local"],
-          "execution_constraints": "verified Registry artifact activation evidence"
+          "placement": ["local", "browser"],
+          "execution_constraints": "network_access=forbidden;filesystem_access=none;host_api_access=none"
         }
       ]
     }
