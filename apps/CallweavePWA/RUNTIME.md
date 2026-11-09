@@ -1,6 +1,6 @@
 # Callweave PWA runtime boundary
 
-Callweave embeds Traverse 0.14.0 directly in the browser. The UI dispatches
+Callweave embeds the Traverse web SDK 0.16.2 directly in the browser. The UI dispatches
 runtime-declared commands and renders ordered runtime events; it does not own a
 recording state machine, transition, policy, or analysis result.
 
@@ -22,15 +22,38 @@ evaluated wildlife model package declared as an exact Traverse model dependency.
 The bundled generic `inference.request-prepare` capability is not an animal
 classifier and is never presented as one.
 
+## Model provisioning gate
+
+The browser model path is deliberately fail-closed. A model is not enabled by
+adding a label or a URL to the UI. Before activation, the application bundle
+must declare one exact model pin and the host must register the matching signed
+package with the Traverse web embedder. Verification covers the exact manifest
+digest, Ed25519 signer, WASM digest, target, resource ceilings, and rights.
+
+The current repository keeps the YAMNet package as an evaluation artifact only;
+its WASM and development signature are not part of the checked-in PWA bundle.
+Until a governed provisioning step supplies both the package and its trusted
+public key, recordings remain viewable but analysis returns
+`model_unavailable`.
+
+The browser host has also been exercised locally with an ephemeral development
+key against the prepared YAMNet ABI-v3 package: signature admission, exact pin
+matching, WASM digest verification, and a zero-valued `f32[160000]` frame all
+passed and returned the expected 41,696-byte score output. That smoke evidence
+does not make the ephemeral key a production trust root.
+
 ## Prepared embedded bundle
 
 Run this after installing dependencies or updating Traverse:
 
 ```sh
+npm run traverse:pwa-runtime:prepare
 npm run traverse:embedder:prepare
 ```
 
-It creates ignored generated assets under `runtime/` and
+The first command syncs the signed Registry index and prepares the exact
+component reference into the local verified cache. The second creates ignored
+generated assets under `runtime/` and
 `vendor/traverse-embedder-web/`. No loopback server, token, or remote runtime
 configuration is required to test the PWA.
 
