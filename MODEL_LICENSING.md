@@ -4,12 +4,35 @@ Callweave source code and generic business capabilities are distributed under th
 
 ## Current policy
 
+The machine-readable policy is [`policy/model-rights-policy.json`](policy/model-rights-policy.json).
+Callweave uses three distribution tiers:
+
+- **Default:** only artifacts with clearly allowed redistribution and commercial
+  use are eligible.
+- **Optional restricted:** non-commercial or conditional artifacts may be
+  installed only after explicit consent and a rights disclosure.
+- **Unverified:** missing, ambiguous, or conflicting rights are rejected.
+
+The policy applies even though Callweave is currently a non-commercial open
+source project. A downstream user may redistribute or use the software in a
+different context, so the project must not imply rights that an upstream model
+does not grant.
+
 - No model is considered installed or usable until its manifest declares its exact version, digest, target, source, license, attribution, redistribution terms, and commercial-use status.
 - The default application remains model-neutral. A model is an optional package selected through the Traverse application manifest.
 - Callweave follows the actual legal terms of each model and does not relicense, broaden, or infer rights. Models with permissive redistribution terms are preferred for the default package; legally restricted models may be offered only as explicit optional packages with their restrictions and attribution shown before activation.
 - The initial implementation uses an existing third-party model when its rights and technical constraints can be verified. Custom training is deferred unless evaluation demonstrates that available models cannot meet the product's accuracy or coverage requirements.
 - Missing, ambiguous, or conflicting rights are a hard stop: the package remains unavailable until its rights are clarified and recorded.
 - Every model's license, attribution, source, redistribution terms, and commercial-use status are disclosed in the app and in the package documentation.
+- Callweave owns the model-signing trust root; Traverse supplies verification and execution, but does not control Callweave's private signing key.
+- Signing uses two tiers: a development key for local/test packages and an offline production key for published packages. Production private-key material is never committed or exposed to ordinary CI jobs.
+- Initial key rotation is manual: a new trusted public key and revoked-key state are shipped through an app/runtime update and checked again at model activation.
+- YAMNet is distributed as a separate signed optional package with one-click activation; it remains a broad sound-event gate and is never presented as a species identifier.
+- YAMNet broad-event results may be shown as qualified sound-event evidence, but never as a verified species observation.
+- If an optional specialist is unavailable, analysis may continue with available models only when the missing specialist is recorded explicitly; no model is silently substituted and insufficient evidence remains `unknown`.
+- Audio and model inference remain local by default. Any raw-audio review package is created only by an explicit user export action.
+- Unknown-review ZIPs may contain raw audio only after explicit confirmation and must include model IDs, versions, digests, licenses, attribution, and rights restrictions.
+- Revoked or rights-incompatible model packages are disabled immediately; their immutable metadata and prior evidence remain available for audit.
 - BirdNET models are treated as non-commercial model packages. BirdNET documents its source code as MIT and its model artifacts as CC BY-NC-SA 4.0. The model license and attribution must travel with every redistribution.
 - A model package must never be relabeled as MIT/Apache merely because Callweave or its adapter is MIT/Apache.
 - Converted WASM artifacts are recorded as derived model artifacts and retain the upstream model's applicable restrictions.

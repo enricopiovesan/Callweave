@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0.0",
+  "policy_id": "callweave.model-rights",
+  "default_distribution": "permissive-only",
+  "tiers": {
+    "default": {
+      "redistribution": "allowed",
+      "commercial_use": "allowed",
+      "activation": "automatic-after-traverse-verification"
+    },
+    "optional-restricted": {
+      "redistribution": "allowed-with-terms",
+      "commercial_use": "non-commercial-only-or-restricted",
+      "activation": "explicit-user-consent"
+    },
+    "unverified": {
+      "activation": "rejected"
+    }
+  },
+  "requirements": [
+    "weights, code, labels, and source-data rights are recorded separately",
+    "exact immutable artifact digest and source revision are required",
+    "attribution and applicable license texts travel with every distribution",
+    "unknown or conflicting rights are never activated",
+    "a converted artifact retains upstream restrictions"
+  ]
+}
