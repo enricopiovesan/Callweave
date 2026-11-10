@@ -16,6 +16,8 @@
     "birdnet:readiness": "node scripts/birdnet-readiness.mjs",
     "perch:readiness": "node scripts/perch-readiness.mjs",
     "yamnet:evaluate": "node scripts/yamnet-evaluate.mjs",
+    "yamnet:wasm:smoke": "node scripts/yamnet_wasm_model_smoke.mjs",
+    "yamnet:wasm:analyze": "node scripts/yamnet-wasm-analyze.mjs",
     "analyze:audio": "node scripts/analyze-audio.mjs",
     "audio-evidence:schema:validate": "node scripts/validate_audio_evidence_schema.mjs",
     "audio:pcm-transform:build": "bash capabilities/audio.pcm-transform/build-fixture.sh",
