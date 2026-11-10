@@ -18,6 +18,7 @@
     "yamnet:evaluate": "node scripts/yamnet-evaluate.mjs",
     "yamnet:wasm:smoke": "node scripts/yamnet_wasm_model_smoke.mjs",
     "yamnet:wasm:analyze": "node scripts/yamnet-wasm-analyze.mjs",
+    "model:binding:smoke": "node scripts/model_binding_smoke.mjs",
     "analyze:audio": "node scripts/analyze-audio.mjs",
     "audio-evidence:schema:validate": "node scripts/validate_audio_evidence_schema.mjs",
     "audio:pcm-transform:build": "bash capabilities/audio.pcm-transform/build-fixture.sh",

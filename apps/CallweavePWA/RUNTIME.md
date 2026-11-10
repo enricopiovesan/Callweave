@@ -32,6 +32,10 @@ digest, Ed25519 signer, WASM digest, target, resource ceilings, and rights.
 
 The current repository keeps the YAMNet package as an evaluation artifact only;
 its WASM and development signature are not part of the checked-in PWA bundle.
+Its reusable exact binding descriptor is checked in at
+`../../artifacts/model-candidates/yamnet-onnx-v1/model-binding.json`. The
+descriptor verifies package files and rights, but intentionally has a null
+trust key until a release key is provisioned.
 Until a governed provisioning step supplies both the package and its trusted
 public key, recordings remain viewable but analysis returns
 `model_unavailable`.
@@ -41,6 +45,10 @@ key against the prepared YAMNet ABI-v3 package: signature admission, exact pin
 matching, WASM digest verification, and a zero-valued `f32[160000]` frame all
 passed and returned the expected 41,696-byte score output. That smoke evidence
 does not make the ephemeral key a production trust root.
+
+Run `npm run model:binding:smoke` to verify the descriptor and package digests.
+It must report `pending_trusted_signer` until the deployment public key is
+provided; that result is expected and is a fail-closed safety check.
 
 ## Prepared embedded bundle
 

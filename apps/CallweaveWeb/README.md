@@ -22,6 +22,11 @@ not infer an animal from a recording when no verified package is installed.
 See [`MODEL_LICENSING.md`](../../MODEL_LICENSING.md) for the user-facing
 license and attribution policy.
 
+The current reusable model-binding candidate is documented in
+[`traverse/MODEL_BINDING_RELEASE_CHECKLIST.md`](../../traverse/MODEL_BINDING_RELEASE_CHECKLIST.md).
+It can be verified with `npm run model:binding:smoke`; production activation
+remains disabled until a Callweave-owned trusted public key is provisioned.
+
 ## Run
 
 Serve the repository root and open:

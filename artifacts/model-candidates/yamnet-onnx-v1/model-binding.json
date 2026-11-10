@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0.0",
+  "binding_id": "callweave.audio.yamnet.event-gate",
+  "model_dependency": {
+    "model_id": "audio.yamnet.event-gate",
+    "version": "1.0.0",
+    "manifest_digest": "sha256:8ad551d048a19802790245865fd71d719daba3bd286815d3880b7f8fe4389942",
+    "wasm_digest": "sha256:687c2f249a7f190a0c7b967b7599d7c40078c36aa3dae310acc58c43f00e29f6",
+    "target": "wasm-cpu",
+    "offline_allowed": true,
+    "rights": {
+      "license_id": "Apache-2.0",
+      "commercial_use": "allowed"
+    }
+  },
+  "package": {
+    "manifest_path": "./traverse-package-v3/model.manifest.json",
+    "wasm_path": "./traverse-package-v3/model.wasm",
+    "signature_path": "./traverse-package-v3/model.sig.json"
+  },
+  "trust": {
+    "source": "external-release-secret",
+    "key_id": null,
+    "public_key_hex": null
+  },
+  "activation": "pending_trusted_signer"
+}

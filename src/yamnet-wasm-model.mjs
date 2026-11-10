@@ -1,4 +1,4 @@
-import { createHash, generateKeyPairSync, sign } from 'node:crypto';
+import { generateKeyPairSync, sign } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import {
@@ -6,8 +6,11 @@ import {
   encodeGuestFrame,
   modelSigningKeyId,
 } from 'traverse-embedder-web';
+import { verifyModelBindingFiles } from './model-binding.mjs';
 
 const PACKAGE_ROOT = resolve(new URL('../artifacts/model-candidates/yamnet-onnx-v1/traverse-package-v3', import.meta.url).pathname);
+const BINDING_ROOT = new URL('../artifacts/model-candidates/yamnet-onnx-v1/', import.meta.url);
+const BINDING_PATH = new URL('./model-binding.json', BINDING_ROOT);
 const LABELS_PATH = resolve(new URL('../artifacts/model-candidates/yamnet-onnx-v1/yamnet_class_map.csv', import.meta.url).pathname);
 
 function parseFrame(bytes) {
@@ -35,10 +38,12 @@ function parseLabels(csv) {
 }
 
 async function signedHost() {
+  const binding = JSON.parse(await readFile(BINDING_PATH, 'utf8'));
+  const verified = await verifyModelBindingFiles(binding, BINDING_ROOT);
   const manifestBytes = await readFile(resolve(PACKAGE_ROOT, 'model.manifest.json'));
   const wasmBytes = await readFile(resolve(PACKAGE_ROOT, 'model.wasm'));
-  const manifest = JSON.parse(manifestBytes.toString('utf8'));
-  const digest = `sha256:${createHash('sha256').update(manifestBytes).digest('hex')}`;
+  const manifest = verified.manifest;
+  const digest = verified.binding.model_dependency.manifest_digest;
   const { publicKey, privateKey } = generateKeyPairSync('ed25519');
   const publicJwk = publicKey.export({ format: 'jwk' });
   const publicKeyBytes = Buffer.from(publicJwk.x, 'base64url');
@@ -46,12 +51,12 @@ async function signedHost() {
   const keyId = await modelSigningKeyId(publicKeyBytes);
   const signature = sign(null, manifestBytes, privateKey);
   const host = new ExactModelBrowserHost([{
-    model_id: manifest.model_id,
-    version: manifest.version,
+    model_id: verified.binding.model_dependency.model_id,
+    version: verified.binding.model_dependency.version,
     digest,
     offline_allowed: manifest.offline_allowed,
     target: 'wasm-cpu',
-    rights: { license_id: manifest.rights.license_id, commercial_use: manifest.rights.commercial_use },
+    rights: verified.binding.model_dependency.rights,
     key_id: keyId,
   }], { trustedPublicKeysHex: [publicKeyHex], modelUsage: 'commercial' });
   const policy = { policy_ref: 'policy:callweave-yamnet-wasm-cpu', placements: ['wasm-cpu'], require_fuel_metering: true };
