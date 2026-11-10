@@ -2,6 +2,28 @@
 
 Status: candidates only; no new model is approved or downloaded.
 
+## Recommended first evaluation: Google Perch 2.0
+
+Perch 2.0 is the leading candidate for the mammal slice. Google describes it
+as a broad bioacoustic model covering mammals, amphibians, birds, and other
+sound classes, and the official source repository is Apache-2.0. The exact
+weights and label artifact still require independent provenance and rights
+verification before Callweave distributes them.
+
+Recommended implementation shape:
+
+1. Evaluate the frozen Perch 2.0 encoder or a precisely identified CPU
+   variant, not an unpinned download.
+2. Use its embeddings with a compact mammal classification head configured by
+   location, rather than shipping the full large taxonomy as the first WASM
+   package.
+3. Train/evaluate a small Golden-relevant head only from recordings whose
+   redistribution rights are documented.
+4. Compare against Nocturne and YAMNet on elk, black bear, cougar, moose,
+   deer, livestock, human speech, water, wind, and silence controls.
+5. Promote only a package that passes exact-license, digest, WASM-resource,
+   calibration, and unknown-rejection gates.
+
 The current Perch artifact is a strong general acoustic baseline, but the
 Golden black-bear fixtures rank poorly. The next model must be evaluated as a
 separate evidence source, not silently substituted for Perch.

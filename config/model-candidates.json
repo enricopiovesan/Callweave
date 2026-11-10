@@ -14,6 +14,17 @@
       "notes": "Released model terms are CC BY-NC-SA 4.0; verify exact model release before packaging."
     },
     {
+      "candidate_id": "perch-v2",
+      "family": "multispecies-mammal",
+      "source": "https://github.com/google-research/perch",
+      "license_status": "declared_requires_artifact_review",
+      "commercial_use": "conditional",
+      "artifact_status": "not_pinned",
+      "deployment_status": "evaluation_only",
+      "rights": { "license_id": "Apache-2.0-declared", "redistribution": "unknown", "commercial_use": "unknown", "attribution_required": true },
+      "notes": "Strong multispecies bioacoustic candidate with mammal coverage. Evaluate the exact frozen artifact, labels, package size, and WASM feasibility before approval."
+    },
+    {
       "candidate_id": "nocturne-v1.2-teacher",
       "family": "non-bird",
       "source": "https://huggingface.co/stratus-labs/nocturne-v1.2-teacher",
