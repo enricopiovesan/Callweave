@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0.0",
+  "policy": "verified-evidence-only",
+  "models": [
+    {
+      "model_id": "audio.yamnet.event-gate",
+      "version": "1.0.0",
+      "digest": "sha256:8ad551d048a19802790245865fd71d719daba3bd286815d3880b7f8fe4389942",
+      "family": "broad-sound-event",
+      "families": ["animal", "bird", "mammal", "insect", "amphibian", "unknown"],
+      "role": "event_gate",
+      "status": "evaluation_only",
+      "enabled": true,
+      "priority": 0
+    },
+    {
+      "model_id": "birdnet",
+      "version": null,
+      "digest": null,
+      "family": "bird",
+      "families": ["bird"],
+      "role": "specialist",
+      "status": "optional_restricted_pending_exact_artifact",
+      "enabled": false,
+      "priority": 10
+    },
+    {
+      "model_id": "perch-v2-int8",
+      "version": null,
+      "digest": "sha256:ff32ca8c57954a86e6023a915d018dc7573cfc5567dd7314891d947cc6d5c5",
+      "family": "multispecies",
+      "families": ["bird", "mammal", "amphibian", "insect"],
+      "role": "broad_evidence",
+      "status": "evaluation_only_weak_mammal_result",
+      "enabled": false,
+      "priority": 20
+    },
+    {
+      "model_id": "nocturne-v1.2-teacher",
+      "version": null,
+      "digest": null,
+      "family": "non-bird",
+      "families": ["mammal", "amphibian", "insect"],
+      "role": "comparison",
+      "status": "evaluation_only",
+      "enabled": false,
+      "priority": 30
+    },
+    {
+      "model_id": "bat-specialist",
+      "version": null,
+      "digest": null,
+      "family": "bat",
+      "families": ["bat"],
+      "role": "specialist",
+      "status": "future_ultrasonic_slice",
+      "enabled": false,
+      "priority": 40
+    }
+  ]
+}

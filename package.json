@@ -8,6 +8,7 @@
     "model:execution:schema": "node scripts/validate_model_execution_schema.mjs",
     "model:adapter:benchmark": "node scripts/model_adapter_benchmark.mjs",
     "model:ensemble:smoke": "node scripts/model_ensemble_smoke.mjs",
+    "model:ensemble-config:smoke": "node scripts/model_ensemble_config_smoke.mjs",
     "model:package:manifest": "node scripts/model_package_manifest_smoke.mjs",
     "model:candidates:validate": "node scripts/validate_model_candidates.mjs",
     "model:dependency:smoke": "node scripts/model_dependency_pin_smoke.mjs",
