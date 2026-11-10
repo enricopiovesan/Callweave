@@ -54,8 +54,9 @@ are absent from the recordings.
 
 ## Current recommendation
 
-Keep Perch as a reusable research baseline, not the Callweave mammal
-recognizer. Keep YAMNet as the small broad-event gate. The honest current
+Keep Perch as one evidence source in a multi-model ensemble, not the sole
+Callweave mammal recognizer. Keep YAMNet as the small broad-event gate and use
+Perch embeddings for reference matching where appropriate. The honest current
 fallback is broad event detection plus `unknown`, not a fabricated mammal
 classifier. A future frozen mammal model must beat these negative results on
 rights-cleared field recordings before promotion.
