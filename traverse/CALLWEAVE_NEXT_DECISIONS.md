@@ -24,6 +24,11 @@
 6. After a specialist model is approved, add its exact pin and run offline
    warm-cache/missing-cache tests on every target.
 
+The no-training reference-matching kernel is now implemented and tested. It
+compares frozen-model embeddings against rights-cleared, location-configured
+reference catalogs and preserves reference provenance; it does not train or
+infer a semantic label from similarity alone.
+
 ## Questions requiring a project decision
 
 | Question | Recommendation | Why |
@@ -45,3 +50,10 @@
   bounded YAMNet smoke path.
 - A specialist model artifact with immutable provenance, legal rights, a
   versioned label schema, and a successful WASM resource/conformance report.
+
+## Current local completion boundary
+
+All safe local model-policy, ensemble-routing, reference-matching, and browser
+conformance work is complete. Further progress requires either a verified
+specialist artifact or the maintainer-controlled production signing key; the
+runtime remains intentionally fail-closed until then.
