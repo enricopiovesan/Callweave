@@ -32,10 +32,30 @@ publicly identified Perch variant:
 4. retain raw logits and mark species results as uncalibrated evidence;
 5. reject the package if the target runtime cannot enforce its resource limits.
 
+## INT8 evaluation result
+
+The public `tphakala/Perch-v2-Models` INT8 ONNX artifact was evaluated outside
+the repository:
+
+- artifact: `full/perch_v2_int8_arm.onnx`
+- size: 125 MB on disk
+- SHA-256: `ff32ca8c57954a86e6023a915d018dc7573cfc5567dd7314891d947cc6d5c5`
+- runtime: `onnxruntime-web` WASM
+- output: 14,795-class logits, 1,536-dimensional embedding, spatial embedding,
+  and spectrogram
+- latency: approximately 200–320 ms per 5-second window on the development
+  machine
+
+On the supplied elk, black-bear, grizzly-bear, cougar, creek, and forest
+recordings, the top results were predominantly unrelated birds, insects,
+frogs, or generic noise. The model therefore fails the current mammal
+promotion bar. This is a model/domain result, not evidence that the animals
+are absent from the recordings.
+
 ## Current recommendation
 
-Use Perch as the first frozen mammal-capable evaluation candidate, with a
-native/desktop proof before attempting browser/WASM packaging. Keep YAMNet as
-the small broad-event gate. If Perch cannot meet the WASM budget, the honest
+Keep Perch as a reusable research baseline, not the Callweave mammal
+recognizer. Keep YAMNet as the small broad-event gate. The honest current
 fallback is broad event detection plus `unknown`, not a fabricated mammal
-classifier.
+classifier. A future frozen mammal model must beat these negative results on
+rights-cleared field recordings before promotion.

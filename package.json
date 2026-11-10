@@ -20,6 +20,7 @@
     "yamnet:wasm:analyze": "node scripts/yamnet-wasm-analyze.mjs",
     "model:binding:smoke": "node scripts/model_binding_smoke.mjs",
     "model:rights-policy:smoke": "node scripts/model_rights_policy_smoke.mjs",
+    "perch:onnx:evaluate": "node scripts/perch_onnx_evaluate.mjs",
     "analyze:audio": "node scripts/analyze-audio.mjs",
     "audio-evidence:schema:validate": "node scripts/validate_audio_evidence_schema.mjs",
     "audio:pcm-transform:build": "bash capabilities/audio.pcm-transform/build-fixture.sh",
