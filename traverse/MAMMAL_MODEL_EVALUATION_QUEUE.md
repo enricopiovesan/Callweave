@@ -10,15 +10,15 @@ sound classes, and the official source repository is Apache-2.0. The exact
 weights and label artifact still require independent provenance and rights
 verification before Callweave distributes them.
 
-Recommended implementation shape:
+Recommended implementation shape (no training):
 
-1. Evaluate the frozen Perch 2.0 encoder or a precisely identified CPU
+1. Evaluate the frozen Perch 2.0 classifier or a precisely identified CPU
    variant, not an unpinned download.
-2. Use its embeddings with a compact mammal classification head configured by
-   location, rather than shipping the full large taxonomy as the first WASM
-   package.
-3. Train/evaluate a small Golden-relevant head only from recordings whose
-   redistribution rights are documented.
+2. Use its existing labels directly and apply a location-configured candidate
+   catalog after inference; do not create a Callweave-trained head.
+3. Reject the artifact if its full classifier is too large for the target; a
+   smaller official frozen variant is acceptable only when its labels and
+   rights are equivalent and its digest is independently verified.
 4. Compare against Nocturne and YAMNet on elk, black bear, cougar, moose,
    deer, livestock, human speech, water, wind, and silence controls.
 5. Promote only a package that passes exact-license, digest, WASM-resource,

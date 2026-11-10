@@ -55,7 +55,7 @@
       "artifact_status": "training_required",
       "deployment_status": "not_started",
       "rights": { "license_id": "not-yet-determined", "redistribution": "unknown", "commercial_use": "unknown", "attribution_required": true },
-      "notes": "Use the MIT-licensed training framework with separately licensed Golden-relevant recordings."
+      "notes": "Deferred: training is out of scope. Keep this entry only as a future research option; do not build or publish a Callweave-trained model."
     },
     {
       "candidate_id": "yamnet-onnx",

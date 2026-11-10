@@ -12,7 +12,7 @@ not hard-coded dependencies of Callweave capabilities.
 | --- | --- | --- | --- |
 | Birds | BirdNET | Bird species candidate generation | Use for non-commercial research after exact artifact/license review |
 | Broad non-birds | Nocturne v1.2 Teacher | Research baseline across non-bird taxa | Evaluate, do not deploy yet |
-| Mammals | Custom Golden regional model using MegaDetector-Acoustic training pipeline | Elk, bears, cougar, moose, deer | Build after licensed data is assembled |
+| Mammals | Frozen pretrained multispecies model (Perch 2.0 first candidate) | Elk, bears, cougar, moose, deer | Evaluate directly; no Callweave training pipeline |
 | Insects | InsectNet Research | Review-only insect presence/cicada/Orthoptera | Evaluate only; current artifact is not field-ready |
 | Amphibians | Nocturne outputs or a dedicated compact classifier | Frog/toad/salamander candidates | Select after amphibian-specific validation |
 | Fallback | General sound-event model | Animal/non-animal and unknown routing | Research baseline only; never claims species certainty |
@@ -91,7 +91,7 @@ The application manifest references only:
 1. Keep `fixture.echo` as the runtime conformance artifact.
 2. Evaluate BirdNET as the first real bird specialist.
 3. Evaluate Nocturne as a broad non-bird research baseline.
-4. Assemble licensed Golden mammal data and train a compact specialist.
+4. Evaluate the frozen mammal-capable model directly against licensed test recordings; no model training is required for the first release.
 5. Evaluate amphibian and insect specialists independently.
 6. Publish only candidates that pass all selection gates.
 
