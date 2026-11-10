@@ -10,6 +10,7 @@
       "commercial_use": "forbidden",
       "artifact_status": "not_pinned",
       "deployment_status": "evaluation_only",
+      "rights": { "license_id": "CC-BY-NC-SA-4.0", "redistribution": "allowed-with-terms", "commercial_use": "non-commercial-only", "attribution_required": true },
       "notes": "Released model terms are CC BY-NC-SA 4.0; verify exact model release before packaging."
     },
     {
@@ -20,6 +21,7 @@
       "commercial_use": "conditional",
       "artifact_status": "not_pinned",
       "deployment_status": "evaluation_only",
+      "rights": { "license_id": "CC-BY-4.0-declared", "redistribution": "unknown", "commercial_use": "unknown", "attribution_required": true },
       "notes": "Broad non-bird research model; validate size, ABI conversion, and field performance."
     },
     {
@@ -30,6 +32,7 @@
       "commercial_use": "forbidden",
       "artifact_status": "not_pinned",
       "deployment_status": "review_only",
+      "rights": { "license_id": "declared-by-source", "redistribution": "unknown", "commercial_use": "non-commercial-only", "attribution_required": true },
       "notes": "Research artifact; model card explicitly reports field limitations."
     },
     {
@@ -40,6 +43,7 @@
       "commercial_use": "unknown",
       "artifact_status": "training_required",
       "deployment_status": "not_started",
+      "rights": { "license_id": "not-yet-determined", "redistribution": "unknown", "commercial_use": "unknown", "attribution_required": true },
       "notes": "Use the MIT-licensed training framework with separately licensed Golden-relevant recordings."
     },
     {
@@ -50,6 +54,7 @@
       "commercial_use": "allowed",
       "artifact_status": "evaluation_artifact_pinned",
       "deployment_status": "evaluation_only",
+      "rights": { "license_id": "Apache-2.0+CC-BY-4.0", "redistribution": "allowed-with-terms", "commercial_use": "allowed", "attribution_required": true },
       "notes": "Apache-2.0 model with AudioSet CC-BY-4.0 labels; broad event gate, not species identification."
     }
   ]

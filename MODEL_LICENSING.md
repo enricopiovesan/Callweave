@@ -18,6 +18,11 @@ source project. A downstream user may redistribute or use the software in a
 different context, so the project must not imply rights that an upstream model
 does not grant.
 
+The evaluation inventory in [`config/model-candidates.json`](config/model-candidates.json)
+records the current rights summary for every candidate, including candidates
+whose terms are still unknown. Unknown terms are acceptable for research
+tracking only; they are never sufficient for deployment approval.
+
 - No model is considered installed or usable until its manifest declares its exact version, digest, target, source, license, attribution, redistribution terms, and commercial-use status.
 - The default application remains model-neutral. A model is an optional package selected through the Traverse application manifest.
 - Callweave follows the actual legal terms of each model and does not relicense, broaden, or infer rights. Models with permissive redistribution terms are preferred for the default package; legally restricted models may be offered only as explicit optional packages with their restrictions and attribution shown before activation.

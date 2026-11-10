@@ -11,6 +11,12 @@ for (const candidate of document.candidates) {
     if (!candidate[field]) throw new Error(`${candidate.candidate_id ?? 'candidate'} missing ${field}`);
   }
   if (!allowed.has(candidate.commercial_use)) throw new Error(`${candidate.candidate_id} has invalid commercial_use`);
+  if (!candidate.rights || typeof candidate.rights !== 'object') throw new Error(`${candidate.candidate_id} missing rights summary`);
+  for (const field of ['license_id', 'redistribution', 'commercial_use']) {
+    if (!candidate.rights[field]) throw new Error(`${candidate.candidate_id} missing rights.${field}`);
+  }
+  if (candidate.rights.attribution_required !== true) throw new Error(`${candidate.candidate_id} must preserve attribution requirements`);
+  if (candidate.rights.commercial_use === 'unknown' && candidate.deployment_status === 'approved') throw new Error(`${candidate.candidate_id} cannot deploy with unknown rights`);
   if (candidate.deployment_status === 'approved') throw new Error(`${candidate.candidate_id} cannot be approved in evaluation inventory`);
 }
 console.log(`model_candidates=passed count=${document.candidates.length} production_pins=0`);
