@@ -11,6 +11,21 @@ for (const record of metadata.records.filter((item) => item.status === 'download
   const run = spawnSync(process.execPath, [join(root, 'scripts/analyze-audio.mjs'), join(root, record.local_path), output, '--candidates', profile], { encoding: 'utf8' });
   if (run.status !== 0) throw new Error(`${record.id}: analyzer failed\n${run.stderr}`);
   const evidence = JSON.parse(await readFile(join(output, `${stem}.evidence.json`), 'utf8'));
-  results.push({ id: record.id, taxon: record.taxon, source: record.source, license: record.license, models: evidence.models.map((model) => ({ model_id: model.model_id, candidate: model.candidate_summary.find((candidate) => candidate.taxon === record.taxon) ?? null, quality: model.quality_summary })) });
+  results.push({
+    id: record.id,
+    taxon: record.taxon,
+    source: record.source,
+    source_url: record.source_url,
+    media_url: record.media_url,
+    license_id: record.license,
+    attribution: record.attribution,
+    local_path: record.local_path,
+    sha256: record.sha256,
+    models: evidence.models.map((model) => ({
+      model_id: model.model_id,
+      candidate: model.candidate_summary.find((candidate) => candidate.taxon === record.taxon) ?? null,
+      quality: model.quality_summary,
+    })),
+  });
 }
 console.log(JSON.stringify({ profile, sample_count: results.length, results }, null, 2));

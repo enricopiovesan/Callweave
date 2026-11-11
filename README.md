@@ -44,7 +44,15 @@ The committed evaluation corpus can be checked and replayed with:
 ```bash
 npm run sound-samples:validate
 npm run sound-samples:evaluate
+npm run corpus:evidence-report
 ```
+
+`corpus:evidence-report` writes a rights-aware inventory of the staged public
+references, user-supplied evaluation files, long-form fixtures, and candidate
+model packages. It deliberately keeps those categories separate: a model
+ranking is evidence only, and user-supplied audio is not redistributable unless
+its source terms have been verified. The report also records the fail-closed
+activation policy and the follow-up evidence required before promotion.
 
 ## Supported scope
 

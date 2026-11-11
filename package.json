@@ -145,6 +145,7 @@
     "sound-samples:evaluate": "node scripts/evaluate_sound_samples.mjs",
     "sound-samples:calibration-report": "node scripts/report_sound_sample_calibration.mjs",
     "sound-samples:calibration-smoke": "node scripts/calibration_report_smoke.mjs",
+  "corpus:evidence-report": "node scripts/generate_corpus_evidence_report.mjs",
     "audio:negative-controls-smoke": "node scripts/audio_negative_controls_smoke.mjs",
     "audio:quality-activity:build": "bash capabilities/audio.signal-quality-evaluate/build-fixture.sh && bash capabilities/audio.activity-interval-classify/build-fixture.sh",
     "audio:quality-activity:smoke": "node scripts/audio_quality_activity_wasm_smoke.mjs",
