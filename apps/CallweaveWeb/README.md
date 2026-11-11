@@ -7,6 +7,8 @@ surfaces. Today it can run the browser-safe checks directly:
 
 - pure capability fixtures
 - business logic smoke
+- model licensing disclosure
+- corpus and model readiness report
 
 The other checks remain Node-only because they depend on local file-system
 scripts rather than browser-safe modules.
@@ -26,6 +28,11 @@ The current reusable model-binding candidate is documented in
 [`traverse/MODEL_BINDING_RELEASE_CHECKLIST.md`](../../traverse/MODEL_BINDING_RELEASE_CHECKLIST.md).
 It can be verified with `npm run model:binding:smoke`; production activation
 remains disabled until a Callweave-owned trusted public key is provisioned.
+
+The corpus readiness view keeps staged public references, user-supplied
+evaluation audio, long-form unknown fixtures, and model promotion status
+separate. It is a diagnostic provenance view, not a species-identification
+result.
 
 ## Run
 

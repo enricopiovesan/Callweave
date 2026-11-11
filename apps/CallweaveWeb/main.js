@@ -56,6 +56,20 @@ const browserActions = [
     detail: 'Node-only today. The browser target does not launch the local BirdNET/Perch CLI analyzer.',
     target: 'node-only',
   },
+  {
+    id: 'model-licensing',
+    title: 'Model licensing',
+    detail: 'Shows the model-rights disclosure used before a wildlife model is activated.',
+    target: 'browser',
+    run: runModelLicensing,
+  },
+  {
+    id: 'corpus-readiness',
+    title: 'Corpus and model readiness',
+    detail: 'Shows the provenance boundary and fail-closed promotion status for the evaluation corpus.',
+    target: 'browser',
+    run: runCorpusReadiness,
+  },
 ];
 
 let selectedAction = browserActions[0];
@@ -124,6 +138,53 @@ function renderSelection() {
     statusLine.className = 'status-line status-warn';
     runButton.disabled = true;
   }
+}
+
+async function runModelLicensing() {
+  return {
+    ok: true,
+    status: 'Model licensing disclosure ready.',
+    output: [
+      'No wildlife model is installed in this browser build.',
+      '',
+      'Callweave source and generic capabilities use the repository MIT/Apache license.',
+      'Model artifacts keep their own license, attribution, redistribution, and commercial-use terms.',
+      'A model will be activated only after Traverse verifies its exact version, digest, signature, target, and rights metadata.',
+      '',
+      'BirdNET models are treated as non-commercial optional packages; review the model license before activation.',
+    ].join('\n'),
+  };
+}
+
+async function runCorpusReadiness() {
+  const [samples, sources, longForm, candidates] = await Promise.all([
+    fetchJson('../../sounds samples/manifest.json'),
+    fetchJson('../../config/audio-source-candidates.json'),
+    fetchJson('../../config/test-corpus/long-form-fixtures.json'),
+    fetchJson('../../config/model-candidates.json'),
+  ]);
+  const staged = sources.records.filter((record) => record.status === 'downloaded_staged');
+  const exactArtifacts = candidates.candidates.filter((candidate) => candidate.artifact_status === 'evaluation_artifact_pinned');
+  const productionReady = candidates.candidates.filter((candidate) => candidate.deployment_status === 'approved');
+  const lines = [
+    `public_source_records=${staged.length} (rights recorded; final import review still required)`,
+    `user_supplied_evaluation_records=${samples.samples.length} (not redistributable by default)`,
+    `long_form_fixtures=${longForm.fixtures.length} (expected status: unknown)`,
+    `model_candidates=${candidates.candidates.length}`,
+    `exact_artifacts_pinned=${exactArtifacts.length}`,
+    `production_approved_models=${productionReady.length}`,
+    '',
+    'Promotion policy:',
+    '- rankings are evidence only; they are not species identifications',
+    '- unknown/abstain is valid until calibration and human review exist',
+    '- model activation requires exact digest, signature, target, and rights',
+    '- user-supplied audio stays evaluation-only unless source terms are verified',
+  ];
+  return {
+    ok: true,
+    status: 'Corpus readiness report passed.',
+    output: lines.join('\n'),
+  };
 }
 
 async function runPureFixtures() {
