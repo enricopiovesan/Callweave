@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0.0",
+  "policy": "evaluation-candidates-are-not-runtime-dependencies",
+  "candidates": [
+    {
+      "model_id": "birdnet.v2_4-global-6k-int8",
+      "version": "2.4.0",
+      "manifest_digest": "sha256:952390542e5206a9e48486d4c3f1bf15bf5c12e9a90d1734f7e448077d1cc597",
+      "target": "wasm-cpu",
+      "rights": {
+        "license_id": "CC-BY-NC-SA-4.0",
+        "commercial_use": "prohibited"
+      },
+      "status": "disabled_until_registry_pin_and_production_trust",
+      "reason": "evaluation package is signed with a Traverse test-only key and is not redistributed"
+    }
+  ]
+}

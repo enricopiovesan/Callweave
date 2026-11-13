@@ -15,12 +15,13 @@
     },
     {
       "model_id": "birdnet",
-      "version": null,
-      "digest": null,
+      "package_model_id": "birdnet.v2_4-global-6k-int8",
+      "version": "2.4.0",
+      "digest": "sha256:952390542e5206a9e48486d4c3f1bf15bf5c12e9a90d1734f7e448077d1cc597",
       "family": "bird",
       "families": ["bird"],
       "role": "specialist",
-      "status": "optional_restricted_pending_exact_artifact",
+      "status": "evaluation_only_non_commercial_test_signature",
       "enabled": false,
       "priority": 10
     },
