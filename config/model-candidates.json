@@ -96,13 +96,24 @@
     {
       "candidate_id": "anurapam-amphibian",
       "family": "amphibian",
-      "source": "https://doi.org/10.5281/zenodo.26010756",
-      "license_status": "not-yet-verified",
-      "commercial_use": "unknown",
-      "artifact_status": "not_pinned",
+      "source": "https://doi.org/10.5281/zenodo.20179472",
+      "license_status": "declared",
+      "commercial_use": "allowed-with-attribution",
       "deployment_status": "review_only",
-      "rights": { "license_id": "not-yet-verified", "redistribution": "unknown", "commercial_use": "unknown", "attribution_required": true },
-      "notes": "Ready-to-use Central European anuran classifiers in TFLite/Raven formats. Geography does not match Golden, and exact Zenodo artifact rights must be verified before use."
+      "rights": { "license_id": "CC-BY-4.0", "redistribution": "allowed-with-attribution", "commercial_use": "allowed", "attribution_required": true },
+      "artifact_status": "evaluation_artifact_pinned",
+      "artifact": {
+        "release": "AnuraPAM CompSeg v1",
+        "record_url": "https://zenodo.org/records/20179472",
+        "license_id": "CC-BY-4.0",
+        "file": "AnuraPAM_CompSeg.tflite",
+        "size_bytes": 52802836,
+        "md5": "63fbcf70d4be36efbf64f52efc563223",
+        "sha256": "733792482746727b30987b59af11ac030b75dd134625898e2283a7bd98322085",
+        "format": "tflite",
+        "wasm_conversion": "blocked_no_tflite_packaging_path"
+      },
+      "notes": "AnuraPAM CompSeg v1 is CC-BY-4.0 and pinned from Zenodo record 20179472. It covers 14 Central European anurans, not Golden/British Columbia, and is TFLite-only; keep evaluation-only until a compatible Traverse conversion path and geography decision exist."
     },
     {
       "candidate_id": "golden-mammal-custom",
