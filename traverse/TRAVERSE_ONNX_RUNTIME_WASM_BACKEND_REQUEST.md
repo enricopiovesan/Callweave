@@ -2,6 +2,7 @@
 
 Status: requested implementation slice
 Date: 2026-11-13
+Traverse ticket: https://github.com/traverse-framework/traverse/issues/1859
 
 ## Problem
 
