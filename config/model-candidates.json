@@ -8,10 +8,20 @@
       "source": "https://github.com/birdnet-team/BirdNET-Analyzer",
       "license_status": "conditional",
       "commercial_use": "forbidden",
-      "artifact_status": "not_pinned",
+      "artifact_status": "evaluation_artifact_pinned",
       "deployment_status": "evaluation_only",
       "rights": { "license_id": "CC-BY-NC-SA-4.0", "redistribution": "allowed-with-terms", "commercial_use": "non-commercial-only", "attribution_required": true },
-      "notes": "Released model terms are CC BY-NC-SA 4.0; verify exact model release before packaging."
+      "artifact": {
+        "release": "BirdNET V2.4",
+        "source_url": "https://zenodo.org/records/15050749",
+        "download_url": "https://zenodo.org/records/15050749/files/BirdNET_v2.4_tflite_int8.zip?download=1",
+        "archive_md5": "69becc3e8eb1c72d1d9dae7f21062c74",
+        "archive_sha256": "48664fe911164d42ab8a5da77f285f69de5077fd15b580de59bf8220688a154f",
+        "archive_size_bytes": 45948867,
+        "format": "tflite-int8",
+        "wasm_conversion": "pending"
+      },
+      "notes": "Official V2.4 release pinned for evaluation. Model terms are CC BY-NC-SA 4.0; conversion to a signed Traverse WASM package remains pending."
     },
     {
       "candidate_id": "perch-v2",

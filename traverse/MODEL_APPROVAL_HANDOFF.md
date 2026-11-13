@@ -20,7 +20,7 @@ Use two separate roles:
 
 | Candidate | Rights state | Evidence state | Decision |
 |---|---|---|---|
-| BirdNET | CC BY-NC-SA 4.0; non-commercial | Strong bird focus, but exact package and rights pin still required | Optional non-commercial specialist |
+| BirdNET V2.4 INT8 | CC BY-NC-SA 4.0; non-commercial | Official Zenodo archive pinned (`md5=69becc3e8eb1c72d1d9dae7f21062c74`, 45.9 MB); TFLite-to-WASM conversion and conformance remain | Recommended first specialist target |
 | Perch v2 | Source Apache-2.0 declaration; exact artifact redistribution rights unresolved | Browser inference works, but supplied elk/bear/cougar tests are weak and uncalibrated | Evaluation/reference only |
 | Nocturne | Declared CC-BY; exact artifact rights unresolved | No approved exact WASM package or field evaluation | Review only |
 | InsectNet research | Conditional/non-commercial | Research limitations and exact artifact rights unresolved | Review only |
