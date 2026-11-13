@@ -145,7 +145,7 @@
     "sound-samples:evaluate": "node scripts/evaluate_sound_samples.mjs",
     "sound-samples:calibration-report": "node scripts/report_sound_sample_calibration.mjs",
     "sound-samples:calibration-smoke": "node scripts/calibration_report_smoke.mjs",
-  "corpus:evidence-report": "node scripts/generate_corpus_evidence_report.mjs",
+    "corpus:evidence-report": "node scripts/generate_corpus_evidence_report.mjs",
     "audio:negative-controls-smoke": "node scripts/audio_negative_controls_smoke.mjs",
     "audio:quality-activity:build": "bash capabilities/audio.signal-quality-evaluate/build-fixture.sh && bash capabilities/audio.activity-interval-classify/build-fixture.sh",
     "audio:quality-activity:smoke": "node scripts/audio_quality_activity_wasm_smoke.mjs",
@@ -160,7 +160,7 @@
   "dependencies": {
     "ffmpeg-static": "^5.3.0",
     "onnxruntime-web": "^1.23.2",
-    "traverse-embedder-web": "^0.16.2"
+    "traverse-embedder-web": "0.17.0"
   },
   "devDependencies": {
     "ajv": "^8.20.0",
