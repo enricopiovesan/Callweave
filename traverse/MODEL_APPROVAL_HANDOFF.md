@@ -22,7 +22,7 @@ Use two separate roles:
 | Candidate | Rights state | Evidence state | Decision |
 |---|---|---|---|
 | BirdNET V2.4 INT8 | CC BY-NC-SA 4.0; non-commercial | ONNX source `tphakala/BirdNET-v2.4@d016ed1` converted with Traverse runner; package verification and Wasmtime/Wasmi conformance pass; held-out field evaluation and production signing remain | First specialist evaluation package |
-| Perch v2 | Source Apache-2.0 declaration; exact artifact redistribution rights unresolved | Browser inference works, but supplied elk/bear/cougar tests are weak and uncalibrated | Evaluation/reference only |
+| Perch v2 | Official regional Canada/Alaska ONNX slice pinned at revision `bbf0d014072919ef6e0d962b3a11c663e5e6b703`; Apache-2.0 declaration still needs artifact-rights confirmation | ONNX Runtime Web loads it, but the label-only Traverse WASM package exhausts the enforced 50B fuel ceiling; supplied elk/bear/cougar tests remain weak and uncalibrated | Evaluation/reference only; not publishable |
 | Nocturne | Declared CC-BY; exact artifact rights unresolved | No approved exact WASM package or field evaluation | Review only |
 | InsectNet research | Conditional/non-commercial | Research limitations and exact artifact rights unresolved | Review only |
 | YAMNet ONNX | Apache-2.0 weights plus CC-BY-4.0 labels with attribution | Exact WASM package executes and passes binding smoke; broad event labels only | Event gate candidate |
