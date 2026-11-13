@@ -77,7 +77,21 @@
       "artifact_status": "not_pinned",
       "deployment_status": "review_only",
       "rights": { "license_id": "CC-BY-4.0", "redistribution": "allowed-with-terms", "commercial_use": "allowed", "attribution_required": true },
-      "notes": "Promising ~29 MB Perch-based reference/classifier head for Orthoptera and Cicadidae. Preprint status, Perch dependency, and per-recording source rights still require review."
+      "artifact_status": "evaluation_artifact_pinned",
+      "artifact": {
+        "release": "EarthChirp v1.0.0",
+        "record_url": "https://zenodo.org/records/20696320",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/legalcode",
+        "license_text": "CC-BY-4.0",
+        "classifier_head_sha256": "7ae4ec909b044a0a04e474e6bfeee1cba6aa5852d5df24f72292eca4df9979b4",
+        "reference_prototypes_sha256": "225db23a22ef491b87c5c2280385664e6b250793a2bcbd9b6c36e6ccc4422e96",
+        "reference_index_sha256": "b8243cbf2011495e6dae8ab53464abfb5494d6f82cadb2f9b500a503c44fdfa1",
+        "attributions_sha256": "bf48cb8fe93ac18aefa8a6602991293ef64b5708f2d3da9ac51c05b9d1e11ac7",
+        "source_recordings_redistributed": false,
+        "dependency": "Perch v2 embeddings; no standalone audio model",
+        "wasm_conversion": "blocked_by_perch_runtime_preflight"
+      },
+      "notes": "CC-BY-4.0 derived EarthChirp reference library and classifier head pinned from Zenodo record 20696320. Source recordings are not redistributed and remain under their own upstream licenses. It requires Perch embeddings, whose current Traverse WASM preflight fails; keep evaluation-only."
     },
     {
       "candidate_id": "anurapam-amphibian",
