@@ -11,7 +11,9 @@ if (!inputPath) {
 const decoded = spawnSync(ffmpegPath, ['-v', 'error', '-i', resolve(inputPath), '-t', '10', '-ac', '1', '-ar', '16000', '-f', 'f32le', 'pipe:1'], { encoding: null, maxBuffer: 2 * 1024 * 1024 });
 if (decoded.status !== 0) throw new Error(decoded.error?.message || decoded.stderr?.toString() || 'ffmpeg decode failed');
 const waveform = new Float32Array(decoded.stdout.buffer, decoded.stdout.byteOffset, Math.floor(decoded.stdout.byteLength / 4));
-const result = await runYamnetWasm(waveform.subarray(0, Math.min(waveform.length, 160000)));
+const frame = new Float32Array(160000);
+frame.set(waveform.subarray(0, Math.min(waveform.length, frame.length)));
+const result = await runYamnetWasm(frame);
 const output = resolve(outputPath);
 await import('node:fs/promises').then(fs => fs.mkdir(resolve(output, '..'), { recursive: true }).then(() => fs.writeFile(output, `${JSON.stringify(result, null, 2)}\n`)));
 console.log(JSON.stringify({ status: 'passed', output, samples: waveform.length, top_scores: result.top_scores.slice(0, 10) }, null, 2));

@@ -32,6 +32,21 @@ publicly identified Perch variant:
 4. retain raw logits and mark species results as uncalibrated evidence;
 5. reject the package if the target runtime cannot enforce its resource limits.
 
+## Traverse package preflight result
+
+The pinned artifact was also submitted to Traverse's generic ONNX packaging
+path using the CPU-WASM runner. Packaging failed closed during the required
+Wasmtime `model_prepare` preflight with:
+
+```json
+{"engine":"wasmtime","stage":"preflight","error":{"code":"execution_failed","message":"model_prepare trapped, ran out of fuel, or returned non-zero"}}
+```
+
+No manifest, signature, or executable package was promoted from this run. This
+is an additional runtime-compatibility failure, independent of the weak
+mammal ranking results and the unresolved converted-artifact rights review.
+The current limits were not relaxed to force the model through.
+
 ## INT8 evaluation result
 
 The public `tphakala/Perch-v2-Models` INT8 ONNX artifact was evaluated outside
