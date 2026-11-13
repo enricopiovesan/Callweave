@@ -52,10 +52,18 @@
       "source": "https://huggingface.co/stratus-labs/nocturne-v1.2-teacher",
       "license_status": "declared",
       "commercial_use": "conditional",
-      "artifact_status": "not_pinned",
+      "artifact_status": "evaluation_artifact_pinned",
       "deployment_status": "evaluation_only",
       "rights": { "license_id": "CC-BY-4.0-declared", "redistribution": "unknown", "commercial_use": "unknown", "attribution_required": true },
-      "notes": "Broad non-bird research model; validate size, ABI conversion, and field performance."
+      "artifact": {
+        "revision": "8e31cde23c4531fa1fc169f725272dc9a6815e89",
+        "source_url": "https://huggingface.co/stratus-labs/nocturne-v1.2-teacher",
+        "file": "best.pt",
+        "format": "pytorch",
+        "license": "CC-BY-4.0",
+        "wasm_conversion": "blocked_no_onnx_or_wasm_artifact"
+      },
+      "notes": "Broad non-bird research model with a CC BY 4.0 model card. The exact release is PyTorch-only; no ONNX/WASM artifact is published. Keep evaluation-only until a reproducible export and Traverse parity/resource evidence exist."
     },
     {
       "candidate_id": "insectnet-research",
