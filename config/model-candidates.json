@@ -57,6 +57,28 @@
       "notes": "Research artifact; model card explicitly reports field limitations."
     },
     {
+      "candidate_id": "earthchirp-insect",
+      "family": "insect",
+      "source": "https://doi.org/10.32942/X2BT2R",
+      "license_status": "declared-preprint",
+      "commercial_use": "allowed",
+      "artifact_status": "not_pinned",
+      "deployment_status": "review_only",
+      "rights": { "license_id": "CC-BY-4.0", "redistribution": "allowed-with-terms", "commercial_use": "allowed", "attribution_required": true },
+      "notes": "Promising ~29 MB Perch-based reference/classifier head for Orthoptera and Cicadidae. Preprint status, Perch dependency, and per-recording source rights still require review."
+    },
+    {
+      "candidate_id": "anurapam-amphibian",
+      "family": "amphibian",
+      "source": "https://doi.org/10.5281/zenodo.26010756",
+      "license_status": "not-yet-verified",
+      "commercial_use": "unknown",
+      "artifact_status": "not_pinned",
+      "deployment_status": "review_only",
+      "rights": { "license_id": "not-yet-verified", "redistribution": "unknown", "commercial_use": "unknown", "attribution_required": true },
+      "notes": "Ready-to-use Central European anuran classifiers in TFLite/Raven formats. Geography does not match Golden, and exact Zenodo artifact rights must be verified before use."
+    },
+    {
       "candidate_id": "golden-mammal-custom",
       "family": "mammal",
       "source": "https://github.com/microsoft/MegaDetector-Acoustic",
@@ -77,6 +99,17 @@
       "deployment_status": "evaluation_only",
       "rights": { "license_id": "Apache-2.0+CC-BY-4.0", "redistribution": "allowed-with-terms", "commercial_use": "allowed", "attribution_required": true },
       "notes": "Apache-2.0 model with AudioSet CC-BY-4.0 labels; broad event gate, not species identification."
+    },
+    {
+      "candidate_id": "megadetector-acoustic-framework",
+      "family": "terrestrial-mammal-reference",
+      "source": "https://github.com/microsoft/MegaDetector-Acoustic",
+      "license_status": "MIT-code-model-rights-separate",
+      "commercial_use": "conditional",
+      "artifact_status": "not_pinned",
+      "deployment_status": "review_only",
+      "rights": { "license_id": "MIT-code-model-rights-unverified", "redistribution": "unknown", "commercial_use": "unknown", "attribution_required": true },
+      "notes": "Open framework with bird/beluga demos and training tooling; not a ready general mammal artifact. Treat model checkpoints and datasets separately from MIT code."
     }
   ]
 }

@@ -10,9 +10,12 @@ research-only benchmark after its exact artifact and license are approved.
 
 | Candidate | Finding | Decision |
 | --- | --- | --- |
-| BirdNET | Strong bird classifier; released models are CC BY-NC-SA 4.0 while source is MIT. | Do not use as the default general/commercial model. |
-| Perch | Bioacoustic project focused primarily on birds; model artifacts are distributed separately. | Consider only for a future bird-specialist package. |
+| BirdNET | Strong bird classifier; released models are CC BY-NC-SA 4.0 while source is MIT. | First specialist target; non-commercial/share-alike only. |
+| Perch | Apache-licensed project and useful embedding/reference model, but official documentation presents it primarily as a bird classifier and our mammal tests were weak. | Keep as broad/reference evidence, not the mammal solution. |
 | YAMNet | 521 AudioSet sound-event classes; broad event baseline, not species-grade wildlife identification. | Candidate for research-only benchmark after artifact/license verification. |
+| EarthChirp | CC-BY-4.0 preprint; ~29 MB Perch-based insect reference/classifier head for Orthoptera and Cicadidae. | Strong insect candidate; exact artifact and source-record rights still need pinning. |
+| AnuraPAM | Ready-to-use TFLite/Raven classifiers for 14 Central European anurans; exact Zenodo rights not yet verified. | Amphibian research candidate, but geography is not Golden. |
+| MegaDetector-Acoustic | MIT open framework with bird/beluga demos and training tooling; no ready general mammal package. | Framework/reference only; do not treat as a mammal model. |
 | AST AudioSet | Broad classifier; the referenced model card reports 86.6M F32 parameters and BSD-3-Clause. | Technically possible but likely too large for the first offline target. |
 | Custom compact model | Can target Golden-relevant taxa and use a controlled license/data pipeline. | Preferred long-term production direction. |
 
