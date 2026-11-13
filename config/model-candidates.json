@@ -41,10 +41,20 @@
       "source": "https://github.com/google-research/perch",
       "license_status": "declared_requires_artifact_review",
       "commercial_use": "conditional",
-      "artifact_status": "not_pinned",
+      "artifact_status": "evaluation_artifact_pinned",
       "deployment_status": "evaluation_only",
       "rights": { "license_id": "Apache-2.0-declared", "redistribution": "unknown", "commercial_use": "unknown", "attribution_required": true },
-      "notes": "Strong multispecies bioacoustic candidate with mammal coverage. Evaluate the exact frozen artifact, labels, package size, and WASM feasibility before approval."
+      "artifact": {
+        "revision": "tphakala/Perch-v2-Models@bbf0d014072919ef6e0d962b3a11c663e5e6b703",
+        "source_url": "https://huggingface.co/tphakala/Perch-v2-Models/resolve/bbf0d014072919ef6e0d962b3a11c663e5e6b703/regional/canada-alaska/perch_v2_canada-alaska_int8_arm.onnx",
+        "file": "perch_v2_canada-alaska_int8_arm.onnx",
+        "format": "onnx",
+        "sha256": "4a7f3f9946ece497f906621f0383f589cf878595ea938099163ab71e069c2cf5",
+        "size_bytes": 46576403,
+        "license": "Apache-2.0-declared",
+        "wasm_conversion": "traverse_preflight_failed_model_execute_fuel_exhausted"
+      },
+      "notes": "Official Canada/Alaska regional slice is pinned for reproducible evaluation. ONNX Runtime Web loads it, but the label-only Traverse WASM package exhausts the enforced 50-billion fuel ceiling; do not publish or activate until a smaller artifact or approved runtime budget exists."
     },
     {
       "candidate_id": "nocturne-v1.2-teacher",
