@@ -98,7 +98,7 @@
       "family": "amphibian",
       "source": "https://doi.org/10.5281/zenodo.20179472",
       "license_status": "declared",
-      "commercial_use": "allowed-with-attribution",
+      "commercial_use": "allowed",
       "deployment_status": "review_only",
       "rights": { "license_id": "CC-BY-4.0", "redistribution": "allowed-with-attribution", "commercial_use": "allowed", "attribution_required": true },
       "artifact_status": "evaluation_artifact_pinned",
