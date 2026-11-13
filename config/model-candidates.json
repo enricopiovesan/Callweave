@@ -63,10 +63,18 @@
       "source": "https://huggingface.co/TheVortexProject/insectnet-research-0.2.0-perch2",
       "license_status": "conditional",
       "commercial_use": "forbidden",
-      "artifact_status": "not_pinned",
+      "artifact_status": "evaluation_artifact_pinned",
       "deployment_status": "review_only",
       "rights": { "license_id": "declared-by-source", "redistribution": "unknown", "commercial_use": "non-commercial-only", "attribution_required": true },
-      "notes": "Research artifact; model card explicitly reports field limitations."
+      "artifact": {
+        "revision": "dbfc1bdb5b3f4c20f3c6fcee833a7f6c676ccf77",
+        "source_url": "https://huggingface.co/TheVortexProject/insectnet-research-0.2.0-perch2",
+        "file": "insectnet-research-0.2.0-perch2.joblib",
+        "sha256": "27bf603a6dec2df2789b3bf9241f5e035ccdea5909c4ecf252623ff9304afe32",
+        "format": "scikit-learn-joblib",
+        "wasm_conversion": "blocked_by_perch_embedding_dependency"
+      },
+      "notes": "CC BY-NC-SA 4.0 research classifier for broad insect presence, cicadas, and Orthoptera. The model card explicitly says it is not deployed and must not drive unattended ecological counts or alerts. It requires Perch embeddings, whose Traverse WASM package currently fails preflight."
     },
     {
       "candidate_id": "earthchirp-insect",
