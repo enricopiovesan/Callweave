@@ -1,6 +1,6 @@
 # Perch 2.0 frozen mammal evaluation
 
-Date: 2026-11-10
+Date: 2026-11-13
 
 ## Finding
 
@@ -46,6 +46,29 @@ No manifest, signature, or executable package was promoted from this run. This
 is an additional runtime-compatibility failure, independent of the weak
 mammal ranking results and the unresolved converted-artifact rights review.
 The current limits were not relaxed to force the model through.
+
+### Regional-slice follow-up (2026-11-13)
+
+The official `tphakala/Perch-v2-Models` revision
+`bbf0d014072919ef6e0d962b3a11c663e5e6b703` publishes a Canada/Alaska slice,
+which is a materially better packaging candidate than the full model:
+
+| Artifact | Size | SHA-256 | External runtime | Traverse preflight |
+|---|---:|---|---|---|
+| `regional/canada-alaska/perch_v2_canada-alaska_int8_arm.onnx` | 46,576,403 bytes | `4a7f3f9946ece497f906621f0383f589cf878595ea938099163ab71e069c2cf5` | not promoted | fails during `model_execute` on Wasmi (`execution_failed`) |
+| `regional/canada-alaska/perch_v2_canada-alaska_no_dft_fp32.onnx` | 73,092,700 bytes | `d0cb954c79fd6d1c130c4979c8aec72be09b22b3e7fd6056fbbde5d8ff869ebb` | ONNX Runtime Web loads and evaluates | fails during `model_prepare` on Wasmi (`execution_failed`) |
+
+The regional graphs were tested both with their four declared outputs and as a
+label-only graph (`inputs` → `label`). The multi-output manifest is supported by
+the current Traverse runner, so this is not a single-output manifest bug. The
+label-only INT8 graph passes preparation but exhausts the current 50-billion
+fuel ceiling during execution. Increasing the declared package limit above that
+ceiling is correctly rejected by the host as `host_limit_exceeded`.
+
+The result is a precise compatibility boundary: the artifact is valid ONNX and
+works in ONNX Runtime Web, but it is not currently a portable Traverse WASM
+model under the enforced CPU/fuel budget. No model package, signature, or
+registry publication was created from these experiments.
 
 ## INT8 evaluation result
 
