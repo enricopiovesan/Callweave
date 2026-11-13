@@ -40,6 +40,11 @@ Use two separate roles:
 - browser smoke test and evidence trace preserving model ID, version, digest,
   rights, and signer.
 
+Run `npm run model:candidate-gates:verify` to regenerate the machine-readable
+gate report. A candidate is never marked production-eligible by this command;
+it only proves that the mechanical gates are complete and leaves human model
+and legal approval explicit.
+
 ## Approval question
 
 When the first specialist reaches this boundary, ask exactly one question:
