@@ -19,9 +19,21 @@
         "archive_sha256": "48664fe911164d42ab8a5da77f285f69de5077fd15b580de59bf8220688a154f",
         "archive_size_bytes": 45948867,
         "format": "tflite-int8",
-        "wasm_conversion": "pending"
+        "wasm_conversion": {
+          "status": "packaged_evaluation_only",
+          "format": "onnx-to-traverse-model-wasm",
+          "source_revision": "tphakala/BirdNET-v2.4@d016ed1",
+          "source_url": "https://huggingface.co/tphakala/BirdNET-v2.4/resolve/d016ed1/BirdNET_v2.4_int8_arm.onnx",
+          "source_sha256": "6a2323fe8f99c2af4bb325cf8f11b52748a86aa1f2c9e706c1ae7f907289521a",
+          "runner_sha256": "ac5591fac5f37435667169e969f9117cc6f81dc66b73cd74d1aef9000f5d3a0a",
+          "wasm_sha256": "e566cf051ca0c811b4c75e71521bd481a207956cb740146d6af5177d4a83bc92",
+          "manifest_sha256": "952390542e5206a9e48486d4c3f1bf15bf5c12e9a90d1734f7e448077d1cc597",
+          "conformance": "wasmtime+wasmi passed; one deterministic zero-frame case",
+          "package_path": "/private/tmp/callweave-birdnet-v2.4-onnx/package",
+          "redistribution": "not committed; local evaluation package only until explicit approval"
+        }
       },
-      "notes": "Official V2.4 release pinned for evaluation. Model terms are CC BY-NC-SA 4.0; conversion to a signed Traverse WASM package remains pending."
+      "notes": "Official V2.4 TFLite release and exact ONNX conversion source are pinned for evaluation. The converted package is signed with Traverse's test-only key, passes package verification and Wasmtime/Wasmi conformance, and remains evaluation-only because the model is CC BY-NC-SA 4.0 and the package is not redistributed."
     },
     {
       "candidate_id": "perch-v2",

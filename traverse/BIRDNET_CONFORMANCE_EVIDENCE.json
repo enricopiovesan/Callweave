@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0.0",
+  "model_id": "birdnet.v2_4-global-6k-int8",
+  "version": "2.4.0",
+  "source_revision": "tphakala/BirdNET-v2.4@d016ed1",
+  "source_onnx_sha256": "6a2323fe8f99c2af4bb325cf8f11b52748a86aa1f2c9e706c1ae7f907289521a",
+  "runner_sha256": "ac5591fac5f37435667169e969f9117cc6f81dc66b73cd74d1aef9000f5d3a0a",
+  "wasm_sha256": "e566cf051ca0c811b4c75e71521bd481a207956cb740146d6af5177d4a83bc92",
+  "manifest_sha256": "952390542e5206a9e48486d4c3f1bf15bf5c12e9a90d1734f7e448077d1cc597",
+  "rights": {
+    "license_id": "CC-BY-NC-SA-4.0",
+    "commercial_use": "prohibited",
+    "redistribution": "evaluation-only; package binary is not committed",
+    "attribution": "BirdNET v2.4 GLOBAL 6K; K. Lisa Yang Center for Conservation Bioacoustics (Cornell Lab of Ornithology) and Chemnitz University of Technology; ONNX export tphakala/BirdNET-v2.4@d016ed1"
+  },
+  "input": {
+    "frame_bytes": 576016,
+    "dtype": "f32",
+    "shape": [1, 144000],
+    "sample_rate_hz": 48000
+  },
+  "output": {
+    "dtype": "f32",
+    "shape": [1, 6522]
+  },
+  "limits": {
+    "max_memory_bytes": 268435456,
+    "max_fuel": 50000000000,
+    "max_input_bytes": 576016,
+    "max_output_bytes": 26104,
+    "max_execution_ms": 60000
+  },
+  "signature": {
+    "status": "verified",
+    "key_scope": "Traverse test-only key; not a production trust anchor"
+  },
+  "conformance": {
+    "engines": ["wasmtime", "wasmi"],
+    "cases": 1,
+    "failed_cases": [],
+    "status": "passed",
+    "fixture": "deterministic zero-valued 3-second frame",
+    "command": "traverse-cli model conformance generate <package> --trusted-key <test-public-key> --model-usage non_commercial --input zero-frame.bin --out conformance.json"
+  },
+  "promotion_status": "evaluation_only",
+  "promotion_gaps": [
+    "human approval of exact model and non-commercial distribution terms",
+    "protected Callweave signing key and trusted public-key configuration",
+    "held-out field and negative-control evaluation",
+    "Registry publication and exact application pin"
+  ]
+}

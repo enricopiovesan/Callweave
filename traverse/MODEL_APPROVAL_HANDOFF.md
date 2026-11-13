@@ -12,15 +12,16 @@ Use two separate roles:
    broad sound-event gate. Its package records Apache-2.0 weights, AudioSet
    CC-BY-4.0 label attribution, exact manifest/WASM digests, and WASM CPU
    limits. It must not be presented as a species identifier.
-2. **A specialist model** for animal-family/species evidence only after its
-   exact artifact, rights, package size, cross-engine conformance, and held-out
-   evaluation are accepted. No current specialist candidate meets that bar.
+2. **BirdNET V2.4 GLOBAL 6K** as the first specialist model for bird evidence
+   only. Its exact ONNX-to-WASM evaluation package now passes Traverse package
+   verification and Wasmtime/Wasmi conformance; it remains non-commercial and
+   evaluation-only until the human and distribution gates below are approved.
 
 ## Candidate disposition
 
 | Candidate | Rights state | Evidence state | Decision |
 |---|---|---|---|
-| BirdNET V2.4 INT8 | CC BY-NC-SA 4.0; non-commercial | Official Zenodo archive pinned (`md5=69becc3e8eb1c72d1d9dae7f21062c74`, 45.9 MB); TFLite-to-WASM conversion and conformance remain | Recommended first specialist target |
+| BirdNET V2.4 INT8 | CC BY-NC-SA 4.0; non-commercial | ONNX source `tphakala/BirdNET-v2.4@d016ed1` converted with Traverse runner; package verification and Wasmtime/Wasmi conformance pass; held-out field evaluation and production signing remain | First specialist evaluation package |
 | Perch v2 | Source Apache-2.0 declaration; exact artifact redistribution rights unresolved | Browser inference works, but supplied elk/bear/cougar tests are weak and uncalibrated | Evaluation/reference only |
 | Nocturne | Declared CC-BY; exact artifact rights unresolved | No approved exact WASM package or field evaluation | Review only |
 | InsectNet research | Conditional/non-commercial | Research limitations and exact artifact rights unresolved | Review only |
